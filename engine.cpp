@@ -19,14 +19,16 @@ namespace checkers
 
 	void engine::run(void)
 	{
+		this->_board.opening();
+
 		for (;;)
 		{
 			if (this->_board.get_black_jumpers())
 			{
 				do
 				{
-					std::cout << "*** black jump ***" << std::endl;
-					checkers::move move("");
+					this->_write_buf.push_back("Info: Black jump\n");
+					checkers::move move(this->_read_buf.get_line());
 	 				if (this->_board.is_valid_black_jump(move))
 					{
 						this->_board.black_jump(move);
@@ -34,7 +36,7 @@ namespace checkers
 					}
 					else
 					{
-						std::cout << "Illegal black jump!" << std::endl;
+						this->_write_buf.push_back("Error: Illegal black jump\n");
 					}
 				} while (this->_board.get_black_jumpers());
 			} 
@@ -42,8 +44,8 @@ namespace checkers
 			{
 				for (;;)
 				{
-					std::cout << "*** black move ***" << std::endl;
-					checkers::move move("");
+					this->_write_buf.push_back("Info: Black move\n");
+					checkers::move move(this->_read_buf.get_line());
 					if (this->_board.is_valid_black_move(move))
 					{
 						this->_board.black_move(move);
@@ -52,13 +54,13 @@ namespace checkers
 					}
 					else
 					{
-						std::cout << "Illegal black move!" << std::endl;
+						this->_write_buf.push_back("Error: Illegal black move\n");
 					}
 				}
 			}
 			else
 			{
-				std::cout << "White win!" << std::endl;
+				this->_write_buf.push_back("Info: White win\n");
 				break;
 			}
 
@@ -66,8 +68,8 @@ namespace checkers
 			{
 				do
 				{
-					std::cout << "*** white jump ***" << std::endl;
-					checkers::move move("");
+					this->_write_buf.push_back("Info: White jump\n");
+					checkers::move move(this->_read_buf.get_line());
 		 			if (this->_board.is_valid_white_jump(move))
 					{
 						this->_board.white_jump(move);
@@ -75,7 +77,7 @@ namespace checkers
 					}
 					else
 					{
-						std::cout << "Illegal white jump!" << std::endl;
+						this->_write_buf.push_back("Illegal white jump\n");
 					}
 				} while (this->_board.get_white_jumpers());
 			} 
@@ -83,8 +85,8 @@ namespace checkers
 			{
 				for (;;)
 				{
-					std::cout << "*** white move ***" << std::endl;
-					checkers::move move("");
+					this->_write_buf.push_back("Info: White move\n");
+					checkers::move move(this->_read_buf.get_line());
 					if (this->_board.is_valid_white_move(move))
 					{	
 						this->_board.white_move(move);
@@ -93,17 +95,21 @@ namespace checkers
 					}
 					else
 					{
-						std::cout << "Illegal white move!" << std::endl;
+						this->_write_buf.push_back("Illegal white move\n");
 					}
 				}
 			}
 			else
 			{
-				std::cout << "Black win!" << std::endl;
+				this->_write_buf.push_back("Info: Black win\n");
 				break;
 			}
 		}
+
+		this->_write_buf.write(STDOUT_FILENO);
 	}
+
+	// ================================================================
 
 	void engine::draw(void) const
 	{
