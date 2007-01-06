@@ -3,8 +3,8 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
+#include <string>
 #include "bitboard.hpp"
-#include "interface.hpp"
 #include "move.hpp"
 
 namespace checkers
@@ -14,7 +14,10 @@ namespace checkers
 	class board
 	{
 	public:
-		board(void);
+		inline board(void);
+		explicit board(const std::string& input);
+
+		std::string to_string(void) const;
 
 		board& opening(void);
 
@@ -27,9 +30,6 @@ namespace checkers
 		void white_move(const move& move);
 		void black_jump(const move& move);
 		void white_jump(const move& move);
-
-		inline void black_man_crown(void);
-		inline void white_man_crown(void);
 
 		inline bitboard get_black_pieces(void) const;
 		inline bitboard get_white_pieces(void) const;
@@ -46,10 +46,11 @@ namespace checkers
 		bitboard get_white_movers(void) const;
 		bitboard get_black_jumpers(void) const;
 		bitboard get_white_jumpers(void) const;
-
-		void draw(interface& interface) const;
 		
 	private:
+		inline void black_man_crown(void);
+		inline void white_man_crown(void);
+
 		bitboard _black_pieces;
 		bitboard _white_pieces;
 		bitboard _kings;

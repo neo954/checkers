@@ -4,6 +4,8 @@
 #define __BITBOARD_HPP__
 
 #include <stdint.h>
+#include <string>
+#include <utility>
 
 namespace checkers
 {
@@ -32,19 +34,10 @@ namespace checkers
 	{
 	public:
 		inline bitboard(uint32_t x = 0);
-		bitboard(int file, int line);
+		bitboard(int file, int rank);
 
+		std::pair<int, int> to_square(void) const;
 		uint32_t bit_count(void) const;
-
-		bool is_black_man_move_valid(const bitboard& dest);
-		bool is_white_man_move_valid(const bitboard& dest);
-		bool is_king_move_valid(const bitboard& dest);
-		bool is_black_man_jump_valid(const bitboard& capture,
-			const bitboard& dest);
-		bool is_white_man_jump_valid(const bitboard& capture,
-			const bitboard& dest);
-		bool is_king_jump_valid(const bitboard& capture,
-			const bitboard& dest);
 
 		static const uint32_t EMPTY = 0x0;
 

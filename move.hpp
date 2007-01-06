@@ -3,6 +3,7 @@
 #ifndef __MOVE_HPP__
 #define __MOVE_HPP__
 
+#include <string>
 #include "bitboard.hpp"
 
 namespace checkers
@@ -11,6 +12,9 @@ namespace checkers
 	{
 	public:
 		inline move(bitboard orig, bitboard dest);
+		explicit move(const std::string& input);
+
+		std::string to_string(void) const;
 
 		inline bitboard get_orig(void) const;
 		inline bitboard get_dest(void) const;

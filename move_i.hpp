@@ -18,7 +18,7 @@ namespace checkers
 		if (!(1 == this->_orig.bit_count() &&
 			1 == this->_dest.bit_count()))
 		{
-			throw std::runtime_error("invalid move");
+			throw std::runtime_error("Invalid move");
 		}
 	}
 

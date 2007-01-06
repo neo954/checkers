@@ -5,11 +5,80 @@
 
 namespace checkers
 {
-	board::board(void)
+	board::board(const std::string& input)
 	{
-		this->_black_pieces = bitboard::EMPTY;
-		this->_white_pieces = bitboard::EMPTY;
-		this->_kings = bitboard::EMPTY;
+		int i;
+		bitboard square;
+		std::string::size_type p;
+
+		for (i = 0, p = 0; i < 32 && p < input.size(); ++i, ++p)
+		{
+			square = 0x1 << i;
+			switch (input[p])
+			{
+			case 'k':
+				this->_black_pieces |= square;
+				this->_kings |= square;
+				break;
+			case 'm':
+				this->_black_pieces |= square;
+				break;
+			case 'K':
+				this->_white_pieces |= square;
+				this->_kings |= square;
+				break;
+			case 'M':
+				this->_white_pieces |= square;
+				break;
+			default:
+				--i;
+				break;
+			}
+		}	
+	}
+
+	std::string board::to_string(void) const
+	{
+		std::string output;
+		int i;
+		bitboard square;
+
+		output.reserve(39);
+		for (i = 0; i < 32; ++i)
+		{
+			if (i > 0 && 0 == i % 4)
+			{
+				output += '/';
+			}
+			square = 0x1 << i;
+			if (this->_black_pieces & square)
+			{
+				if (this->_kings & square)
+				{
+					output += 'k';
+				}
+				else
+				{
+					output += 'm';
+				}
+			}
+			else if (this->_white_pieces & square)
+			{
+				if (this->_kings & square)
+				{
+					output += 'K';
+				}
+				else
+				{
+					output += 'M';
+				}
+			}
+			else
+			{
+				output += '0';
+			}
+		}
+		return output;
 	}
 
 	board& board::opening(void)
@@ -251,11 +320,6 @@ namespace checkers
 			}
 		}
 		return movers;
-	}
-
-	void board::draw(interface& interface) const
-	{
-		interface.draw_board(*this);
 	}
 };
 // End of file

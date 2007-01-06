@@ -5,14 +5,11 @@
 
 namespace checkers
 {
-	inline void board::black_man_crown(void)
+	inline board::board(void) :
+		_black_pieces(bitboard::EMPTY),
+		_white_pieces(bitboard::EMPTY),
+		_kings(bitboard::EMPTY)
 	{
-		this->_kings |= this->_black_pieces & bitboard::BLACK_KINGS_ROW;
-	}
-
-	inline void board::white_man_crown(void)
-	{
-		this->_kings |= this->_white_pieces & bitboard::WHITE_KINGS_ROW;
 	}
 
 	inline bitboard board::get_black_pieces(void) const
@@ -53,6 +50,18 @@ namespace checkers
 	inline bitboard board::get_white_kings(void) const
 	{
 		return this->_white_pieces & this->_kings;
+	}
+
+	// ================================================================
+
+	inline void board::black_man_crown(void)
+	{
+		this->_kings |= this->_black_pieces & bitboard::BLACK_KINGS_ROW;
+	}
+
+	inline void board::white_man_crown(void)
+	{
+		this->_kings |= this->_white_pieces & bitboard::WHITE_KINGS_ROW;
 	}
 };
 #endif // __BOARD_I_HPP__
