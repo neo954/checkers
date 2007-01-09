@@ -5,33 +5,17 @@
 
 namespace checkers
 {
-	move::move(const std::string& input)
+	move::move(const std::string& str)
 	{
-		assert(4 == input.size());
-		assert('a' <= input[0] && input[0] <= 'h');
-		assert('1' <= input[1] && input[1] <= '8');
-		assert('a' <= input[2] && input[2] <= 'h');
-		assert('1' <= input[3] && input[3] <= '8');
-		int orig_file = input[0] - 'a';
-		int orig_rank = input[1] - '1';
-		int dest_file = input[2] - 'a';
-		int dest_rank = input[3] - '1';
-		assert(orig_file % 2 == orig_rank % 2);
-		assert(dest_file % 2 == dest_rank % 2);
+		assert(move::is_valid(str));
 
-		if (!(4 == input.size() &&
-			'a' <= input[0] && input[0] <= 'h' &&
-			'1' <= input[1] && input[1] <= '8' &&
-			'a' <= input[2] && input[2] <= 'h' &&
-			'1' <= input[3] && input[3] <= '8' &&
-			orig_file % 2 == orig_rank % 2 &&
-			dest_file % 2 == dest_rank % 2))
+		if (!move::is_valid(str))
 		{
-			throw std::runtime_error("Invalid move - " + input);
+			throw std::runtime_error("Invalid move - " + str);
 		}
 
-		this->_orig = bitboard(orig_file, orig_rank);
-		this->_dest = bitboard(dest_file, dest_rank);
+		this->_orig = bitboard(str[0] - 'a', str[1] - '1');
+		this->_dest = bitboard(str[2] - 'a', str[3] - '1');
 	}
 
 	std::string move::to_string(void) const
@@ -43,9 +27,9 @@ namespace checkers
 		std::pair<int, int> dest = this->_dest.to_square();
 
 		return std::string(1, static_cast<char>(orig.first + 'a'))
-			+ (static_cast<char>(orig.second + '1'))
-			+ (static_cast<char>(dest.first + 'a'))
-			+ (static_cast<char>(dest.second + '1'));
+			+ static_cast<char>(orig.second + '1')
+			+ static_cast<char>(dest.first + 'a')
+			+ static_cast<char>(dest.second + '1');
 	}
 
 	bitboard move::is_valid_on_black_man(void) const

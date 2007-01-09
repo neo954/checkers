@@ -14,7 +14,7 @@ int main(void)
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << "Fatal error: " << e.what() << std::endl;
 		exit(1);
 	}
 

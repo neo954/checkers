@@ -39,6 +39,8 @@ namespace checkers
 		std::pair<int, int> to_square(void) const;
 		uint32_t bit_count(void) const;
 
+		inline bitboard get_lsb(void) const;
+
 		static const uint32_t EMPTY = 0x0;
 
 		static const uint32_t BLACK_PIECES_INIT =

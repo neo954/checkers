@@ -4,6 +4,7 @@
 #define __BOARD_HPP__
 
 #include <string>
+#include <vector>
 #include "bitboard.hpp"
 #include "move.hpp"
 
@@ -46,6 +47,11 @@ namespace checkers
 		bitboard get_white_movers(void) const;
 		bitboard get_black_jumpers(void) const;
 		bitboard get_white_jumpers(void) const;
+
+		std::vector<move> generate_black_moves(void) const;
+		std::vector<move> generate_white_moves(void) const;
+		std::vector<move> generate_black_jumps(void) const;
+		std::vector<move> generate_white_jumps(void) const;
 		
 	private:
 		inline void black_man_crown(void);

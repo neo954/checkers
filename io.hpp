@@ -1,0 +1,43 @@
+/// @file io.hpp
+
+#ifndef __IO_HPP__
+#define __IO_HPP__
+
+#include <fcntl.h>
+#include <string>
+#include "loopbuffer.hpp"
+
+namespace checkers
+{
+	class io
+	{
+	public:
+                static io& init(void);
+
+		inline std::string read_line(void);
+
+		inline void write(char c);
+		inline void write(const std::string& str);
+		inline void write(const char* s);
+		template<typename T>
+        	inline void write(const T& v);
+
+		void process(void);
+
+	private:
+		io(void);
+		~io(void);
+		io(const io& rhs);
+		io& operator=(const io& rhs);
+
+		loopbuffer _read_buf;
+		loopbuffer _write_buf;
+
+		void setfl(int fd, int flags);
+	};
+}
+
+#include "io_i.hpp"
+
+#endif // __IO_HPP__
+// End of file

@@ -29,6 +29,11 @@ namespace checkers
 	{
 		assert(1 == this->bit_count());
 
+		if (1 != this->bit_count())
+		{
+			throw std::runtime_error("Illegal bitboard::to_square() call");
+		}
+
 		int file;
 		int rank;
 

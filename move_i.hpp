@@ -31,6 +31,17 @@ namespace checkers
 	{
 		return this->_dest;
 	}
+
+	inline bool move::is_valid(const std::string& str)
+	{
+		return (4 == str.size() &&
+			'a' <= str[0] && str[0] <= 'h' &&
+			'1' <= str[1] && str[1] <= '8' &&
+			'a' <= str[2] && str[2] <= 'h' &&
+			'1' <= str[3] && str[3] <= '8' &&
+			(str[0] - 'a') % 2 == (str[1] - '1') % 2 &&
+			(str[2] - 'a') % 2 == (str[3] - '1') % 2);
+	}
 };
 
 #endif // __MOVE_I_HPP__

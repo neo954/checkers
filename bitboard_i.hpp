@@ -10,6 +10,11 @@ namespace checkers
 	{
 	}
 
+	inline bitboard bitboard::get_lsb(void) const
+	{
+		return this->_bitboard & (-this->_bitboard);
+	}
+
 	inline bitboard bitboard::operator <<(int rhs) const
 	{
 		return this->_bitboard << rhs;

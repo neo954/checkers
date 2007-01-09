@@ -7,7 +7,7 @@ TESTS = test_loopbuffer
 build: $(TARGETS)
 test: $(TESTS)
 
-ponder: engine.o bitboard.o board.o move.o loopbuffer.o
+ponder: engine.o bitboard.o board.o move.o loopbuffer.o io.o
 test_loopbuffer: loopbuffer.o
 
 doc: Doxyfile *.cpp *.hpp
@@ -15,7 +15,7 @@ doc: Doxyfile *.cpp *.hpp
 	doxygen
 
 clean:
-	$(RM) $(TARGETS) *.o deps core gmon.out
+	$(RM) $(TARGETS) $(TESTS) *.o deps core gmon.out
 	$(RM) -r doc
 
 deps: *.cpp *.hpp

@@ -321,5 +321,244 @@ namespace checkers
 		}
 		return movers;
 	}
+
+	std::vector<move> board::generate_black_moves(void) const
+	{
+		std::vector<move> moves;
+		bitboard black_movers = this->get_black_movers();
+		bitboard orig;
+		bitboard dest;
+		const bitboard not_occupied = this->get_not_occupied();
+
+		while (black_movers)
+		{
+			orig = black_movers.get_lsb();
+			black_movers &= ~orig;
+
+			dest = (orig >> 4) & not_occupied; 
+			if (dest)
+			{
+				moves.push_back(move(orig, dest));
+			}
+
+			dest = (((orig & bitboard::MASK_R3) >> 3) |
+				((orig & bitboard::MASK_R5) >> 5)) &
+				not_occupied;
+			if (dest)
+			{
+				moves.push_back(move(orig, dest));
+			}
+
+			if (orig & this->_kings)
+			{
+				dest = (orig << 4) & not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+
+				dest = (((orig & bitboard::MASK_L3) << 3) |
+					((orig & bitboard::MASK_L5) << 5)) & not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+			}
+		}
+
+		return moves;
+	}
+
+	std::vector<move> board::generate_white_moves(void) const
+	{
+		std::vector<move> moves;
+		bitboard white_movers = this->get_white_movers();
+		bitboard orig;
+		bitboard dest;
+		const bitboard not_occupied = this->get_not_occupied();
+
+		while (white_movers)
+		{
+			orig = white_movers.get_lsb();
+			white_movers &= ~orig;
+
+			dest = (orig << 4) & not_occupied; 
+			if (dest)
+			{
+				moves.push_back(move(orig, dest));
+			}
+
+			dest = (((orig & bitboard::MASK_L3) << 3) |
+				((orig & bitboard::MASK_L5) << 5)) &
+				not_occupied;
+			if (dest)
+			{
+				moves.push_back(move(orig, dest));
+			}
+
+			if (orig & this->_kings)
+			{
+				dest = (orig >> 4) & not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+
+				dest = (((orig & bitboard::MASK_R3) >> 3) |
+					((orig & bitboard::MASK_R5) >> 5)) &
+					not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+			}
+		}
+
+		return moves;
+	}
+
+	std::vector<move> board::generate_black_jumps(void) const
+	{
+		std::vector<move> moves;
+		bitboard black_jumpers = this->get_black_jumpers();
+		bitboard orig;
+		bitboard dest;
+		bitboard temp;
+		const bitboard not_occupied = this->get_not_occupied();
+
+		while (black_jumpers)
+		{
+			orig = black_jumpers.get_lsb();
+			black_jumpers &= ~orig;
+
+			temp = (orig >> 4) & this->_white_pieces;
+			if (temp)
+			{
+				dest = (((temp & bitboard::MASK_R3) >> 3) |
+					((temp & bitboard::MASK_R5) >> 5)) &
+					not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+			}
+
+			temp = (((orig & bitboard::MASK_R3) >> 3) |
+				((orig & bitboard::MASK_R5) >> 5)) &
+				this->_white_pieces;
+			if (temp)
+			{
+				dest = (temp >> 4) & not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+			}
+
+			if (orig & this->_kings)
+			{
+				temp = (orig << 4) & this->_white_pieces;
+				if (temp)
+				{
+					dest = (((temp & bitboard::MASK_L3)
+							<< 3) |
+						((temp & bitboard::MASK_L5)
+							<< 5)) & not_occupied;
+					if (dest)
+					{
+						moves.push_back(
+							move(orig, dest));
+					}
+				}
+
+				temp = (((orig & bitboard::MASK_L3) << 3) |
+					((orig & bitboard::MASK_L5) << 5)) &
+					this->_white_pieces;
+				if (temp)
+				{
+					dest = (temp << 4) & not_occupied;
+					if (dest)
+					{
+						moves.push_back(
+							move(orig, dest));
+					}
+				}
+			}
+		}
+
+		return moves;
+	}
+
+	std::vector<move> board::generate_white_jumps(void) const
+	{
+		std::vector<move> moves;
+		bitboard white_jumpers = this->get_white_jumpers();
+		bitboard orig;
+		bitboard dest;
+		bitboard temp;
+		const bitboard not_occupied = this->get_not_occupied();
+
+		while (white_jumpers)
+		{
+			orig = white_jumpers.get_lsb();
+			white_jumpers &= ~orig;
+
+			temp = (orig << 4) & this->_black_pieces;
+			if (temp)
+			{
+				dest = (((temp & bitboard::MASK_L3) << 3) |
+					((temp & bitboard::MASK_L5) << 5)) &
+					not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+			}
+
+			temp = (((orig & bitboard::MASK_L3) << 3) |
+				((orig & bitboard::MASK_L5) << 5)) &
+				this->_black_pieces;
+			if (temp)
+			{
+				dest = (temp << 4) & not_occupied;
+				if (dest)
+				{
+					moves.push_back(move(orig, dest));
+				}
+			}
+
+			if (orig & this->_kings)
+			{
+				temp = (orig >> 4) & this->_black_pieces;
+				if (temp)
+				{
+					dest = (((temp & bitboard::MASK_R3)
+							>> 3) |
+						((temp & bitboard::MASK_R5)
+							>> 5)) & not_occupied;
+					if (dest)
+					{
+						moves.push_back(
+							move(orig, dest));
+					}
+				}
+
+				temp = (((orig & bitboard::MASK_R3) >> 3) |
+					((orig & bitboard::MASK_R5) >> 5)) &
+					this->_black_pieces;
+				if (temp)
+				{
+					dest = (temp >> 4) & not_occupied;
+					if (dest)
+					{
+						moves.push_back(
+							move(orig, dest));
+					}
+				}
+			}
+		}
+
+		return moves;
+	}
 };
 // End of file

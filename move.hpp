@@ -12,7 +12,7 @@ namespace checkers
 	{
 	public:
 		inline move(bitboard orig, bitboard dest);
-		explicit move(const std::string& input);
+		explicit move(const std::string& str);
 
 		std::string to_string(void) const;
 
@@ -26,6 +26,8 @@ namespace checkers
 		bitboard get_black_man_jump_capture(void) const;
 		bitboard get_white_man_jump_capture(void) const;
 		bitboard get_king_jump_capture(void) const;
+
+		inline static bool is_valid(const std::string& str);
 
 	private:
 		move(void);
