@@ -12,6 +12,11 @@ int main(void)
 
 		engine.run();
 	}
+	catch (std::runtime_error& e)
+	{
+		std::cerr << "Runtime error: " << e.what() << std::endl;
+		exit(1);
+	}
 	catch (std::exception& e)
 	{
 		std::cerr << "Fatal error: " << e.what() << std::endl;

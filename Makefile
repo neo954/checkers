@@ -7,7 +7,7 @@ TESTS = test_loopbuffer
 build: $(TARGETS)
 test: $(TESTS)
 
-ponder: engine.o bitboard.o board.o move.o loopbuffer.o io.o
+ponder: engine.o bitboard.o board.o move.o loopbuffer.o io.o intelligence.o
 test_loopbuffer: loopbuffer.o
 
 doc: Doxyfile *.cpp *.hpp

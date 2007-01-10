@@ -22,6 +22,8 @@ namespace checkers
 		engine(const engine& rhs);
 		engine& operator=(const engine& rhs);
 
+		bool make_move(const move& move);
+		void switch_player(void);
 		void print(void);
 		void print(bitboard square);
 		void rotate(void);
@@ -42,8 +44,6 @@ namespace checkers
 		board _board;
 		bool _rotate;
 		player _player;
-
-		loopbuffer _move_queue;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;

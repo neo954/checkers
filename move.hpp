@@ -30,8 +30,6 @@ namespace checkers
 		inline static bool is_valid(const std::string& str);
 
 	private:
-		move(void);
-
 		bitboard _orig;
 		bitboard _dest;
 	};

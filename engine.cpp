@@ -1,6 +1,7 @@
 /// @file console.cpp
 
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include "engine.hpp"
@@ -9,7 +10,7 @@
 namespace checkers
 {
 	engine::engine(void) :
-		_board(), _rotate(false), _player(BLACK), _move_queue()
+		_board(), _rotate(false), _player(BLACK)
 	{
 		this->_action.push_back(std::make_pair("print",  &engine::do_print));
 		this->_action.push_back(std::make_pair("rotate", &engine::do_rotate));
@@ -32,122 +33,185 @@ namespace checkers
 	{
 		io& io = io::init();
 
+		std::string line;
+		std::vector<std::string> args;
+		std::string::size_type idx_begin;
+		std::string::size_type idx_end;
+		std::string piece;
+		std::string::const_iterator begin;
+		std::vector<std::pair<std::string, do_action> >::const_iterator
+			pos;
+
 		this->_board.opening();
 		this->print();
+		this->prompt();
 
 		for (;;)
 		{
-			if (this->_board.get_black_jumpers())
+			io.process();
+			line = io.read_line();
+			if (line.empty())
 			{
-				// black jump
-				do
-				{
-					this->prompt();
-					while (this->_move_queue.is_empty())
-					{
-						io.process();
-						this->parse_input();
-					}
-					checkers::move move(this->_move_queue.get_line());
-	 				if (this->_board.is_valid_black_jump(move))
-					{
-						this->_board.black_jump(move);
-						this->print();
-					}
-					else
-					{
-						io.write("Error: Illegal move - must jump\n");
-					}
-				} while (this->_board.get_black_jumpers());
-			} 
-			else if (this->_board.get_black_movers())
-			{
-				// black move
-				for (;;)
-				{
-					this->prompt();
-					while (this->_move_queue.is_empty())
-					{
-						io.process();
-						this->parse_input();
-					}
-					checkers::move move(this->_move_queue.get_line());
-					if (this->_board.is_valid_black_move(move))
-					{
-						this->_board.black_move(move);
-						this->print();
-						break;
-					}
-					else
-					{
-						io.write("Error: Illegal move\n");
-					}
-				}
-			}
-			else
-			{
-				io.write("Info: White win\n");
-				break;
+				continue;
 			}
 
-			if (this->_board.get_white_jumpers())
+			assert('\n' == line.at(line.size() - 1));
+
+			idx_begin = 0;
+			idx_end = 0;
+			begin = line.begin();
+			while ((idx_end = line.find(' ', idx_begin))
+				!= std::string::npos)
 			{
-				// white jump
-				do
+				piece = std::string(begin + idx_begin,
+					begin + idx_end);
+				idx_begin = idx_end + 1;
+				if (!piece.empty())
 				{
-					this->prompt();
-					while (this->_move_queue.is_empty())
-					{
-						io.process();
-						this->parse_input();
-					}
-					checkers::move move(this->_move_queue.get_line());
-		 			if (this->_board.is_valid_white_jump(move))
-					{
-						this->_board.white_jump(move);
-						this->print();
-					}
-					else
-					{
-						io.write("Error: Illegal move - must jump\n");
-					}
-				} while (this->_board.get_white_jumpers());
-			} 
-			else if (this->_board.get_white_movers())
-			{
-				// white move
-				for (;;)
-				{
-					this->prompt();
-					while (this->_move_queue.is_empty())
-					{
-						io.process();
-						this->parse_input();
-					}
-					checkers::move move(this->_move_queue.get_line());
-					if (this->_board.is_valid_white_move(move))
-					{	
-						this->_board.white_move(move);
-						this->print();
-						break;
-					}
-					else
-					{
-						io.write("Error: Illegal move\n");
-					}
+					args.push_back(piece);
 				}
 			}
-			else
+			piece = std::string(begin + idx_begin,
+				static_cast<std::string::const_iterator>(
+				line.end() - 1));
+			if (!piece.empty())
 			{
-				io.write("Info: Black win\n");
-				break;
+				args.push_back(piece);
 			}
+
+			if (args.empty())
+			{
+				this->prompt();
+				continue;
+			}
+			// args is produced
+
+			for (pos = this->_action.begin();
+				pos != this->_action.end(); ++pos)
+			{
+				if (pos->first == args[0])
+				{
+					(this->*pos->second)(args);
+					goto again;
+				}
+			}
+
+			// process move
+			if (1 == args.size() && move::is_valid(args[0]))
+			{
+				if (this->make_move(move(args[0])))
+				{
+					this->print();
+				}
+				goto again;
+			}
+
+			io.write("Error: Illegal ");
+			io.write((BLACK == this->_player) ? "black" : "white");
+			io.write(" move - ");
+			io.write(args[0]);
+			io.write('\n');
+again:
+			args.clear();
+			this->prompt();
 		}
-
-		io.process();
 	}
 
 	// ================================================================
+
+	bool engine::make_move(const move& move)
+	{
+		io& io = io::init();
+
+		if (BLACK == this->_player)
+		{
+			if (this->_board.get_black_jumpers())
+			{
+	 			if (this->_board.is_valid_black_jump(move))
+				{
+					this->_board.black_jump(move);
+					if (this->_board.get_black_jumpers())
+					{
+						return true;
+					}
+				}
+				else
+				{
+					io.write("Error: Illegal black move - ");
+					io.write(move.to_string());
+					io.write(", jump is forced\n");
+					return false;
+				}
+			} 
+			else if (this->_board.get_black_movers())
+			{
+				if (this->_board.is_valid_black_move(move))
+				{
+					this->_board.black_move(move);
+				}
+				else
+				{
+					io.write("Error: Illegal black move - ");
+					io.write(move.to_string());
+					io.write('\n');
+					return false;
+				}
+			}
+			else
+			{
+				assert("White win");
+				throw std::runtime_error("White win");
+			}
+		}
+		else
+		{
+			if (this->_board.get_white_jumpers())
+			{
+		 		if (this->_board.is_valid_white_jump(move))
+				{
+					this->_board.white_jump(move);
+					if (this->_board.get_white_jumpers())
+					{
+						return true;
+					}
+				}
+				else
+				{
+					io.write("Error: Illegal white move - ");
+					io.write(move.to_string());
+					io.write(", jump is forced\n");
+					return false;
+				}
+			} 
+			else if (this->_board.get_white_movers())
+			{
+				if (this->_board.is_valid_white_move(move))
+				{	
+					this->_board.white_move(move);
+				}
+				else
+				{
+					io.write("Error: Illegal white move - ");
+					io.write(move.to_string());
+					io.write('\n');
+					return false;
+				}
+			}
+			else
+			{
+				assert("Black win");
+				throw std::runtime_error("Black win");
+			}
+		}
+
+		this->switch_player();
+		return true;
+	}
+
+	void engine::switch_player(void)
+	{
+		this->_player = (BLACK == this->_player) ? WHITE : BLACK;
+	}
 
 	void engine::print(void)
 	{
@@ -247,85 +311,6 @@ namespace checkers
 	void engine::rotate(void)
 	{
 		this->_rotate = !this->_rotate;
-	}
-
-	void engine::parse_input(void)
-	{
-		io& io = io::init();
-
-		std::string line;
-		std::vector<std::string> args;
-		std::string::size_type idx_begin;
-		std::string::size_type idx_end;
-		std::string piece;
-		std::string::const_iterator begin;
-		std::vector<std::pair<std::string, do_action> >::const_iterator
-			pos;
-
-		for (;;)
-		{
-			line = io.read_line();
-			if (line.empty())
-			{
-				break;
-			}
-
-			idx_begin = 0;
-			idx_end = 0;
-			begin = line.begin();
-			while ((idx_end = line.find(' ', idx_begin))
-				!= std::string::npos)
-			{
-				piece = std::string(begin + idx_begin,
-					begin + idx_end);
-				idx_begin = idx_end + 1;
-				if (!piece.empty())
-				{
-					args.push_back(piece);
-				}
-			}
-			piece = std::string(begin + idx_begin,
-				static_cast<std::string::const_iterator>(
-				line.end()));
-			if (!piece.empty())
-			{
-				args.push_back(piece);
-			}
-
-			if (args.empty())
-			{
-				continue;
-			}
-			// args is produced
-
-			for (pos = this->_action.begin();
-				pos != this->_action.end(); ++pos)
-			{
-				if (pos->first == args[0])
-				{
-					(this->*pos->second)(args);
-					goto again;
-				}
-			}
-
-			// process move
-			if (1 == args.size() && move::is_valid(args[0]))
-			{
-				this->_move_queue.push_back(args[0] + '\n');
-				goto again;
-			}
-
-			if (!args.empty())
-			{
-				io.write(
-					"Error: Illegal move - "
-					+ args[0] + '\n');
-			}
-again:
-			args.clear();
-			this->prompt();
-		}
-		io.process();
 	}
 
 	void engine::prompt(void)
