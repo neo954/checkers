@@ -32,14 +32,15 @@ namespace checkers
 
 		void prompt(void);
 
-		void do_print(const std::vector<std::string>& args);
-		void do_rotate(const std::vector<std::string>& args);
 		void do_black(const std::vector<std::string>& args);
-		void do_white(const std::vector<std::string>& args);
-		void do_ping(const std::vector<std::string>& args);
+		void do_go(const std::vector<std::string>& args);
 		void do_help(const std::vector<std::string>& args);
 		void do_new(const std::vector<std::string>& args);
+		void do_ping(const std::vector<std::string>& args);
+		void do_print(const std::vector<std::string>& args);
 		void do_quit(const std::vector<std::string>& args);
+		void do_rotate(const std::vector<std::string>& args);
+		void do_white(const std::vector<std::string>& args);
 
 		board _board;
 		bool _rotate;

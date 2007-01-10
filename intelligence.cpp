@@ -10,6 +10,17 @@ namespace checkers
 		this->whether_jump();
 	}
 
+	move intelligence::think(int depth)
+	{
+		std::vector<move> best_moves;
+
+		this->alpha_beta_search(depth, -INFINITY, INFINITY, best_moves);
+
+		return best_moves.at(0);
+	}
+
+	// ================================================================
+
 	int intelligence::alpha_beta_search(int depth, int alpha, int beta,
 		std::vector<move>& best_moves)
 	{
@@ -50,8 +61,6 @@ namespace checkers
 
 		return alpha;
 	}
-
-	// ================================================================
 
 	std::vector<move> intelligence::generate_moves(void) const
 	{

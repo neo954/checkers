@@ -11,38 +11,6 @@
 
 namespace checkers
 {
-	loopbuffer::loopbuffer(int max_size) :
-		_max_size(max_size), _front(0), _rear(0), _lines(0)
-	{
-		this->_buffer = new char[this->_max_size];
-	}
-
-	loopbuffer::~loopbuffer(void)
-	{
-		delete[] this->_buffer;
-	}
-
-	int loopbuffer::max_size(void) const
-	{
-		return this->_max_size;
-	}
-
-	int loopbuffer::size(void) const
-	{
-		return (this->_rear - this->_front + this->_max_size)
-			% this->_max_size;
-	}
-
-	bool loopbuffer::is_full(void) const
-	{
-		return (this->_rear + 1) % this->_max_size == this->_front;
-	}
-
-	bool loopbuffer::is_empty(void) const
-	{
-		return this->_front == this->_rear;
-	}
-
 	char loopbuffer::front(void) const
 	{
 		assert(!this->is_empty());		

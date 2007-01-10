@@ -8,13 +8,13 @@ namespace checkers
 	class loopbuffer
 	{
 	public:
-		explicit loopbuffer(int max_size = 512);
-		~loopbuffer(void);
+		explicit inline loopbuffer(int max_size = 512);
+		inline ~loopbuffer(void);
 
-		int max_size(void) const;
-		int size(void) const;
-		bool is_full(void) const;
-		bool is_empty(void) const;
+		inline int max_size(void) const;
+		inline int size(void) const;
+		inline bool is_full(void) const;
+		inline bool is_empty(void) const;
 		char front(void) const;
 		void pop_front(void);
 		bool read(int fd);
@@ -38,6 +38,6 @@ namespace checkers
 		int _lines;
 	};
 };
-
+#include "loopbuffer_i.hpp"
 #endif // __LOOPBUFFER_HPP__
 // End of file

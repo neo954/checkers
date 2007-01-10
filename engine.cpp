@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "engine.hpp"
+#include "intelligence.hpp"
 #include "io.hpp"
 
 namespace checkers
@@ -12,6 +13,7 @@ namespace checkers
 	engine::engine(void) :
 		_board(), _rotate(false), _player(BLACK)
 	{
+		this->_action.push_back(std::make_pair("go",     &engine::do_go));
 		this->_action.push_back(std::make_pair("print",  &engine::do_print));
 		this->_action.push_back(std::make_pair("rotate", &engine::do_rotate));
 		this->_action.push_back(std::make_pair("black",  &engine::do_black));
@@ -360,19 +362,34 @@ again:
 		io.write('\n');
 	}
 
+	void engine::do_go(const std::vector<std::string>& args)
+	{
+		io& io = io::init();
+
+		intelligence intelligence(this->_board, this->_player);
+		move move = intelligence.think(1);
+
+		io.write("Info: My move is : ");
+		io.write(move.to_string());
+		io.write('\n');
+		this->make_move(move);
+		this->print();
+	}
+
 	void engine::do_help(const std::vector<std::string>& args)
 	{
 		io& io = io::init();
 
 		io.write("Info: Help message\n");
-		io.write(" ping N         N is a decimal number. Reply by sending the string \"pong N\"\n");
-		io.write(" print          Show the current board.\n");
-		io.write(" rotate         Rotate the board 180 degrees.\n");
 		io.write(" black          Set Black on move. Set the engine to play White. Stop clocks.\n");
-		io.write(" white          Set White on move. Set the engine to play Black. Stop clocks.\n");
+		io.write(" go             Set the engine to play the color that is on move.\n");
 		io.write(" help           Show this help information.\n");
 		io.write(" new            Reset the board to the standard starting position.\n");
+		io.write(" ping N         N is a decimal number. Reply by sending the string \"pong N\"\n");
+		io.write(" print          Show the current board.\n");
 		io.write(" quit           Quit this program.\n");
+		io.write(" rotate         Rotate the board 180 degrees.\n");
+		io.write(" white          Set White on move. Set the engine to play Black. Stop clocks.\n");
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)
