@@ -31,7 +31,8 @@ namespace checkers
 	inline void io::write(const T& v)
 	{
 		std::ostringstream stream;
-		stream << std::ios::fixed << v;
+		stream.setf(std::ios::fixed);
+		stream << v;
 		this->_write_buf.push_back(stream.str());
 	}
 }

@@ -8,7 +8,7 @@ namespace checkers
 {
 	enum player
 	{
-		BLACK,
+		BLACK = 0,
 		WHITE,
 	};
 };
