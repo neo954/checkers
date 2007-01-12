@@ -125,5 +125,6 @@ namespace checkers
 		bitboard capture = this->get_black_man_jump_capture();
 		return capture ? capture : this->get_white_man_jump_capture();
 	}
-};
+}
+
 // End of file

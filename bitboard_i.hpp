@@ -109,6 +109,7 @@ namespace checkers
 	{
 		return lhs._bitboard & rhs;
 	}
-};
+}
+
 #endif // __BITBOARD_I_HPP__
 // End of file

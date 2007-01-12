@@ -3,7 +3,6 @@
 #ifndef __MOVE_HPP__
 #define __MOVE_HPP__
 
-#include <string>
 #include "bitboard.hpp"
 
 namespace checkers
@@ -33,7 +32,7 @@ namespace checkers
 		bitboard _orig;
 		bitboard _dest;
 	};
-};
+}
 
 #include "move_i.hpp"
 #endif // __MOVE_HPP__

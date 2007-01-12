@@ -36,6 +36,7 @@ namespace checkers
 	{
 		return this->_front == this->_rear;
 	}
-};
+}
+
 #endif // __LOOPBUFFER_I_HPP__
 // End of file

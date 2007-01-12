@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 #include <string>
-#include <utility>
 
 namespace checkers
 {
@@ -37,7 +36,7 @@ namespace checkers
 		bitboard(int file, int rank);
 
 		std::pair<int, int> to_square(void) const;
-		uint32_t bit_count(void) const;
+		int bit_count(void) const;
 
 		inline bitboard get_lsb(void) const;
 
@@ -69,6 +68,10 @@ namespace checkers
 			0x1 <<  9 | 0x1 << 10 | 0x1 << 11 | 0x1 << 17 |
 			0x1 << 18 | 0x1 << 19 | 0x1 << 25 | 0x1 << 26 |
 			0x1 << 27;
+
+		static const uint32_t EDGES =
+			0x1 <<  7 | 0x1 <<  8 | 0x1 << 15 | 0x1 << 16 |
+			0x1 << 23 | 0x1 << 24;
 
 		static const uint32_t BLACK_KINGS_ROW =
 			0x1 <<  0 | 0x1 <<  1 | 0x1 <<  2 | 0x1 <<  3;
@@ -112,7 +115,7 @@ namespace checkers
 	inline bitboard operator ^(const bitboard& lhs, const bitboard& rhs);
 	inline bitboard operator ^(uint32_t, const bitboard& rhs);
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs);
-};
+}
 
 #include "bitboard_i.hpp"
 #endif // __BITBOARD_HPP__

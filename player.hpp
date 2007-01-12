@@ -8,10 +8,10 @@ namespace checkers
 {
 	enum player
 	{
-		BLACK = 0,
-		WHITE,
+		BLACK,
+		WHITE
 	};
-};
+}
 
 #endif // __PLAYER_HPP__
 // End of file

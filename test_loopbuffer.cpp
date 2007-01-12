@@ -79,3 +79,5 @@ int main(void)
 		test(0 == buffer.size());
 	}
 }
+
+// End of file

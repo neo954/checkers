@@ -1,7 +1,6 @@
 /// @file ponder.cpp
 
 #include <iostream>
-#include <stdexcept>
 #include "engine.hpp"
 
 int main(void)
@@ -25,4 +24,5 @@ int main(void)
 
 	return 0;
 }
+
 // End of file

@@ -9,6 +9,12 @@
 
 namespace checkers
 {
+	enum wait
+	{
+		NOWAIT = 0,
+		AWHILE = 10000
+	};
+
 	class io
 	{
 	public:
@@ -22,7 +28,7 @@ namespace checkers
 		template<typename T>
         	inline void write(const T& v);
 
-		void process(void);
+		void process(wait sleep = AWHILE);
 
 	private:
 		io(void);
@@ -38,6 +44,5 @@ namespace checkers
 }
 
 #include "io_i.hpp"
-
 #endif // __IO_HPP__
 // End of file

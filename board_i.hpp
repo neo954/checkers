@@ -1,4 +1,4 @@
-/// @file board_i.cpp
+/// @file board_i.hpp
 
 #ifndef __BOARD_I_HPP__
 #define __BOARD_I_HPP__
@@ -54,15 +54,26 @@ namespace checkers
 
 	// ================================================================
 
-	inline void board::black_man_crown(void)
+	/// @return crown piece
+
+	inline bitboard board::black_man_crown(void)
 	{
-		this->_kings |= this->_black_pieces & bitboard::BLACK_KINGS_ROW;
+		bitboard crown = this->get_black_men() & bitboard::BLACK_KINGS_ROW;
+		this->_kings |= crown;
+
+		return crown;
 	}
 
-	inline void board::white_man_crown(void)
+	/// @return crown piece
+
+	inline bitboard board::white_man_crown(void)
 	{
-		this->_kings |= this->_white_pieces & bitboard::WHITE_KINGS_ROW;
+		bitboard crown = this->get_white_men() & bitboard::WHITE_KINGS_ROW;
+		this->_kings |= crown;
+
+		return crown;
 	}
-};
+}
+
 #endif // __BOARD_I_HPP__
 // End of file

@@ -186,4 +186,5 @@ namespace checkers
 		this->_max_size *= multiple;
 	}
 }
+
 // End of file

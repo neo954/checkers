@@ -10,4 +10,5 @@ int main(void)
 	board.opening();
 	return 0;
 }
+
 // End of file

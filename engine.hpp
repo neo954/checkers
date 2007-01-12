@@ -3,10 +3,7 @@
 #ifndef __ENGINE_HPP__
 #define __ENGINE_HPP__
 
-#include <string>
-#include <vector>
 #include "board.hpp"
-#include "loopbuffer.hpp"
 #include "player.hpp"
 
 namespace checkers
@@ -28,9 +25,10 @@ namespace checkers
 		void print(bitboard square);
 		void rotate(void);
 
-		void parse_input(void);
+		void go(void);
 
 		void prompt(void);
+		void declare_winning(player player);
 
 		void do_black(const std::vector<std::string>& args);
 		void do_go(const std::vector<std::string>& args);
@@ -49,6 +47,7 @@ namespace checkers
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;
 	};
-};
+}
+
 #endif // __ENGINE_HPP__
 // End of file

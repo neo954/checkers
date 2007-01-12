@@ -144,7 +144,7 @@ namespace checkers
 		return std::pair<int, int>(file, rank);
 	}
 
-	uint32_t bitboard::bit_count(void) const
+	int bitboard::bit_count(void) const
 	{
 		uint32_t x = this->_bitboard;
 
@@ -153,7 +153,8 @@ namespace checkers
 		x = (x + (x >> 4)) & 0x0f0f0f0f;
 		x = x + (x >> 8);
 		x = x + (x >> 16);
-		return x & 0x0000003f;
+		return static_cast<int>(x & 0x0000003f);
 	}
-};
+}
+
 // End of file

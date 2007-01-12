@@ -1,4 +1,5 @@
-CXXFLAGS += -g -ggdb -Wall
+CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winline
+CXXFLAGS += -g -ggdb
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 TARGETS = ponder

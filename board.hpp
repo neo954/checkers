@@ -3,7 +3,6 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-#include <string>
 #include <vector>
 #include "bitboard.hpp"
 #include "move.hpp"
@@ -27,10 +26,10 @@ namespace checkers
 		bool is_valid_black_jump(const move& move) const;
 		bool is_valid_white_jump(const move& move) const;
 
-		void black_move(const move& move);
-		void white_move(const move& move);
-		void black_jump(const move& move);
-		void white_jump(const move& move);
+		bitboard black_move(const move& move);
+		bitboard white_move(const move& move);
+		bitboard black_jump(const move& move);
+		bitboard white_jump(const move& move);
 
 		inline bitboard get_black_pieces(void) const;
 		inline bitboard get_white_pieces(void) const;
@@ -54,14 +53,14 @@ namespace checkers
 		std::vector<move> generate_white_jumps(void) const;
 		
 	private:
-		inline void black_man_crown(void);
-		inline void white_man_crown(void);
+		inline bitboard black_man_crown(void);
+		inline bitboard white_man_crown(void);
 
 		bitboard _black_pieces;
 		bitboard _white_pieces;
 		bitboard _kings;
 	};
-};
+}
 
 #include "board_i.hpp"
 #endif // __BOARD_HPP__

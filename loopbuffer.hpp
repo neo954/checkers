@@ -37,7 +37,8 @@ namespace checkers
 		int _rear;
 		int _lines;
 	};
-};
+}
+
 #include "loopbuffer_i.hpp"
 #endif // __LOOPBUFFER_HPP__
 // End of file

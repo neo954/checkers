@@ -28,7 +28,7 @@ namespace checkers
 		return io;
 	}
 
-	void io::process(void)
+	void io::process(wait sleep)
 	{
 		fd_set read_set;
 		fd_set write_set;
@@ -39,6 +39,10 @@ namespace checkers
 		FD_SET(STDIN_FILENO,  &read_set);
 		FD_SET(STDOUT_FILENO, &write_set);
 
+		if (sleep)
+		{
+			usleep(sleep);
+		}
 		n = select(std::max(STDIN_FILENO, STDOUT_FILENO) + 1,
 			&read_set, &write_set, NULL, NULL);
 		if (n < 0)
@@ -77,5 +81,6 @@ namespace checkers
 			throw std::runtime_error("System call fcntl(..., F_SETFL, ...) failed");
 		}
 	}
-};
+}
+
 // End of file

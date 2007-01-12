@@ -5,7 +5,6 @@
 
 #include <cassert>
 #include <stdexcept>
-#include "bitboard.hpp"
 
 namespace checkers
 {
@@ -42,7 +41,7 @@ namespace checkers
 			(str[0] - 'a') % 2 == (str[1] - '1') % 2 &&
 			(str[2] - 'a') % 2 == (str[3] - '1') % 2);
 	}
-};
+}
 
 #endif // __MOVE_I_HPP__
 // End of file

@@ -16,18 +16,16 @@ namespace checkers
 			square = 0x1 << i;
 			switch (input[p])
 			{
-			case 'k':
-				this->_black_pieces |= square;
+			case 'B':
 				this->_kings |= square;
-				break;
-			case 'm':
+				// intentionally no break
+			case 'b':
 				this->_black_pieces |= square;
 				break;
-			case 'K':
-				this->_white_pieces |= square;
+			case 'W':
 				this->_kings |= square;
-				break;
-			case 'M':
+				// intentionally no break
+			case 'w':
 				this->_white_pieces |= square;
 				break;
 			default:
@@ -55,22 +53,22 @@ namespace checkers
 			{
 				if (this->_kings & square)
 				{
-					output += 'k';
+					output += 'B';
 				}
 				else
 				{
-					output += 'm';
+					output += 'b';
 				}
 			}
 			else if (this->_white_pieces & square)
 			{
 				if (this->_kings & square)
 				{
-					output += 'K';
+					output += 'W';
 				}
 				else
 				{
-					output += 'M';
+					output += 'w';
 				}
 			}
 			else
@@ -126,7 +124,7 @@ namespace checkers
 			move.get_white_man_jump_capture()));
 	}
 
-	void board::black_move(const move& move)
+	bitboard board::black_move(const move& move)
 	{
 		assert(this->is_valid_black_move(move));
 
@@ -137,10 +135,10 @@ namespace checkers
 		}
 		this->_black_pieces &= ~move.get_orig();
 		this->_black_pieces |= move.get_dest();
-		this->black_man_crown();
+		return this->black_man_crown();
 	}
 
-	void board::white_move(const move& move)
+	bitboard board::white_move(const move& move)
 	{
 		assert(this->is_valid_white_move(move));
 
@@ -151,10 +149,10 @@ namespace checkers
 		}
 		this->_white_pieces &= ~move.get_orig();
 		this->_white_pieces |= move.get_dest();
-		this->white_man_crown();
+		return this->white_man_crown();
 	}
 
-	void board::black_jump(const move& move)
+	bitboard board::black_jump(const move& move)
 	{
 		assert(this->is_valid_black_jump(move));
 
@@ -173,10 +171,10 @@ namespace checkers
 			move.get_black_man_jump_capture();
 		this->_kings &= ~capture;
 		this->_white_pieces &= ~capture;
-		this->black_man_crown();
+		return this->black_man_crown();
 	}
 
-	void board::white_jump(const move& move)
+	bitboard board::white_jump(const move& move)
 	{
 		assert(this->is_valid_white_jump(move));
 
@@ -195,7 +193,7 @@ namespace checkers
 			move.get_white_man_jump_capture();
 		this->_kings &= ~capture;
 		this->_black_pieces &= ~capture;
-		this->white_man_crown();
+		return this->white_man_crown();
 	}
 
 	bitboard board::get_black_movers(void) const
@@ -560,5 +558,6 @@ namespace checkers
 
 		return moves;
 	}
-};
+}
+
 // End of file

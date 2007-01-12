@@ -1,9 +1,5 @@
-/// @file console.cpp
+/// @file engine.cpp
 
-#include <iostream>
-#include <stdexcept>
-#include <string>
-#include <vector>
 #include "engine.hpp"
 #include "intelligence.hpp"
 #include "io.hpp"
@@ -103,7 +99,8 @@ namespace checkers
 			{
 				if (this->make_move(move(args[0])))
 				{
-					this->print();
+					io.process();
+					this->go();
 				}
 				goto again;
 			}
@@ -121,6 +118,8 @@ again:
 
 	// ================================================================
 
+	/// @return swich user or not
+	
 	bool engine::make_move(const move& move)
 	{
 		io& io = io::init();
@@ -131,10 +130,11 @@ again:
 			{
 	 			if (this->_board.is_valid_black_jump(move))
 				{
-					this->_board.black_jump(move);
-					if (this->_board.get_black_jumpers())
+					if (!this->_board.black_jump(move) &&
+						this->_board.get_black_jumpers())
 					{
-						return true;
+						this->print();
+						return false;
 					}
 				}
 				else
@@ -149,7 +149,7 @@ again:
 			{
 				if (this->_board.is_valid_black_move(move))
 				{
-					this->_board.black_move(move);
+					(void)this->_board.black_move(move);
 				}
 				else
 				{
@@ -161,8 +161,11 @@ again:
 			}
 			else
 			{
-				assert("White win");
-				throw std::runtime_error("White win");
+				io.write("Error: Illegal black move - ");
+				io.write(move.to_string());
+				io.write('\n');
+				this->declare_winning(WHITE);
+				return false;
 			}
 		}
 		else
@@ -171,10 +174,11 @@ again:
 			{
 		 		if (this->_board.is_valid_white_jump(move))
 				{
-					this->_board.white_jump(move);
-					if (this->_board.get_white_jumpers())
+					if (!this->_board.white_jump(move) &&
+						this->_board.get_white_jumpers())
 					{
-						return true;
+						this->print();
+						return false;
 					}
 				}
 				else
@@ -189,7 +193,7 @@ again:
 			{
 				if (this->_board.is_valid_white_move(move))
 				{	
-					this->_board.white_move(move);
+					(void)this->_board.white_move(move);
 				}
 				else
 				{
@@ -201,9 +205,28 @@ again:
 			}
 			else
 			{
-				assert("Black win");
-				throw std::runtime_error("Black win");
+				io.write("Error: Illegal white move - ");
+				io.write(move.to_string());
+				io.write('\n');
+				this->declare_winning(BLACK);
+				return false;
 			}
+		}
+
+		this->print();
+
+		intelligence intelligence(this->_board, this->_player);
+		int winning = intelligence.evaluate_winning();
+		if (winning > 0)
+		{
+			this->declare_winning(this->_player);
+			return false;
+		}
+		else if (winning < 0)
+		{
+			this->declare_winning(BLACK == this->_player ?
+				WHITE : BLACK);
+			return false;
 		}
 
 		this->switch_player();
@@ -313,6 +336,51 @@ again:
 	void engine::rotate(void)
 	{
 		this->_rotate = !this->_rotate;
+		this->print();
+	}
+
+	void engine::go(void)
+	{
+		io& io = io::init();
+		bool cont;
+		int val;
+		std::vector<move> best_moves;
+		std::vector<move>::const_iterator pos;
+
+		do
+		{
+			best_moves.clear();
+
+			io.write("  Thinking ...\n");
+			io.process();
+
+			intelligence intelligence(this->_board, this->_player);
+			val = intelligence.alpha_beta_search(best_moves, 3);
+
+			if (best_moves.empty())
+			{
+				this->declare_winning(BLACK == this->_player ?
+					WHITE : BLACK);
+				return;
+			}
+
+			io.write("  Best moves - ");
+			io.write('(');
+			io.write(val);
+			io.write(')');
+			for (pos = best_moves.begin();
+				pos != best_moves.end(); ++pos)
+			{
+				io.write(' ');
+				io.write(pos->to_string());
+			}
+			io.write('\n');
+
+			io.write("Info: My move is: ");
+			io.write(best_moves[0].to_string());
+			io.write('\n');
+			cont = this->make_move(best_moves[0]);
+		} while (!cont);
 	}
 
 	void engine::prompt(void)
@@ -327,6 +395,15 @@ again:
 		{
 			io.write("Info: White move\n");
 		}
+	}
+
+	void engine::declare_winning(player player)
+	{
+		io& io = io.init();
+
+		io.write("Info: *** ");
+		io.write((BLACK == player) ?  "Black" : "White");
+		io.write(" win ***\n");
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -364,16 +441,7 @@ again:
 
 	void engine::do_go(const std::vector<std::string>& args)
 	{
-		io& io = io::init();
-
-		intelligence intelligence(this->_board, this->_player);
-		move move = intelligence.think(1);
-
-		io.write("Info: My move is : ");
-		io.write(move.to_string());
-		io.write('\n');
-		this->make_move(move);
-		this->print();
+		this->go();
 	}
 
 	void engine::do_help(const std::vector<std::string>& args)
@@ -381,15 +449,15 @@ again:
 		io& io = io::init();
 
 		io.write("Info: Help message\n");
-		io.write(" black          Set Black on move. Set the engine to play White. Stop clocks.\n");
-		io.write(" go             Set the engine to play the color that is on move.\n");
-		io.write(" help           Show this help information.\n");
-		io.write(" new            Reset the board to the standard starting position.\n");
-		io.write(" ping N         N is a decimal number. Reply by sending the string \"pong N\"\n");
-		io.write(" print          Show the current board.\n");
-		io.write(" quit           Quit this program.\n");
-		io.write(" rotate         Rotate the board 180 degrees.\n");
-		io.write(" white          Set White on move. Set the engine to play Black. Stop clocks.\n");
+		io.write("  black         Set Black on move. Set the engine to play White.\n");
+		io.write("  go            Set the engine to play the color that is on move.\n");
+		io.write("  help          Show this help information.\n");
+		io.write("  new           Reset the board to the standard starting position.\n");
+		io.write("  ping N        N is a decimal number. Reply by sending the string \"pong N\"\n");
+		io.write("  print         Show the current board.\n");
+		io.write("  quit          Quit this program.\n");
+		io.write("  rotate        Rotate the board 180 degrees.\n");
+		io.write("  white         Set White on move. Set the engine to play Black.\n");
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)
@@ -403,5 +471,6 @@ again:
 	{
 		exit(0);
 	}
-};
+}
+
 // End of file
