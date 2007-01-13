@@ -26,7 +26,7 @@ namespace checkers
 		inline void write(const std::string& str);
 		inline void write(const char* s);
 		template<typename T>
-        	inline void write(const T& v);
+        	void write(const T& v);
 
 		void process(wait sleep = AWHILE);
 

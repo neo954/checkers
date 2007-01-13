@@ -28,7 +28,7 @@ namespace checkers
 	}
 
 	template<typename T>
-	inline void io::write(const T& v)
+	void io::write(const T& v)
 	{
 		std::ostringstream stream;
 		stream.setf(std::ios::fixed);

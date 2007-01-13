@@ -252,7 +252,7 @@ done:
 			io.process();
 
 			intelligence intelligence(this->_board);
-			val = intelligence.alpha_beta_search(best_moves, 8);
+			val = intelligence.alpha_beta_search(best_moves, 12);
 
 			if (best_moves.empty())
 			{
@@ -316,26 +316,41 @@ done:
 
 	void engine::do_print(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		this->print();
 	}
 
 	void engine::do_rotate(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		this->rotate();
 	}
 
 	void engine::do_black(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		//this->_player = BLACK;
 	}
 
 	void engine::do_white(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		//this->_player = WHITE;
 	}
 
 	void engine::do_ping(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		io& io = io::init();
 
 		io.write("pong");
@@ -349,11 +364,17 @@ done:
 
 	void engine::do_go(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		this->go();
 	}
 
 	void engine::do_help(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		io& io = io::init();
 
 		io.write("Info: Help message\n");
@@ -370,12 +391,18 @@ done:
 
 	void engine::do_new(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		this->_board.opening();
 		this->print();
 	}
 
 	void engine::do_quit(const std::vector<std::string>& args)
 	{
+		// void the warning: unused parameter ‘args’
+		(void)args;
+
 		exit(0);
 	}
 }

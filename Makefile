@@ -1,4 +1,4 @@
-CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winline
+CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
 CXXFLAGS += -g -ggdb
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 

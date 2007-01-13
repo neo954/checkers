@@ -36,7 +36,7 @@ namespace checkers
 		bitboard(int file, int rank);
 
 		std::pair<int, int> to_square(void) const;
-		int bit_count(void) const;
+		inline int bit_count(void) const;
 
 		inline bitboard get_lsb(void) const;
 

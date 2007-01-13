@@ -10,6 +10,18 @@ namespace checkers
 	{
 	}
 
+	inline int bitboard::bit_count(void) const
+	{
+		uint32_t x = this->_bitboard;
+
+		x = x - ((x >> 1) & 0x55555555);
+		x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+		x = (x + (x >> 4)) & 0x0f0f0f0f;
+		x = x + (x >> 8);
+		x = x + (x >> 16);
+		return static_cast<int>(x & 0x0000003f);
+	}
+
 	inline bitboard bitboard::get_lsb(void) const
 	{
 		return this->_bitboard & (-this->_bitboard);
