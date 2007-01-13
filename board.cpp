@@ -79,11 +79,12 @@ namespace checkers
 		return output;
 	}
 
-	board& board::opening(void)
+	void board::opening(void)
 	{
 		this->_black_pieces = bitboard::BLACK_PIECES_INIT;
 		this->_white_pieces = bitboard::WHITE_PIECES_INIT;
-		return *this;
+		this->_kings  = bitboard::EMPTY;
+		this->_player = BLACK;
 	}
 
 	bool board::is_valid_black_move(const move& move) const
@@ -124,7 +125,18 @@ namespace checkers
 			move.get_white_man_jump_capture()));
 	}
 
-	bitboard board::black_move(const move& move)
+	bool board::is_valid_move(const move& move) const
+	{
+		return this->is_black_move() ?
+			(this->get_black_jumpers() ?
+			 this->is_valid_black_jump(move) :
+			 this->is_valid_black_move(move)) :
+			(this->get_white_jumpers() ?
+			 this->is_valid_white_jump(move) :
+			 this->is_valid_white_move(move));
+	}
+
+	void board::make_black_move(const move& move)
 	{
 		assert(this->is_valid_black_move(move));
 
@@ -135,10 +147,11 @@ namespace checkers
 		}
 		this->_black_pieces &= ~move.get_orig();
 		this->_black_pieces |= move.get_dest();
-		return this->black_man_crown();
+		(void)this->black_man_crown();
+		this->_player = WHITE;
 	}
 
-	bitboard board::white_move(const move& move)
+	void board::make_white_move(const move& move)
 	{
 		assert(this->is_valid_white_move(move));
 
@@ -149,10 +162,12 @@ namespace checkers
 		}
 		this->_white_pieces &= ~move.get_orig();
 		this->_white_pieces |= move.get_dest();
-		return this->white_man_crown();
+		(void)this->white_man_crown();
+		this->_player = BLACK;
 	}
 
-	bitboard board::black_jump(const move& move)
+	/// @return whether the same player move one more
+	bool board::make_black_jump(const move& move)
 	{
 		assert(this->is_valid_black_jump(move));
 
@@ -171,10 +186,18 @@ namespace checkers
 			move.get_black_man_jump_capture();
 		this->_kings &= ~capture;
 		this->_white_pieces &= ~capture;
-		return this->black_man_crown();
+		if (!this->black_man_crown() &&
+			(move.get_dest() & this->get_black_jumpers()))
+		{
+			return true;
+		}
+
+		this->_player = WHITE;
+		return false;
 	}
 
-	bitboard board::white_jump(const move& move)
+	/// @return whether the same player move one more
+	bool board::make_white_jump(const move& move)
 	{
 		assert(this->is_valid_white_jump(move));
 
@@ -193,7 +216,45 @@ namespace checkers
 			move.get_white_man_jump_capture();
 		this->_kings &= ~capture;
 		this->_black_pieces &= ~capture;
-		return this->white_man_crown();
+		if (!this->white_man_crown() &&
+			(move.get_dest() & this->get_white_jumpers()))
+		{
+			return true;
+		}
+
+		this->_player = BLACK;
+		return false;
+	}
+
+	/// @return whether the same player move one more
+	bool board::make_move(const move& move)
+	{
+		assert(this->is_valid_move(move));
+
+		if (this->is_black_move())
+		{
+			if (move.is_jump())
+			{
+				return this->make_black_jump(move);
+			}
+			else
+			{
+				this->make_black_move(move);
+			}
+		}
+		else // WHITE
+		{
+			if (move.is_jump())
+			{
+				return this->make_white_jump(move);
+			}
+			else
+			{
+				this->make_white_move(move);
+			}
+		}
+
+		return false;
 	}
 
 	bitboard board::get_black_movers(void) const
@@ -557,6 +618,33 @@ namespace checkers
 		}
 
 		return moves;
+	}
+
+	std::vector<move> board::generate_moves(void) const
+	{
+		return (this->is_black_move()) ?
+			(this->get_black_jumpers() ?
+				this->generate_black_jumps() :
+				this->generate_black_moves()) :
+			(this->get_white_jumpers() ?
+				this->generate_white_jumps() :
+				this->generate_white_moves());
+	}
+
+	bool board::is_winning(void) const
+	{
+		return this->is_black_move() ?
+			!this->get_white_pieces() :
+			!this->get_black_pieces();
+	}
+
+	bool board::is_losing(void) const
+	{
+		return this->is_black_move() ?
+			!(this->get_black_jumpers() ||
+			  this->get_black_movers()) :
+			!(this->get_white_jumpers() ||
+			  this->get_white_movers());
 	}
 }
 

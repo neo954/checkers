@@ -9,27 +9,36 @@
 
 namespace checkers
 {
-	class interface;
 
 	class board
 	{
 	public:
+		enum player
+		{
+			BLACK = 1,
+			WHITE = -BLACK
+		};
+
 		inline board(void);
 		explicit board(const std::string& input);
 
 		std::string to_string(void) const;
 
-		board& opening(void);
+		void opening(void);
 
 		bool is_valid_black_move(const move& move) const;
 		bool is_valid_white_move(const move& move) const;
 		bool is_valid_black_jump(const move& move) const;
 		bool is_valid_white_jump(const move& move) const;
 
-		bitboard black_move(const move& move);
-		bitboard white_move(const move& move);
-		bitboard black_jump(const move& move);
-		bitboard white_jump(const move& move);
+		bool is_valid_move(const move& move) const;
+
+		void make_black_move(const move& move);
+		void make_white_move(const move& move);
+		bool make_black_jump(const move& move);
+		bool make_white_jump(const move& move);
+
+		bool make_move(const move& move);
 
 		inline bitboard get_black_pieces(void) const;
 		inline bitboard get_white_pieces(void) const;
@@ -42,6 +51,9 @@ namespace checkers
 		inline bitboard get_black_kings(void) const;
 		inline bitboard get_white_kings(void) const;
 
+		inline bool is_black_move(void) const;
+		inline bool is_white_move(void) const;
+
 		bitboard get_black_movers(void) const;
 		bitboard get_white_movers(void) const;
 		bitboard get_black_jumpers(void) const;
@@ -51,6 +63,11 @@ namespace checkers
 		std::vector<move> generate_white_moves(void) const;
 		std::vector<move> generate_black_jumps(void) const;
 		std::vector<move> generate_white_jumps(void) const;
+
+		std::vector<move> generate_moves(void) const;
+
+		bool is_winning(void) const;
+		bool is_losing(void) const;
 		
 	private:
 		inline bitboard black_man_crown(void);
@@ -59,6 +76,7 @@ namespace checkers
 		bitboard _black_pieces;
 		bitboard _white_pieces;
 		bitboard _kings;
+		player _player;
 	};
 }
 

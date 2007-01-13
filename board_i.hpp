@@ -6,9 +6,8 @@
 namespace checkers
 {
 	inline board::board(void) :
-		_black_pieces(bitboard::EMPTY),
-		_white_pieces(bitboard::EMPTY),
-		_kings(bitboard::EMPTY)
+		_black_pieces(bitboard::EMPTY), _white_pieces(bitboard::EMPTY),
+		_kings(bitboard::EMPTY), _player(BLACK)
 	{
 	}
 
@@ -52,23 +51,33 @@ namespace checkers
 		return this->_white_pieces & this->_kings;
 	}
 
+	inline bool board::is_black_move(void) const
+	{
+		return BLACK == this->_player;
+	}
+
+	inline bool board::is_white_move(void) const
+	{
+		return WHITE == this->_player;
+	}
+
 	// ================================================================
 
-	/// @return crown piece
-
+	/// @return crowned black men
 	inline bitboard board::black_man_crown(void)
 	{
-		bitboard crown = this->get_black_men() & bitboard::BLACK_KINGS_ROW;
+		bitboard crown = this->get_black_men() &
+			bitboard::BLACK_KINGS_ROW;
 		this->_kings |= crown;
 
 		return crown;
 	}
 
-	/// @return crown piece
-
+	/// @return crowned white men
 	inline bitboard board::white_man_crown(void)
 	{
-		bitboard crown = this->get_white_men() & bitboard::WHITE_KINGS_ROW;
+		bitboard crown = this->get_white_men() &
+			bitboard::WHITE_KINGS_ROW;
 		this->_kings |= crown;
 
 		return crown;

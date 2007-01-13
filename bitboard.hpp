@@ -90,7 +90,7 @@ namespace checkers
 		inline bitboard& operator &=(const bitboard& rhs);
 		inline bitboard& operator ^=(const bitboard& rhs);
 
-		inline operator bool(void) const;
+		inline operator uint32_t(void) const;
 
 		friend bitboard operator |(const bitboard& lhs, const bitboard& rhs);
 		friend bitboard operator |(uint32_t lhs, const bitboard& rhs);
@@ -105,7 +105,7 @@ namespace checkers
 	private:
 		uint32_t _bitboard;
 	};
-	
+
 	inline bitboard operator |(const bitboard& lhs, const bitboard& rhs);
 	inline bitboard operator |(uint32_t lhs, const bitboard& rhs);
 	inline bitboard operator |(const bitboard& lhs, uint32_t rhs);

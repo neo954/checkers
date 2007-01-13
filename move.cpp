@@ -9,11 +9,6 @@ namespace checkers
 	{
 		assert(move::is_valid(str));
 
-		if (!move::is_valid(str))
-		{
-			throw std::runtime_error("Invalid move - " + str);
-		}
-
 		this->_orig = bitboard(str[0] - 'a', str[1] - '1');
 		this->_dest = bitboard(str[2] - 'a', str[3] - '1');
 	}

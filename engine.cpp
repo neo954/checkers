@@ -7,17 +7,26 @@
 namespace checkers
 {
 	engine::engine(void) :
-		_board(), _rotate(false), _player(BLACK)
+		_board(), _rotate(false)
 	{
-		this->_action.push_back(std::make_pair("go",     &engine::do_go));
-		this->_action.push_back(std::make_pair("print",  &engine::do_print));
-		this->_action.push_back(std::make_pair("rotate", &engine::do_rotate));
-		this->_action.push_back(std::make_pair("black",  &engine::do_black));
-		this->_action.push_back(std::make_pair("white",  &engine::do_white));
-		this->_action.push_back(std::make_pair("ping",   &engine::do_ping));
-		this->_action.push_back(std::make_pair("help",   &engine::do_help));
-		this->_action.push_back(std::make_pair("new",    &engine::do_new));
-		this->_action.push_back(std::make_pair("quit",   &engine::do_quit));
+		this->_action.push_back(std::make_pair("go",
+			&engine::do_go));
+		this->_action.push_back(std::make_pair("print",
+			&engine::do_print));
+		this->_action.push_back(std::make_pair("rotate",
+			&engine::do_rotate));
+		this->_action.push_back(std::make_pair("black",
+			&engine::do_black));
+		this->_action.push_back(std::make_pair("white",
+			&engine::do_white));
+		this->_action.push_back(std::make_pair("ping",
+			&engine::do_ping));
+		this->_action.push_back(std::make_pair("help",
+			&engine::do_help));
+		this->_action.push_back(std::make_pair("new",
+			&engine::do_new));
+		this->_action.push_back(std::make_pair("quit",
+			&engine::do_quit));
 	}
 
 	engine& engine::init(void)
@@ -90,153 +99,41 @@ namespace checkers
 				if (pos->first == args[0])
 				{
 					(this->*pos->second)(args);
-					goto again;
+					goto done;
 				}
 			}
 
 			// process move
 			if (1 == args.size() && move::is_valid(args[0]))
 			{
-				if (this->make_move(move(args[0])))
+				move move(args[0]);
+				if (this->_board.is_valid_move(move))
 				{
+					if (this->_board.make_move(move))
+					{
+						this->print();
+						goto done;
+					}
+					this->print();
 					io.process();
 					this->go();
+					goto done;
 				}
-				goto again;
 			}
 
 			io.write("Error: Illegal ");
-			io.write((BLACK == this->_player) ? "black" : "white");
+			io.write((this->_board.is_black_move()) ?
+				"black" : "white");
 			io.write(" move - ");
 			io.write(args[0]);
 			io.write('\n');
-again:
+done:
 			args.clear();
 			this->prompt();
 		}
 	}
 
 	// ================================================================
-
-	/// @return swich user or not
-	
-	bool engine::make_move(const move& move)
-	{
-		io& io = io::init();
-
-		if (BLACK == this->_player)
-		{
-			if (this->_board.get_black_jumpers())
-			{
-	 			if (this->_board.is_valid_black_jump(move))
-				{
-					if (!this->_board.black_jump(move) &&
-						this->_board.get_black_jumpers())
-					{
-						this->print();
-						return false;
-					}
-				}
-				else
-				{
-					io.write("Error: Illegal black move - ");
-					io.write(move.to_string());
-					io.write(", jump is forced\n");
-					return false;
-				}
-			} 
-			else if (this->_board.get_black_movers())
-			{
-				if (this->_board.is_valid_black_move(move))
-				{
-					(void)this->_board.black_move(move);
-				}
-				else
-				{
-					io.write("Error: Illegal black move - ");
-					io.write(move.to_string());
-					io.write('\n');
-					return false;
-				}
-			}
-			else
-			{
-				io.write("Error: Illegal black move - ");
-				io.write(move.to_string());
-				io.write('\n');
-				this->declare_winning(WHITE);
-				return false;
-			}
-		}
-		else
-		{
-			if (this->_board.get_white_jumpers())
-			{
-		 		if (this->_board.is_valid_white_jump(move))
-				{
-					if (!this->_board.white_jump(move) &&
-						this->_board.get_white_jumpers())
-					{
-						this->print();
-						return false;
-					}
-				}
-				else
-				{
-					io.write("Error: Illegal white move - ");
-					io.write(move.to_string());
-					io.write(", jump is forced\n");
-					return false;
-				}
-			} 
-			else if (this->_board.get_white_movers())
-			{
-				if (this->_board.is_valid_white_move(move))
-				{	
-					(void)this->_board.white_move(move);
-				}
-				else
-				{
-					io.write("Error: Illegal white move - ");
-					io.write(move.to_string());
-					io.write('\n');
-					return false;
-				}
-			}
-			else
-			{
-				io.write("Error: Illegal white move - ");
-				io.write(move.to_string());
-				io.write('\n');
-				this->declare_winning(BLACK);
-				return false;
-			}
-		}
-
-		this->print();
-
-		intelligence intelligence(this->_board, this->_player);
-		int winning = intelligence.evaluate_winning();
-		if (winning > 0)
-		{
-			this->declare_winning(this->_player);
-			return false;
-		}
-		else if (winning < 0)
-		{
-			this->declare_winning(BLACK == this->_player ?
-				WHITE : BLACK);
-			return false;
-		}
-
-		this->switch_player();
-		return true;
-	}
-
-	void engine::switch_player(void)
-	{
-		this->_player = (BLACK == this->_player) ? WHITE : BLACK;
-	}
 
 	void engine::print(void)
 	{
@@ -354,13 +251,12 @@ again:
 			io.write("  Thinking ...\n");
 			io.process();
 
-			intelligence intelligence(this->_board, this->_player);
-			val = intelligence.alpha_beta_search(best_moves, 3);
+			intelligence intelligence(this->_board);
+			val = intelligence.alpha_beta_search(best_moves, 8);
 
 			if (best_moves.empty())
 			{
-				this->declare_winning(BLACK == this->_player ?
-					WHITE : BLACK);
+				this->declare_winning();
 				return;
 			}
 
@@ -379,15 +275,16 @@ again:
 			io.write("Info: My move is: ");
 			io.write(best_moves[0].to_string());
 			io.write('\n');
-			cont = this->make_move(best_moves[0]);
-		} while (!cont);
+			cont = this->_board.make_move(best_moves[0]);
+			this->print();
+		} while (cont);
 	}
 
 	void engine::prompt(void)
 	{
 		io& io = io::init();
 
-		if (BLACK == this->_player)
+		if (this->_board.is_black_move())
 		{
 			io.write("Info: Black move\n");
 		}
@@ -397,13 +294,24 @@ again:
 		}
 	}
 
-	void engine::declare_winning(player player)
+	void engine::declare_winning(void)
 	{
 		io& io = io.init();
 
-		io.write("Info: *** ");
-		io.write((BLACK == player) ?  "Black" : "White");
-		io.write(" win ***\n");
+		if (this->_board.is_winning())
+		{
+			io.write("Info: *** ");
+			io.write(this->_board.is_black_move() ?
+				"Black" : "White");
+			io.write(" win ***\n");
+		}
+		else if (this->_board.is_losing())
+		{
+			io.write("Info: *** ");
+			io.write(this->_board.is_black_move() ?
+				"White" : "Black");
+			io.write(" win ***\n");
+		}
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -418,12 +326,12 @@ again:
 
 	void engine::do_black(const std::vector<std::string>& args)
 	{
-		this->_player = BLACK;
+		//this->_player = BLACK;
 	}
 
 	void engine::do_white(const std::vector<std::string>& args)
 	{
-		this->_player = WHITE;
+		//this->_player = WHITE;
 	}
 
 	void engine::do_ping(const std::vector<std::string>& args)
@@ -463,7 +371,6 @@ again:
 	void engine::do_new(const std::vector<std::string>& args)
 	{
 		this->_board.opening();
-		this->_player = BLACK;
 		this->print();
 	}
 

@@ -15,22 +15,12 @@ namespace checkers
 	{
 		assert(!this->is_empty());		
 
-		if (this->is_empty())
-		{
-			throw std::runtime_error("Buffer is empty while call loopbuffer::front()");
-		}
-
 		return this->_buffer[this->_front];
 	}
 
 	void loopbuffer::pop_front(void)
 	{
 		assert(!this->is_empty());		
-
-		if (this->is_empty())
-		{
-			throw std::runtime_error("Buffer is empty while call loopbuffer::pop_front()");
-		}
 
 		if ('\n' == this->front())
 		{
@@ -159,11 +149,6 @@ namespace checkers
 	void loopbuffer::enlarge(void)
 	{
 		assert(this->is_full());
-
-		if (!this->is_full())
-		{
-			throw std::runtime_error("Buffer is not full while call loopbuffer::enlarge()");
-		}
 
 		const int multiple = 2;
 		char* buffer = new char[this->_max_size * multiple];

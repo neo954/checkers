@@ -18,6 +18,9 @@ namespace checkers
 		inline bitboard get_orig(void) const;
 		inline bitboard get_dest(void) const;
 
+		inline bool is_jump(void) const;
+		inline bool is_move(void) const;
+
 		bitboard is_valid_on_black_man(void) const;
 		bitboard is_valid_on_white_man(void) const;
 		bitboard is_valid_on_king(void) const;

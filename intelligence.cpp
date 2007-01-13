@@ -5,23 +5,21 @@
 
 namespace checkers
 {
-	intelligence::intelligence(const board& board, player player) :
-		_board(board), _player(player)
+	intelligence::intelligence(const board& board) :
+		_board(board)
 	{
-		this->whether_jump();
 	}
 
 	int intelligence::alpha_beta_search(std::vector<move>& best_moves,
 		 int depth, int alpha, int beta, int ply)
 	{
-		int winning = this->evaluate_winning();
-		if (winning > 0)
+		if (this->_board.is_winning())
 		{
-			return winning - ply;
+			return WIN - ply;
 		}
-		else if (winning < 0)
+		else if (this->_board.is_losing())
 		{
-			return winning + ply;
+			return -WIN + ply;
 		}
 		else if (0 >= depth)
 		{
@@ -30,7 +28,7 @@ namespace checkers
 		}
 
 		// Generate legal moves
-		std::vector<move> legal_moves = this->generate_moves();
+		std::vector<move> legal_moves = this->_board.generate_moves();
 		int val;
 		std::vector<move> moves;
 
@@ -39,9 +37,11 @@ namespace checkers
 		{
 			intelligence intelligence(*this);
 
-			intelligence.make_move(*pos);
-			val = -intelligence.alpha_beta_search(moves, depth - 1,
-					-beta, -alpha, ply + 1);
+			val = intelligence._board.make_move(*pos) ?
+				 intelligence.alpha_beta_search(moves,
+					depth - 1, alpha,   beta, ply + 1) :
+				-intelligence.alpha_beta_search(moves,
+					depth - 1, -beta, -alpha, ply + 1);
 
 			if (val >= beta) {
 				return beta;
@@ -60,69 +60,6 @@ namespace checkers
 
 	// ================================================================
 
-	std::vector<move> intelligence::generate_moves(void) const
-	{
-		return (BLACK == this->_player) ?
-			(this->_is_jump ?
-				this->_board.generate_black_jumps() :
-				this->_board.generate_black_moves()) :
-			(this->_is_jump ?
-				this->_board.generate_white_jumps() :
-				this->_board.generate_white_moves());
-	}
-
-	void intelligence::make_move(const move& move)
-	{
-		if (this->_is_jump)
-		{
-			if (BLACK == this->_player)
-			{
-				if (!this->_board.black_jump(move) &&
-					this->_board.get_black_jumpers())
-				{
-					return;
-				}
-			}
-			else // WHITE
-			{
-				if (!this->_board.white_jump(move) &&
-					this->_board.get_white_jumpers())
-				{
-					return;
-				}
-			}
-		}
-		else
-		{
-			if (BLACK == this->_player)
-			{
-				(void)this->_board.black_move(move);
-			}
-			else
-			{
-				(void)this->_board.white_move(move);
-			}
-		}
-
-		this->switch_player();
-		this->whether_jump();
-	}
-
-	void intelligence::switch_player(void)
-	{
-		this->_player = (BLACK == this->_player) ? WHITE : BLACK;
-	}
-
-	/** Decide the current step is jump or not.
-	 *  And update this->_is_jump.
-	 */
-	void intelligence::whether_jump(void)
-	{
-		this->_is_jump = (BLACK == this->_player) ?
-			this->_board.get_black_jumpers() :
-			this->_board.get_white_jumpers();
-	}
-
 	/**
 	 *  @return >0 when the current player is ahead in game, and
 	 *  @return <0 when the current player is behind in game
@@ -135,44 +72,13 @@ namespace checkers
 			this->evaluate_edges() * 8;
 	}
 
-	int intelligence::evaluate_winning(void)
-	{
-		if (!this->_is_jump)
-		{
-			if (BLACK == this->_player)
-			{
-				if (!this->_board.get_white_pieces())
-				{
-					return WIN;
-				}
-				if (!this->_board.get_black_movers())
-				{
-					return -WIN;
-				}
-			}
-			else // WHITE
-			{
-				if (!this->_board.get_black_pieces())
-				{
-					return WIN;
-				}
-				if (!this->_board.get_white_movers())
-				{
-					return -WIN;
-				}
-			}
-		}
-
-		return 0;
-	}
-
 	/**
 	 *  A  man get 1 points
 	 *  A king get 2 points
 	 */
 	int intelligence::evaluate_pieces_strength(void)
 	{
-		return (BLACK == this->_player) ?
+		return this->_board.is_black_move() ?
 			((this->_board.get_black_pieces().bit_count() -
 			  this->_board.get_white_pieces().bit_count()) +
 			 (this->_board.get_black_kings().bit_count() -
@@ -185,16 +91,16 @@ namespace checkers
 
 	int intelligence::evaluate_movers(void)
 	{
-		return (BLACK == this->_player) ?
-			(this->_board.get_black_movers() -
-			 this->_board.get_white_movers()) :
-			(this->_board.get_white_movers() -
-			 this->_board.get_black_movers());
+		return this->_board.is_black_move() ?
+			(this->_board.get_black_movers().bit_count() -
+			 this->_board.get_white_movers().bit_count()) :
+			(this->_board.get_white_movers().bit_count() -
+			 this->_board.get_black_movers().bit_count());
 	}
 
 	int intelligence::evaluate_kings_row(void)
 	{
-		return (BLACK == this->_player) ?
+		return this->_board.is_black_move() ?
 			((this->_board.get_black_pieces() &
 				bitboard::WHITE_KINGS_ROW).bit_count() -
 			 (this->_board.get_white_pieces() &
@@ -207,7 +113,7 @@ namespace checkers
 
 	int intelligence::evaluate_edges(void)
 	{
-		return (BLACK == this->_player) ?
+		return this->_board.is_black_move() ?
 			((this->_board.get_black_pieces() &
 				bitboard::EDGES).bit_count() -
 			 (this->_board.get_white_pieces() &
@@ -216,7 +122,6 @@ namespace checkers
 				bitboard::EDGES).bit_count() -
 			 (this->_board.get_black_pieces() &
 				bitboard::EDGES).bit_count());
-			
 	}
 }
 

@@ -60,9 +60,9 @@ namespace checkers
 		return *this;
 	}
 
-	inline bitboard::operator bool(void) const
+	inline bitboard::operator uint32_t(void) const
 	{
-		return static_cast<bool>(this->_bitboard);
+		return static_cast<uint32_t>(this->_bitboard);
 	}
 
 	inline bitboard operator |(const bitboard& lhs, const bitboard& rhs)

@@ -13,26 +13,11 @@ namespace checkers
 		assert(0 <= file && file < 8);
 		assert(0 <= rank && rank < 8);
 		assert(file % 2 == rank % 2);
-
-		if (!(0 <= file && file < 8 &&
-			0 <= rank && rank < 8 &&
-			file % 2 == rank % 2))
-		{
-			std::ostringstream error;
-			error << "Invalid bitboard - file: " << file
-				<< " rank: " << rank;
-			throw std::runtime_error(error.str());
-		}
 	}
 
 	std::pair<int, int> bitboard::to_square(void) const
 	{
 		assert(1 == this->bit_count());
-
-		if (1 != this->bit_count())
-		{
-			throw std::runtime_error("Illegal bitboard::to_square() call");
-		}
 
 		int file;
 		int rank;

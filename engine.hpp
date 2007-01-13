@@ -4,7 +4,6 @@
 #define __ENGINE_HPP__
 
 #include "board.hpp"
-#include "player.hpp"
 
 namespace checkers
 {
@@ -19,8 +18,6 @@ namespace checkers
 		engine(const engine& rhs);
 		engine& operator=(const engine& rhs);
 
-		bool make_move(const move& move);
-		void switch_player(void);
 		void print(void);
 		void print(bitboard square);
 		void rotate(void);
@@ -28,7 +25,7 @@ namespace checkers
 		void go(void);
 
 		void prompt(void);
-		void declare_winning(player player);
+		void declare_winning(void);
 
 		void do_black(const std::vector<std::string>& args);
 		void do_go(const std::vector<std::string>& args);
@@ -42,7 +39,6 @@ namespace checkers
 
 		board _board;
 		bool _rotate;
-		player _player;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;

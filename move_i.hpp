@@ -13,12 +13,7 @@ namespace checkers
 	{
 		assert(1 == this->_orig.bit_count());
 		assert(1 == this->_dest.bit_count());
-		
-		if (!(1 == this->_orig.bit_count() &&
-			1 == this->_dest.bit_count()))
-		{
-			throw std::runtime_error("Invalid move");
-		}
+		assert(this->is_jump() || this->is_move());
 	}
 
 	inline bitboard move::get_orig(void) const
@@ -29,6 +24,22 @@ namespace checkers
 	inline bitboard move::get_dest(void) const
 	{
 		return this->_dest;
+	}
+
+	inline bool move::is_jump(void) const
+	{
+		return (this->_orig > this->_dest) ?
+			((this->_orig >> 7 | this->_orig >> 9) & this->_dest) :
+			((this->_orig << 7 | this->_orig << 9) & this->_dest);
+	}
+
+	inline bool move::is_move(void) const
+	{
+		return (this->_orig > this->_dest) ?
+			((this->_orig >> 3 | this->_orig >> 4 |
+			  this->_orig >> 5) & this->_dest) :
+			((this->_orig << 3 | this->_orig << 4 |
+			  this->_orig << 5) & this->_dest);
 	}
 
 	inline bool move::is_valid(const std::string& str)
