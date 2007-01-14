@@ -38,7 +38,7 @@ namespace checkers
 		bool make_black_jump(const move& move);
 		bool make_white_jump(const move& move);
 
-		bool make_move(const move& move);
+		inline bool make_move(const move& move);
 
 		inline bitboard get_black_pieces(void) const;
 		inline bitboard get_white_pieces(void) const;
@@ -64,10 +64,12 @@ namespace checkers
 		std::vector<move> generate_black_jumps(void) const;
 		std::vector<move> generate_white_jumps(void) const;
 
-		std::vector<move> generate_moves(void) const;
+		inline std::vector<move> generate_moves(void) const;
 
-		bool is_winning(void) const;
-		bool is_losing(void) const;
+		inline void set_black(void);
+		inline void set_white(void);
+		inline bool is_winning(void) const;
+		inline bool is_losing(void) const;
 		
 	private:
 		inline bitboard black_man_crown(void);

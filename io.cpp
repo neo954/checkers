@@ -1,5 +1,6 @@
 /// @file io.cpp
 
+#include <sys/select.h>
 #include <stdexcept>
 #include "io.hpp"
 

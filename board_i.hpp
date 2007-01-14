@@ -11,6 +11,37 @@ namespace checkers
 	{
 	}
 
+	/// @return whether the same player move one more
+	inline bool board::make_move(const move& move)
+	{
+		assert(this->is_valid_move(move));
+
+		if (this->is_black_move())
+		{
+			if (move.is_jump())
+			{
+				return this->make_black_jump(move);
+			}
+			else
+			{
+				this->make_black_move(move);
+			}
+		}
+		else // WHITE
+		{
+			if (move.is_jump())
+			{
+				return this->make_white_jump(move);
+			}
+			else
+			{
+				this->make_white_move(move);
+			}
+		}
+
+		return false;
+	}
+
 	inline bitboard board::get_black_pieces(void) const
 	{
 		return this->_black_pieces;
@@ -59,6 +90,43 @@ namespace checkers
 	inline bool board::is_white_move(void) const
 	{
 		return WHITE == this->_player;
+	}
+
+	inline std::vector<move> board::generate_moves(void) const
+	{
+		return (this->is_black_move()) ?
+			(this->get_black_jumpers() ?
+				this->generate_black_jumps() :
+				this->generate_black_moves()) :
+			(this->get_white_jumpers() ?
+				this->generate_white_jumps() :
+				this->generate_white_moves());
+	}
+
+	inline void board::set_black(void)
+	{
+		this->_player = board::BLACK;
+	}
+
+	inline void board::set_white(void)
+	{
+		this->_player = board::WHITE;
+	}
+
+	inline bool board::is_winning(void) const
+	{
+		return this->is_black_move() ?
+			!this->get_white_pieces() :
+			!this->get_black_pieces();
+	}
+
+	inline bool board::is_losing(void) const
+	{
+		return this->is_black_move() ?
+			!(this->get_black_jumpers() ||
+			  this->get_black_movers()) :
+			!(this->get_white_jumpers() ||
+			  this->get_white_movers());
 	}
 
 	// ================================================================

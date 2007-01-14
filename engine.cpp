@@ -115,6 +115,7 @@ namespace checkers
 						goto done;
 					}
 					this->print();
+					this->declare_winning();
 					io.process();
 					this->go();
 					goto done;
@@ -252,7 +253,7 @@ done:
 			io.process();
 
 			intelligence intelligence(this->_board);
-			val = intelligence.alpha_beta_search(best_moves, 12);
+			val = intelligence.alpha_beta_search(best_moves, 8);
 
 			if (best_moves.empty())
 			{
@@ -335,7 +336,7 @@ done:
 		// void the warning: unused parameter ‘args’
 		(void)args;
 
-		//this->_player = BLACK;
+		this->_board.set_black();
 	}
 
 	void engine::do_white(const std::vector<std::string>& args)
@@ -343,7 +344,7 @@ done:
 		// void the warning: unused parameter ‘args’
 		(void)args;
 
-		//this->_player = WHITE;
+		this->_board.set_white();
 	}
 
 	void engine::do_ping(const std::vector<std::string>& args)

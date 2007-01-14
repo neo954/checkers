@@ -226,37 +226,6 @@ namespace checkers
 		return false;
 	}
 
-	/// @return whether the same player move one more
-	bool board::make_move(const move& move)
-	{
-		assert(this->is_valid_move(move));
-
-		if (this->is_black_move())
-		{
-			if (move.is_jump())
-			{
-				return this->make_black_jump(move);
-			}
-			else
-			{
-				this->make_black_move(move);
-			}
-		}
-		else // WHITE
-		{
-			if (move.is_jump())
-			{
-				return this->make_white_jump(move);
-			}
-			else
-			{
-				this->make_white_move(move);
-			}
-		}
-
-		return false;
-	}
-
 	bitboard board::get_black_movers(void) const
 	{
 		const bitboard not_occupied = this->get_not_occupied();
@@ -303,7 +272,7 @@ namespace checkers
 	{
 		const bitboard not_occupied = this->get_not_occupied();
 		const bitboard black_kings = this->get_black_kings();
-		bitboard movers = 0x0;
+		bitboard movers = bitboard::EMPTY;
 		// White pieces next to not occupied squares
 		bitboard temp = (not_occupied << 4) & this->_white_pieces;
 		if (temp)
@@ -344,7 +313,7 @@ namespace checkers
 	{
 		const bitboard not_occupied = this->get_not_occupied();
 		const bitboard white_kings = this->get_white_kings();
-		bitboard movers = 0x0;
+		bitboard movers = bitboard::EMPTY;
 		// Black pieces next to not occupied squares
 		bitboard temp = (not_occupied >> 4) & this->_black_pieces;
       		if (temp)
@@ -618,33 +587,6 @@ namespace checkers
 		}
 
 		return moves;
-	}
-
-	std::vector<move> board::generate_moves(void) const
-	{
-		return (this->is_black_move()) ?
-			(this->get_black_jumpers() ?
-				this->generate_black_jumps() :
-				this->generate_black_moves()) :
-			(this->get_white_jumpers() ?
-				this->generate_white_jumps() :
-				this->generate_white_moves());
-	}
-
-	bool board::is_winning(void) const
-	{
-		return this->is_black_move() ?
-			!this->get_white_pieces() :
-			!this->get_black_pieces();
-	}
-
-	bool board::is_losing(void) const
-	{
-		return this->is_black_move() ?
-			!(this->get_black_jumpers() ||
-			  this->get_black_movers()) :
-			!(this->get_white_jumpers() ||
-			  this->get_white_movers());
 	}
 }
 
