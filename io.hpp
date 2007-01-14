@@ -9,14 +9,14 @@
 
 namespace checkers
 {
-	enum wait
-	{
-		NOWAIT = 0,
-		AWHILE = 10000
-	};
-
 	class io
 	{
+		enum wait
+		{
+			NOWAIT = 0,
+			AWHILE = 10000
+		};
+
 	public:
                 static io& init(void);
 

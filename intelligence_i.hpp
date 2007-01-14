@@ -10,7 +10,37 @@ namespace checkers
 	{
 	}
 
+	inline void intelligence::init_best_moves(const std::vector<move>& moves)
+	{
+		this->_best_moves = moves;
+		this->_reorder = true;
+	}
+
 	// ================================================================
+
+	inline void intelligence::reorder_moves(std::vector<move>& moves, int ply)
+	{
+		if (!this->_reorder)
+		{
+			return;
+		}
+		if (static_cast<std::vector<move>::size_type>(ply)
+			>= this->_best_moves.size())
+		{
+			this->_reorder = false;
+			return;
+		}
+
+		std::vector<move>::iterator pos = std::find(moves.begin(),
+			moves.end(), this->_best_moves[ply]);
+		if (moves.end() == pos)
+		{
+			this->_reorder = false;
+			return;
+		}
+
+		std::swap(moves[0], *pos);
+	}
 
 	/**
 	 *  @return >0 when the current player is ahead in game, and

@@ -73,7 +73,7 @@ namespace checkers
 			file = 7;
 			break;
 		default:
-			// should not reach here
+			// Should not reach here
 			file = -1;
 			assert(file);
 			break;
@@ -130,7 +130,7 @@ namespace checkers
 			rank = 7;
 			break;
 		default:
-			// should not reach here
+			// Should not reach here
 			rank = -1;
 			assert(rank);
 			break;

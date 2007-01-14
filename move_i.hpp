@@ -52,6 +52,11 @@ namespace checkers
 			(str[0] - 'a') % 2 == (str[1] - '1') % 2 &&
 			(str[2] - 'a') % 2 == (str[3] - '1') % 2);
 	}
+
+	inline bool operator ==(const move& lhs, const move& rhs)
+	{
+		return lhs._orig == rhs._orig && lhs._dest == rhs._dest;
+	}
 }
 
 #endif // __MOVE_I_HPP__

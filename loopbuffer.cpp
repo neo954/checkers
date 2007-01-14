@@ -7,8 +7,6 @@
 #include <stdexcept>
 #include "loopbuffer.hpp"
 
-#include <iostream>
-
 namespace checkers
 {
 	char loopbuffer::front(void) const

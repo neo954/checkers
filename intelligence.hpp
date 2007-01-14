@@ -16,6 +16,7 @@ namespace checkers
 		int alpha_beta_search(std::vector<move>& best_moves,
 			int depth, int alpha = -INFINITY, int beta = INFINITY,
 			int ply = 0);
+		inline void init_best_moves(const std::vector<move>& moves);
 
 	private:
 		inline int evaluate(void);
@@ -24,10 +25,15 @@ namespace checkers
 		inline int evaluate_kings_row(void);
 		inline int evaluate_edges(void);
 
+		inline void reorder_moves(std::vector<move>& moves, int ply);
+
 		static const int INFINITY = INT_MAX;
 		static const int WIN      = 65535;
 
 		board _board;
+
+		static std::vector<move> _best_moves;
+		static bool _reorder;
 	};
 }
 

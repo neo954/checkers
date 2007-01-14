@@ -91,7 +91,7 @@ namespace checkers
 				this->prompt();
 				continue;
 			}
-			// args is produced
+			// Args is produced
 
 			for (pos = this->_action.begin();
 				pos != this->_action.end(); ++pos)
@@ -103,7 +103,7 @@ namespace checkers
 				}
 			}
 
-			// process move
+			// Process user move
 			if (1 == args.size() && move::is_valid(args[0]))
 			{
 				move move(args[0]);
@@ -244,6 +244,8 @@ done:
 		int val;
 		std::vector<move> best_moves;
 		std::vector<move>::const_iterator pos;
+		int depth;
+		std::vector<move>::size_type i;
 
 		do
 		{
@@ -252,33 +254,46 @@ done:
 			io.write("  Thinking ...\n");
 			io.process();
 
-			intelligence intelligence(this->_board);
-			val = intelligence.alpha_beta_search(best_moves, 8);
-
-			if (best_moves.empty())
+			for (depth = 1; depth < 13; ++depth)
 			{
-				this->declare_winning();
-				return;
+				intelligence intelligence(this->_board);
+				intelligence.init_best_moves(best_moves);
+				val = intelligence.alpha_beta_search(
+					best_moves, depth);
+
+				if (best_moves.empty())
+				{
+					this->declare_winning();
+					return;
+				}
+
+				io.write("    Depth ");
+				io.write(depth);
+				io.write(" - (");
+				io.write(val);
+				io.write(')');
+				for (pos = best_moves.begin();
+					pos != best_moves.end(); ++pos)
+				{
+					io.write(' ');
+					io.write(pos->to_string());
+				}
+				io.write('\n');
+				io.process();
 			}
 
-			io.write("  Best moves - ");
-			io.write('(');
-			io.write(val);
-			io.write(')');
-			for (pos = best_moves.begin();
-				pos != best_moves.end(); ++pos)
+			i = 0;
+			do
 			{
-				io.write(' ');
-				io.write(pos->to_string());
-			}
-			io.write('\n');
-
-			io.write("Info: My move is: ");
-			io.write(best_moves[0].to_string());
-			io.write('\n');
-			cont = this->_board.make_move(best_moves[0]);
-			this->print();
+				io.write("Info: My move is: ");
+				io.write(best_moves[i].to_string());
+				io.write('\n');
+				cont = this->_board.make_move(best_moves[i]);
+				this->print();
+				++i;
+			} while (cont && i < best_moves.size());
 		} while (cont);
+		this->declare_winning();
 	}
 
 	void engine::prompt(void)
@@ -317,7 +332,7 @@ done:
 
 	void engine::do_print(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		this->print();
@@ -325,7 +340,7 @@ done:
 
 	void engine::do_rotate(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		this->rotate();
@@ -333,7 +348,7 @@ done:
 
 	void engine::do_black(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		this->_board.set_black();
@@ -341,7 +356,7 @@ done:
 
 	void engine::do_white(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		this->_board.set_white();
@@ -349,7 +364,7 @@ done:
 
 	void engine::do_ping(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		io& io = io::init();
@@ -365,7 +380,7 @@ done:
 
 	void engine::do_go(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		this->go();
@@ -373,7 +388,7 @@ done:
 
 	void engine::do_help(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		io& io = io::init();
@@ -392,7 +407,7 @@ done:
 
 	void engine::do_new(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		this->_board.opening();
@@ -401,7 +416,7 @@ done:
 
 	void engine::do_quit(const std::vector<std::string>& args)
 	{
-		// void the warning: unused parameter ‘args’
+		// Void the warning: unused parameter ‘args’
 		(void)args;
 
 		exit(0);

@@ -1,6 +1,5 @@
-// @file intelligence.cpp
+/// @file intelligence.cpp
 
-#include "io.hpp"
 #include "intelligence.hpp"
 
 namespace checkers
@@ -24,24 +23,34 @@ namespace checkers
 
 		// Generate legal moves
 		std::vector<move> legal_moves = this->_board.generate_moves();
+		// Re-order the legal moves
+		this->reorder_moves(legal_moves, ply);
+
 		int val;
 		std::vector<move> moves;
 
 		for (std::vector<move>::const_iterator pos =
 			legal_moves.begin(); pos != legal_moves.end(); ++pos)
 		{
-			intelligence intelligence(*this);
+			// When capture piece in the last ply, search deeper
+			if (1 == depth && pos->is_jump())
+			{
+				++depth;
+			}
 
+			intelligence intelligence(*this);
 			val = intelligence._board.make_move(*pos) ?
 				 intelligence.alpha_beta_search(moves,
-					depth - 1, alpha,   beta, ply + 1) :
+					depth,     alpha,   beta, ply + 1) :
 				-intelligence.alpha_beta_search(moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
-			if (val >= beta) {
+			if (val >= beta)
+			{
 				return beta;
 			}
-			if (val > alpha) {
+			if (val > alpha)
+			{
 				alpha = val;
 				best_moves.clear();
 				best_moves.push_back(*pos);
@@ -52,6 +61,11 @@ namespace checkers
 
 		return alpha;
 	}
+
+	// ================================================================
+
+	std::vector<move> intelligence::_best_moves;
+	bool intelligence::_reorder = false;
 }
 
 // End of file

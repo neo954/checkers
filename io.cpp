@@ -64,7 +64,7 @@ namespace checkers
 
 	// ================================================================
 
-	/// flags are file status flags to turn on
+	/// @param flags are file status flags to turn on
 	void io::setfl(int fd, int flags)
 	{
 		int val;
@@ -74,7 +74,7 @@ namespace checkers
 			throw std::runtime_error("System call fcntl(..., F_GETFL, ...) failed");
 		}
 
-		// turn on flags
+		// Turn on flags
 		val |= flags;
 
 		if (fcntl(fd, F_SETFL, val) < 0)

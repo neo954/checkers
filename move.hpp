@@ -31,10 +31,14 @@ namespace checkers
 
 		inline static bool is_valid(const std::string& str);
 
+		friend bool operator ==(const move& lhs, const move& rhs);
+
 	private:
 		bitboard _orig;
 		bitboard _dest;
 	};
+
+	inline bool operator ==(const move& lhs, const move& rhs);
 }
 
 #include "move_i.hpp"

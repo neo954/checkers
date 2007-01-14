@@ -18,13 +18,13 @@ namespace checkers
 			{
 			case 'B':
 				this->_kings |= square;
-				// intentionally no break
+				// Intentionally no break
 			case 'b':
 				this->_black_pieces |= square;
 				break;
 			case 'W':
 				this->_kings |= square;
-				// intentionally no break
+				// Intentionally no break
 			case 'w':
 				this->_white_pieces |= square;
 				break;
