@@ -1,11 +1,15 @@
 /// @file engine.cpp
 
+#include <sys/time.h>
+#include <time.h>
+#include <iomanip>
 #include "engine.hpp"
 #include "intelligence.hpp"
-#include "io.hpp"
 
 namespace checkers
 {
+	io& engine::_io = io::init();
+
 	engine::engine(void) :
 		_board(), _rotate(false)
 	{
@@ -38,8 +42,6 @@ namespace checkers
 
 	void engine::run(void)
 	{
-		io& io = io::init();
-
 		std::string line;
 		std::vector<std::string> args;
 		std::string::size_type idx_begin;
@@ -55,8 +57,8 @@ namespace checkers
 
 		for (;;)
 		{
-			io.process();
-			line = io.read_line();
+			this->_io.process();
+			line = this->_io.read_line();
 			if (line.empty())
 			{
 				continue;
@@ -114,20 +116,23 @@ namespace checkers
 						this->print();
 						goto done;
 					}
+
 					this->print();
 					this->declare_winning();
-					io.process();
+					this->_io.process();
 					this->go();
 					goto done;
 				}
+
+				this->_io.write("Illegal move: ");
+				this->_io.write(args[0]);
+				this->_io.write('\n');
+				goto done;
 			}
 
-			io.write("Error: Illegal ");
-			io.write((this->_board.is_black_move()) ?
-				"black" : "white");
-			io.write(" move - ");
-			io.write(args[0]);
-			io.write('\n');
+			this->_io.write("Error (unknown command): ");
+			this->_io.write(args[0]);
+			this->_io.write('\n');
 done:
 			args.clear();
 			this->prompt();
@@ -138,68 +143,66 @@ done:
 
 	void engine::print(void)
 	{
-		io& io = io::init();
-
 		int i;
 		int j;
 
 		if (this->_rotate)
 		{
-			io.write("      H   G   F   E   D   C   B   A\n");
-			io.write("    +---+---+---+---+---+---+---+---+\n");
+			this->_io.write("       H   G   F   E   D   C   B   A\n");
+			this->_io.write("     +---+---+---+---+---+---+---+---+\n");
 			for (i = 1; i <= 8; ++i)
 			{
-				io.write(' ');
-				io.write(i);
+				this->_io.write("  ");
+				this->_io.write(i);
 				if (i % 2)
 				{
-					io.write("  | ");
+					this->_io.write("  | ");
 				}
 				for (j = i * 4 - 1; j >= i * 4 - 4; --j)
 				{
-					io.write("  |");
+					this->_io.write("  |");
 					this->print(0x1 << j);
-					io.write("| ");
+					this->_io.write("| ");
 				}
 				if (!(i % 2))
 				{
-					io.write("  | ");
+					this->_io.write("  | ");
 				}
-				io.write(' ');
-				io.write(i);
-				io.write('\n');
-				io.write("    +---+---+---+---+---+---+---+---+\n");
+				this->_io.write(' ');
+				this->_io.write(i);
+				this->_io.write('\n');
+				this->_io.write("     +---+---+---+---+---+---+---+---+\n");
 			}
-			io.write("      H   G   F   E   D   C   B   A\n");
+			this->_io.write("       H   G   F   E   D   C   B   A\n");
 		}
 		else
 		{
-			io.write("      A   B   C   D   E   F   G   H\n");
-			io.write("    +---+---+---+---+---+---+---+---+\n");
+			this->_io.write("       A   B   C   D   E   F   G   H\n");
+			this->_io.write("     +---+---+---+---+---+---+---+---+\n");
 			for (i = 8; i >= 1; --i)
 			{
-				io.write(' ');
-				io.write(i);
+				this->_io.write("  ");
+				this->_io.write(i);
 				if (!(i % 2))
 				{
-					io.write("  | ");
+					this->_io.write("  | ");
 				}
 				for (j = i * 4 - 4; j <= i * 4 - 1; ++j)
 				{
-					io.write("  |");
+					this->_io.write("  |");
 					this->print(0x1 << j);
-					io.write("| ");
+					this->_io.write("| ");
 				}
 				if (i % 2)
 				{
-					io.write("  | ");
+					this->_io.write("  | ");
 				}
-				io.write(' ');
-				io.write(i);
-				io.write('\n');
-				io.write("    +---+---+---+---+---+---+---+---+\n");
+				this->_io.write(' ');
+				this->_io.write(i);
+				this->_io.write('\n');
+				this->_io.write("     +---+---+---+---+---+---+---+---+\n");
 			}
-			io.write("      A   B   C   D   E   F   G   H\n");
+			this->_io.write("       A   B   C   D   E   F   G   H\n");
 		}
 	}
 
@@ -207,27 +210,25 @@ done:
 	{
 		assert(1 == square.bit_count());
 
-		io& io = io::init();
-
 		if (this->_board.get_black_men() & square)
 		{
-			io.write("(b)");
+			this->_io.write("(b)");
 		}		
 		else if (this->_board.get_white_men() & square)
 		{
-			io.write("(w)");
+			this->_io.write("(w)");
 		}		
 		else if (this->_board.get_black_kings() & square)
 		{
-			io.write("(B)");
+			this->_io.write("(B)");
 		}		
 		else if (this->_board.get_white_kings() & square)
 		{
-			io.write("(W)");
+			this->_io.write("(W)");
 		}
 		else
 		{
-			io.write(" \\ ");
+			this->_io.write(" \\ ");
 		}
 	}
 
@@ -239,27 +240,30 @@ done:
 
 	void engine::go(void)
 	{
-		io& io = io::init();
 		bool cont;
 		int val;
 		std::vector<move> best_moves;
-		std::vector<move>::const_iterator pos;
 		int depth;
 		std::vector<move>::size_type i;
+		struct timeval start_time;
+		struct timeval terminal_time;
 
 		do
 		{
 			best_moves.clear();
 
-			io.write("  Thinking ...\n");
-			io.process();
+			this->_io.write("  Thinking ...\n");
+			this->_io.process();
 
-			for (depth = 1; depth < 13; ++depth)
+			for (depth = 1; depth <= 13; ++depth)
 			{
+				::gettimeofday(&start_time, NULL);
 				intelligence intelligence(this->_board);
+				intelligence::reset_nodes();
 				intelligence.init_best_moves(best_moves);
 				val = intelligence.alpha_beta_search(
 					best_moves, depth);
+				::gettimeofday(&terminal_time, NULL);
 
 				if (best_moves.empty())
 				{
@@ -267,27 +271,21 @@ done:
 					return;
 				}
 
-				io.write("    Depth ");
-				io.write(depth);
-				io.write(" - (");
-				io.write(val);
-				io.write(')');
-				for (pos = best_moves.begin();
-					pos != best_moves.end(); ++pos)
-				{
-					io.write(' ');
-					io.write(pos->to_string());
-				}
-				io.write('\n');
-				io.process();
+				this->print(depth, val,
+					(terminal_time.tv_sec
+						- start_time.tv_sec) * 1000000 +
+					(terminal_time.tv_usec
+						- start_time.tv_usec),
+					intelligence::get_nodes(), best_moves);
+				this->_io.process();
 			}
 
 			i = 0;
 			do
 			{
-				io.write("Info: My move is: ");
-				io.write(best_moves[i].to_string());
-				io.write('\n');
+				this->_io.write("move ");
+				this->_io.write(best_moves[i].to_string());
+				this->_io.write('\n');
 				cont = this->_board.make_move(best_moves[i]);
 				this->print();
 				++i;
@@ -296,37 +294,67 @@ done:
 		this->declare_winning();
 	}
 
+	/// @param time microseconds
+	void engine::print(int depth, int val, int time, int nodes,
+		const std::vector<move>& best_moves)
+	{
+		std::ostringstream stream;
+		std::vector<move>::size_type i;
+		std::vector<move>::size_type max_size;
+
+		if (1 == depth % 10)
+		{
+			stream << "  depth   value      time       nodes\n";
+			stream << "  ----------------------------------------------------------------------------\n";
+		}
+		stream << "  " << std::setw(5) << depth;
+		stream << "  " << std::setw(6) << val;
+		stream << "  " << std::setw(4) << (time / 1000000) << '.' <<
+			std::setw(3) << std::setfill('0') <<
+			((time / 1000) % 1000) << std::setfill(' ');
+		stream << "  " << std::setw(10) << nodes;
+		stream << " ";
+
+		max_size = best_moves.size();
+		for (i = 0; i < max_size; ++i)
+		{
+			if (i > 0 && 0 == i % 8)
+			{
+				stream << "\n                                      ";
+			}
+			stream << " " << best_moves[i].to_string();
+		}
+		stream << '\n';
+		this->_io.write(stream.str());
+	}
+
 	void engine::prompt(void)
 	{
-		io& io = io::init();
-
 		if (this->_board.is_black_move())
 		{
-			io.write("Info: Black move\n");
+			this->_io.write("  Black move\n");
 		}
 		else
 		{
-			io.write("Info: White move\n");
+			this->_io.write("  White move\n");
 		}
 	}
 
 	void engine::declare_winning(void)
 	{
-		io& io = io.init();
-
 		if (this->_board.is_winning())
 		{
-			io.write("Info: *** ");
-			io.write(this->_board.is_black_move() ?
-				"Black" : "White");
-			io.write(" win ***\n");
+			this->_io.write("RESULT ");
+			this->_io.write(this->_board.is_black_move() ?
+				"1-0 {Black win}\n" :
+				"0-1 {White win}\n");
 		}
 		else if (this->_board.is_losing())
 		{
-			io.write("Info: *** ");
-			io.write(this->_board.is_black_move() ?
-				"White" : "Black");
-			io.write(" win ***\n");
+			this->_io.write("RESULT ");
+			this->_io.write(this->_board.is_black_move() ?
+				"0-1 {White win}\n" :
+				"1-0 {Black win}\n");
 		}
 	}
 
@@ -367,15 +395,13 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		io& io = io::init();
-
-		io.write("pong");
+		this->_io.write("pong");
 		if (1 < args.size())
 		{
-			io.write(' ');
-			io.write(args[1]);
+			this->_io.write(' ');
+			this->_io.write(args[1]);
 		}
-		io.write('\n');
+		this->_io.write('\n');
 	}
 
 	void engine::do_go(const std::vector<std::string>& args)
@@ -391,18 +417,16 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		io& io = io::init();
-
-		io.write("Info: Help message\n");
-		io.write("  black         Set Black on move. Set the engine to play White.\n");
-		io.write("  go            Set the engine to play the color that is on move.\n");
-		io.write("  help          Show this help information.\n");
-		io.write("  new           Reset the board to the standard starting position.\n");
-		io.write("  ping N        N is a decimal number. Reply by sending the string \"pong N\"\n");
-		io.write("  print         Show the current board.\n");
-		io.write("  quit          Quit this program.\n");
-		io.write("  rotate        Rotate the board 180 degrees.\n");
-		io.write("  white         Set White on move. Set the engine to play Black.\n");
+		this->_io.write("  Help message\n");
+		this->_io.write("    black       Set Black on move. Set the engine to play White.\n");
+		this->_io.write("    go          Set the engine to play the color that is on move.\n");
+		this->_io.write("    help        Show this help information.\n");
+		this->_io.write("    new         Reset the board to the standard starting position.\n");
+		this->_io.write("    ping N      N is a decimal number. Reply by sending the string \"pong N\"\n");
+		this->_io.write("    print       Show the current board.\n");
+		this->_io.write("    quit        Quit this program.\n");
+		this->_io.write("    rotate      Rotate the board 180 degrees.\n");
+		this->_io.write("    white       Set White on move. Set the engine to play Black.\n");
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)

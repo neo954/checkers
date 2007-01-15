@@ -4,6 +4,7 @@
 #define __ENGINE_HPP__
 
 #include "board.hpp"
+#include "io.hpp"
 
 namespace checkers
 {
@@ -20,6 +21,9 @@ namespace checkers
 
 		void print(void);
 		void print(bitboard square);
+		/// Print think output
+		void print(int depth, int val, int time, int nodes,
+			const std::vector<move>& best_moves);
 		void rotate(void);
 
 		void go(void);
@@ -42,6 +46,8 @@ namespace checkers
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;
+
+		static io& _io;
 	};
 }
 

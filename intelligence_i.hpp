@@ -16,6 +16,16 @@ namespace checkers
 		this->_reorder = true;
 	}
 
+	inline void intelligence::reset_nodes(void)
+	{
+		intelligence::_nodes = 0;
+	}
+
+	inline int intelligence::get_nodes(void)
+	{
+		return intelligence::_nodes;
+	}
+
 	// ================================================================
 
 	inline void intelligence::reorder_moves(std::vector<move>& moves, int ply)

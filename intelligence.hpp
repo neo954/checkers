@@ -18,6 +18,9 @@ namespace checkers
 			int ply = 0);
 		inline void init_best_moves(const std::vector<move>& moves);
 
+		inline static void reset_nodes(void);
+		inline static int get_nodes(void);
+
 	private:
 		inline int evaluate(void);
 		inline int evaluate_pieces_strength(void);
@@ -34,6 +37,8 @@ namespace checkers
 
 		static std::vector<move> _best_moves;
 		static bool _reorder;
+
+		static int _nodes;
 	};
 }
 

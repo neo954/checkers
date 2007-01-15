@@ -32,6 +32,7 @@ namespace checkers
 		inline static bool is_valid(const std::string& str);
 
 		friend bool operator ==(const move& lhs, const move& rhs);
+		friend bool operator !=(const move& lhs, const move& rhs);
 
 	private:
 		bitboard _orig;
@@ -39,6 +40,7 @@ namespace checkers
 	};
 
 	inline bool operator ==(const move& lhs, const move& rhs);
+	inline bool operator !=(const move& lhs, const move& rhs);
 }
 
 #include "move_i.hpp"

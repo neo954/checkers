@@ -57,6 +57,11 @@ namespace checkers
 	{
 		return lhs._orig == rhs._orig && lhs._dest == rhs._dest;
 	}
+
+	inline bool operator !=(const move& lhs, const move& rhs)
+	{
+		return !(lhs == rhs);
+	}
 }
 
 #endif // __MOVE_I_HPP__

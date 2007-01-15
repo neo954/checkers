@@ -7,6 +7,8 @@ namespace checkers
 	int intelligence::alpha_beta_search(std::vector<move>& best_moves,
 		 int depth, int alpha, int beta, int ply)
 	{
+		++this->_nodes;
+
 		if (this->_board.is_winning())
 		{
 			return WIN - ply;
@@ -66,6 +68,7 @@ namespace checkers
 
 	std::vector<move> intelligence::_best_moves;
 	bool intelligence::_reorder = false;
+	int intelligence::_nodes = 0;
 }
 
 // End of file
