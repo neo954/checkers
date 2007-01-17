@@ -18,7 +18,7 @@ namespace checkers
 		};
 
 	public:
-                static io& init(void);
+                inline static io& init(void);
 
 		inline std::string read_line(void);
 

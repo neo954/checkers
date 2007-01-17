@@ -10,47 +10,7 @@ namespace checkers
 	{
 	}
 
-	inline void intelligence::init_best_moves(const std::vector<move>& moves)
-	{
-		this->_best_moves = moves;
-		this->_reorder = true;
-	}
-
-	inline void intelligence::reset_nodes(void)
-	{
-		intelligence::_nodes = 0;
-	}
-
-	inline int intelligence::get_nodes(void)
-	{
-		return intelligence::_nodes;
-	}
-
 	// ================================================================
-
-	inline void intelligence::reorder_moves(std::vector<move>& moves, int ply)
-	{
-		if (!this->_reorder)
-		{
-			return;
-		}
-		if (static_cast<std::vector<move>::size_type>(ply)
-			>= this->_best_moves.size())
-		{
-			this->_reorder = false;
-			return;
-		}
-
-		std::vector<move>::iterator pos = std::find(moves.begin(),
-			moves.end(), this->_best_moves[ply]);
-		if (moves.end() == pos)
-		{
-			this->_reorder = false;
-			return;
-		}
-
-		std::swap(moves[0], *pos);
-	}
 
 	/**
 	 *  @return >0 when the current player is ahead in game, and
@@ -114,6 +74,43 @@ namespace checkers
 				bitboard::EDGES).bit_count() -
 			 (this->_board.get_black_pieces() &
 				bitboard::EDGES).bit_count());
+	}
+
+	inline void intelligence::reorder_moves(std::vector<move>& moves, int ply)
+	{
+		if (!this->_reorder)
+		{
+			return;
+		}
+		if (static_cast<std::vector<move>::size_type>(ply)
+			>= this->_best_moves.size())
+		{
+			this->_reorder = false;
+			return;
+		}
+
+		std::vector<move>::iterator pos = std::find(moves.begin(),
+			moves.end(), this->_best_moves[ply]);
+		if (moves.end() == pos)
+		{
+			this->_reorder = false;
+			return;
+		}
+
+		std::swap(moves[0], *pos);
+	}
+
+	inline void intelligence::set_timeout(time_t second)
+	{
+		::gettimeofday(&intelligence::_deadline, NULL);
+		intelligence::_deadline += second;
+	}
+
+	inline bool intelligence::is_timeout(void)
+	{
+		struct timeval now;
+		::gettimeofday(&now, NULL);
+		return now > intelligence::_deadline;
 	}
 }
 

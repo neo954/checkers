@@ -1,36 +1,39 @@
 /// @file engine.cpp
 
-#include <sys/time.h>
-#include <time.h>
-#include <iomanip>
 #include "engine.hpp"
 #include "intelligence.hpp"
 
 namespace checkers
 {
-	io& engine::_io = io::init();
-
 	engine::engine(void) :
-		_board(), _rotate(false)
+		_board(), _rotate(false), _force_mode(false),
+		_depth_limit(INT_MAX), _time_limit(10),
+		_io(io::init())
 	{
-		this->_action.push_back(std::make_pair("go",
-			&engine::do_go));
-		this->_action.push_back(std::make_pair("print",
-			&engine::do_print));
-		this->_action.push_back(std::make_pair("rotate",
-			&engine::do_rotate));
+		this->_action.push_back(std::make_pair("analyze",
+			&engine::do_analyze));
 		this->_action.push_back(std::make_pair("black",
 			&engine::do_black));
-		this->_action.push_back(std::make_pair("white",
-			&engine::do_white));
-		this->_action.push_back(std::make_pair("ping",
-			&engine::do_ping));
+		this->_action.push_back(std::make_pair("force",
+			&engine::do_force));
+		this->_action.push_back(std::make_pair("go",
+			&engine::do_go));
 		this->_action.push_back(std::make_pair("help",
 			&engine::do_help));
 		this->_action.push_back(std::make_pair("new",
 			&engine::do_new));
+		this->_action.push_back(std::make_pair("ping",
+			&engine::do_ping));
+		this->_action.push_back(std::make_pair("print",
+			&engine::do_print));
 		this->_action.push_back(std::make_pair("quit",
 			&engine::do_quit));
+		this->_action.push_back(std::make_pair("rotate",
+			&engine::do_rotate));
+		this->_action.push_back(std::make_pair("set",
+			&engine::do_set));
+		this->_action.push_back(std::make_pair("white",
+			&engine::do_white));
 	}
 
 	engine& engine::init(void)
@@ -240,103 +243,48 @@ done:
 
 	void engine::go(void)
 	{
-		bool cont;
-		int val;
+		if (this->_force_mode)
+		{
+			return;
+		}
+
+		bool contin;
 		std::vector<move> best_moves;
-		int depth;
 		std::vector<move>::size_type i;
-		struct timeval start_time;
-		struct timeval terminal_time;
+
+		this->_io.write("  Think ...\n");
 
 		do
 		{
-			best_moves.clear();
-
-			this->_io.write("  Thinking ...\n");
-			this->_io.process();
-
-			for (depth = 1; depth <= 13; ++depth)
+			best_moves = intelligence::think(this->_board,
+				this->_depth_limit, this->_time_limit);
+			if (best_moves.empty())
 			{
-				::gettimeofday(&start_time, NULL);
-				intelligence intelligence(this->_board);
-				intelligence::reset_nodes();
-				intelligence.init_best_moves(best_moves);
-				val = intelligence.alpha_beta_search(
-					best_moves, depth);
-				::gettimeofday(&terminal_time, NULL);
-
-				if (best_moves.empty())
-				{
-					this->declare_winning();
-					return;
-				}
-
-				this->print(depth, val,
-					(terminal_time.tv_sec
-						- start_time.tv_sec) * 1000000 +
-					(terminal_time.tv_usec
-						- start_time.tv_usec),
-					intelligence::get_nodes(), best_moves);
-				this->_io.process();
+				break;
 			}
-
 			i = 0;
 			do
 			{
 				this->_io.write("move ");
 				this->_io.write(best_moves[i].to_string());
 				this->_io.write('\n');
-				cont = this->_board.make_move(best_moves[i]);
+				contin = this->_board.make_move(best_moves[i]);
 				this->print();
 				++i;
-			} while (cont && i < best_moves.size());
-		} while (cont);
+			} while (contin && i < best_moves.size());
+		} while (contin);
 		this->declare_winning();
-	}
-
-	/// @param time microseconds
-	void engine::print(int depth, int val, int time, int nodes,
-		const std::vector<move>& best_moves)
-	{
-		std::ostringstream stream;
-		std::vector<move>::size_type i;
-		std::vector<move>::size_type max_size;
-
-		if (1 == depth % 10)
-		{
-			stream << "  depth   value      time       nodes\n";
-			stream << "  ----------------------------------------------------------------------------\n";
-		}
-		stream << "  " << std::setw(5) << depth;
-		stream << "  " << std::setw(6) << val;
-		stream << "  " << std::setw(4) << (time / 1000000) << '.' <<
-			std::setw(3) << std::setfill('0') <<
-			((time / 1000) % 1000) << std::setfill(' ');
-		stream << "  " << std::setw(10) << nodes;
-		stream << " ";
-
-		max_size = best_moves.size();
-		for (i = 0; i < max_size; ++i)
-		{
-			if (i > 0 && 0 == i % 8)
-			{
-				stream << "\n                                      ";
-			}
-			stream << " " << best_moves[i].to_string();
-		}
-		stream << '\n';
-		this->_io.write(stream.str());
 	}
 
 	void engine::prompt(void)
 	{
 		if (this->_board.is_black_move())
 		{
-			this->_io.write("  Black move\n");
+			this->_io.write("  *** Black move\n");
 		}
 		else
 		{
-			this->_io.write("  White move\n");
+			this->_io.write("  *** White move\n");
 		}
 	}
 
@@ -356,6 +304,16 @@ done:
 				"0-1 {White win}\n" :
 				"1-0 {Black win}\n");
 		}
+	}
+
+	void engine::do_analyze(const std::vector<std::string>& args)
+	{
+		// Void the warning: unused parameter ‘args’
+		(void)args;
+
+		this->_io.write("  Analyzing ...\n");
+		(void)intelligence::think(this->_board, this->_depth_limit,
+			this->_time_limit);
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -409,6 +367,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
+		this->_force_mode = false;
 		this->go();
 	}
 
@@ -417,16 +376,21 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io.write("  Help message\n");
-		this->_io.write("    black       Set Black on move. Set the engine to play White.\n");
-		this->_io.write("    go          Set the engine to play the color that is on move.\n");
-		this->_io.write("    help        Show this help information.\n");
-		this->_io.write("    new         Reset the board to the standard starting position.\n");
-		this->_io.write("    ping N      N is a decimal number. Reply by sending the string \"pong N\"\n");
-		this->_io.write("    print       Show the current board.\n");
-		this->_io.write("    quit        Quit this program.\n");
-		this->_io.write("    rotate      Rotate the board 180 degrees.\n");
-		this->_io.write("    white       Set White on move. Set the engine to play Black.\n");
+		this->_io.write(
+			"  Help message\n"
+			"    analyze     Engine thinks about what move it make next if it were on move.\n"
+			"    black       Set Black on move.  Set the engine to play White.\n"
+			"    force       Set the engine to play neither color (\"force mode\").\n"
+			"    go          Leave force mode and set the engine to play the color that is\n"
+			"                on move.  Start thinking and eventually make a move.\n"
+			"    help        Show this help information.\n"
+			"    new         Reset the board to the standard starting position.\n"
+			"    ping N      N is a decimal number. Reply by sending the string \"pong N\"\n"
+			"    print       Show the current board.\n"
+			"    quit        Quit this program.\n"
+			"    rotate      Rotate the board 180 degrees.\n"
+			"    white       Set White on move.  Set the engine to play Black.\n"
+		);
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)
@@ -444,6 +408,66 @@ done:
 		(void)args;
 
 		exit(0);
+	}
+
+	void engine::do_force(const std::vector<std::string>& args)
+	{
+		// Void the warning: unused parameter ‘args’
+		(void)args;
+
+		this->_force_mode = true;
+	}
+
+	void engine::do_set(const std::vector<std::string>& args)
+	{
+		std::vector<move>::size_type size = args.size();
+
+		if (size < 1)
+		{
+			this->_io.write("Error (option missing): set\n");
+		}
+
+		if ("all" == args[1])
+		{
+			if (this->_depth_limit < INT_MAX)
+			{
+				this->_io.write("  Depth limit: ");
+				this->_io.write(this->_depth_limit);
+				this->_io.write(" ply(s)\n");
+			}
+			if (this->_time_limit < INT_MAX)
+			{
+				this->_io.write("  Time limit:  ");
+				this->_io.write(this->_time_limit);
+				this->_io.write(" second(s)\n");
+			}
+		}
+		else if ("depth" == args[1])
+		{
+			if (size < 2)
+			{
+				this->_io.write("Error (option missing): set depth\n");
+			}
+			this->_depth_limit = strtol(args[2].c_str(),
+				static_cast<char**>(NULL), 10);
+			this->_time_limit = INT_MAX;
+		}
+		else if ("time" == args[1])
+		{
+			if (size < 2)
+			{
+				this->_io.write("Error (option missing): set time\n");
+			}
+			this->_depth_limit = INT_MAX;
+			this->_time_limit = strtol(args[2].c_str(),
+				static_cast<char**>(NULL), 10);
+		}
+		else
+		{
+			this->_io.write("Error (unknown option): ");
+			this->_io.write(args[1]);
+			this->_io.write('\n');
+		}
 	}
 }
 

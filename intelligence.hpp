@@ -4,7 +4,9 @@
 #define __INTELLIGENCE_HPP_
 
 #include "board.hpp"
+#include "io.hpp"
 #include "move.hpp"
+#include "timeval.hpp"
 
 namespace checkers
 {
@@ -16,12 +18,14 @@ namespace checkers
 		int alpha_beta_search(std::vector<move>& best_moves,
 			int depth, int alpha = -INFINITY, int beta = INFINITY,
 			int ply = 0);
-		inline void init_best_moves(const std::vector<move>& moves);
-
-		inline static void reset_nodes(void);
-		inline static int get_nodes(void);
+		static std::vector<move> think(const board& board,
+			int depth_limit, time_t second);
 
 	private:
+		/// Print think output
+		static void print(int depth, int val, struct timeval time,
+			long int nodes, const std::vector<move>& best_moves);
+
 		inline int evaluate(void);
 		inline int evaluate_pieces_strength(void);
 		inline int evaluate_movers(void);
@@ -30,6 +34,10 @@ namespace checkers
 
 		inline void reorder_moves(std::vector<move>& moves, int ply);
 
+		inline static void set_timeout(time_t second);
+		inline static bool is_timeout(void);
+
+		static const int TIMEOUT  = INT_MIN;
 		static const int INFINITY = INT_MAX;
 		static const int WIN      = 65535;
 
@@ -38,7 +46,8 @@ namespace checkers
 		static std::vector<move> _best_moves;
 		static bool _reorder;
 
-		static int _nodes;
+		static long int _nodes;
+		static struct timeval _deadline;
 	};
 }
 

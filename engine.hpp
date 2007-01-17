@@ -21,9 +21,7 @@ namespace checkers
 
 		void print(void);
 		void print(bitboard square);
-		/// Print think output
-		void print(int depth, int val, int time, int nodes,
-			const std::vector<move>& best_moves);
+
 		void rotate(void);
 
 		void go(void);
@@ -31,7 +29,9 @@ namespace checkers
 		void prompt(void);
 		void declare_winning(void);
 
+		void do_analyze(const std::vector<std::string>& args);
 		void do_black(const std::vector<std::string>& args);
+		void do_force(const std::vector<std::string>& args);
 		void do_go(const std::vector<std::string>& args);
 		void do_help(const std::vector<std::string>& args);
 		void do_new(const std::vector<std::string>& args);
@@ -39,15 +39,19 @@ namespace checkers
 		void do_print(const std::vector<std::string>& args);
 		void do_quit(const std::vector<std::string>& args);
 		void do_rotate(const std::vector<std::string>& args);
+		void do_set(const std::vector<std::string>& args);
 		void do_white(const std::vector<std::string>& args);
 
 		board _board;
 		bool _rotate;
+		bool _force_mode;
+		int _depth_limit;
+		time_t _time_limit;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;
 
-		static io& _io;
+		io& _io;
 	};
 }
 

@@ -7,6 +7,13 @@
 
 namespace checkers
 {
+	inline io& io::init(void)
+	{
+		static io io;
+
+		return io;
+	}
+
 	inline std::string io::read_line(void)
 	{
 		return this->_read_buf.get_line();

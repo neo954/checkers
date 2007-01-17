@@ -22,13 +22,6 @@ namespace checkers
 		}
 	}
 
-	io& io::init(void)
-	{
-		static io io;
-
-		return io;
-	}
-
 	void io::process(wait sleep)
 	{
 		fd_set read_set;
