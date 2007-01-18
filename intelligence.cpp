@@ -91,12 +91,6 @@ namespace checkers
 		struct timeval start;
 		struct timeval end;
 
-		cio << io::nowait;
-
-		cio << "  " << depth_limit << " ply(s) depth limit ...\n";
-		cio << "  " << time_limit << " second(s) time limit ...\n";
-		cio << io::flush;
-
 		intelligence::set_timeout(time_limit);
 
 		for (depth = 1, val = 0;
@@ -164,7 +158,7 @@ namespace checkers
 		}
 		stream << '\n';
 
-		cio << stream.str() << io::flush;
+		cio << stream.str() << io::nowait << io::flush;
 	}
 
 	std::vector<move> intelligence::_best_moves;

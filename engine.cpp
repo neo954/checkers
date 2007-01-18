@@ -11,7 +11,7 @@ namespace checkers
 {
 	engine::engine(void) :
 		_board(), _rotate(false), _force_mode(false),
-		_depth_limit(INT_MAX), _time_limit(10)
+		_depth_limit(UNLIMITED), _time_limit(10)
 	{
 		this->_action.push_back(std::make_pair("analyze",
 			&engine::do_analyze));
@@ -415,10 +415,26 @@ done:
 
 		if ("all" == args[1])
 		{
-			cio << "  Depth limit: " << this->_depth_limit
-				<< " ply(s)\n";
-			cio << "  Time limit:  " << this->_time_limit
-				<< " second(s)\n";
+			cio << "  depth      (plys) ";
+			if (UNLIMITED == this->_depth_limit)
+			{
+				cio << "unlimited";
+			}
+			else
+			{
+				cio << this->_depth_limit;
+			}
+			cio << '\n';
+			cio << "  time    (seconds) ";
+			if (UNLIMITED == this->_time_limit)
+			{
+				cio << "unlimited";
+			}
+			else
+			{
+				cio << this->_time_limit;
+			}
+			cio << '\n';
 		}
 		else if ("depth" == args[1])
 		{
@@ -429,7 +445,7 @@ done:
 			}
 			this->_depth_limit = strtol(args[2].c_str(),
 				static_cast<char**>(NULL), 10);
-			this->_time_limit = 86400 * 30;	// 30 days time limit
+			this->_time_limit = UNLIMITED;
 		}
 		else if ("time" == args[1])
 		{
@@ -438,7 +454,7 @@ done:
 				cio << "Error (option missing): set time\n";
 				return;
 			}
-			this->_depth_limit = INT_MAX;
+			this->_depth_limit = UNLIMITED;
 			this->_time_limit = strtol(args[2].c_str(),
 				static_cast<char**>(NULL), 10);
 		}

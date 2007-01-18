@@ -51,7 +51,9 @@ namespace checkers
 		bool _rotate;
 		bool _force_mode;
 		int _depth_limit;
-		time_t _time_limit;
+		int _time_limit;
+
+		static const int UNLIMITED = INT_MAX;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;
