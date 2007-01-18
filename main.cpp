@@ -1,4 +1,7 @@
-/// @file main.cpp
+/** @file main.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <iostream>
 #include "board.hpp"

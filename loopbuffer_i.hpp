@@ -1,4 +1,7 @@
-/// @file loopbuffer_i.hpp
+/** @file loopbuffer_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __LOOPBUFFER_I_HPP__
 #define __LOOPBUFFER_I_HPP__

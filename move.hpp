@@ -1,4 +1,7 @@
-/// @file move.hpp
+/** @file move.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __MOVE_HPP__
 #define __MOVE_HPP__
@@ -12,8 +15,6 @@ namespace checkers
 	public:
 		inline move(bitboard orig, bitboard dest);
 		explicit move(const std::string& str);
-
-		std::string to_string(void) const;
 
 		inline bitboard get_orig(void) const;
 		inline bitboard get_dest(void) const;
@@ -34,6 +35,9 @@ namespace checkers
 		friend bool operator ==(const move& lhs, const move& rhs);
 		friend bool operator !=(const move& lhs, const move& rhs);
 
+		friend std::ostream& operator <<(std::ostream& os,
+			const move& rhs);
+
 	private:
 		bitboard _orig;
 		bitboard _dest;
@@ -41,6 +45,8 @@ namespace checkers
 
 	inline bool operator ==(const move& lhs, const move& rhs);
 	inline bool operator !=(const move& lhs, const move& rhs);
+
+	std::ostream& operator <<(std::ostream& os, const move& rhs);
 }
 
 #include "move_i.hpp"

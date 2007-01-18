@@ -1,4 +1,7 @@
-/// @file move_i.hpp
+/** @file move_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __MOVE_I_HPP__
 #define __MOVE_I_HPP__

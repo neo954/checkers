@@ -1,4 +1,7 @@
-/// @file io.cpp
+/** @file io.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <sys/select.h>
 #include <stdexcept>
@@ -6,8 +9,10 @@
 
 namespace checkers
 {
+	io& cio = io::init();
+
 	io::io(void) :
-		_read_buf(), _write_buf()
+		_read_buf(), _write_buf(), _wait(true)
 	{
 		// Set stdin and stdout nonblock I/O
 		this->setfl(STDIN_FILENO,  O_NONBLOCK);
@@ -18,12 +23,13 @@ namespace checkers
 	{
 		while (!this->_write_buf.is_empty())
 		{
-			this->process();
+			*this << io::flush;
 		}
 	}
 
-	void io::process(wait sleep)
+	io& io::flush(io& io)
 	{
+		const unsigned long int wait = 10000;
 		fd_set read_set;
 		fd_set write_set;
 		int n;
@@ -33,9 +39,9 @@ namespace checkers
 		FD_SET(STDIN_FILENO,  &read_set);
 		FD_SET(STDOUT_FILENO, &write_set);
 
-		if (sleep)
+		if (io._wait)
 		{
-			usleep(sleep);
+			usleep(wait);
 		}
 		n = select(std::max(STDIN_FILENO, STDOUT_FILENO) + 1,
 			&read_set, &write_set, NULL, NULL);
@@ -46,18 +52,22 @@ namespace checkers
 
 		if (FD_ISSET(STDIN_FILENO, &read_set))
 		{
-			this->_read_buf.read(STDIN_FILENO);
+			io._read_buf.read(STDIN_FILENO);
 		}
 		if (FD_ISSET(STDOUT_FILENO, &write_set))
 		{
-			this->_write_buf.write(STDOUT_FILENO);
+			io._write_buf.write(STDOUT_FILENO);
 		}
 
+		return io;
 	}
 
 	// ================================================================
 
-	/// @param flags are file status flags to turn on
+	/**
+	 *  @param fd is the open file descriptor
+	 *  @param flags are file status flags to turn on
+	 */
 	void io::setfl(int fd, int flags)
 	{
 		int val;

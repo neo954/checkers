@@ -1,4 +1,7 @@
-/// @file engine.hpp
+/** @file engine.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __ENGINE_HPP__
 #define __ENGINE_HPP__
@@ -16,18 +19,20 @@ namespace checkers
 
 	private:
 		engine(void);
+		/// Define but not implement, to prevent object copy.
 		engine(const engine& rhs);
-		engine& operator=(const engine& rhs);
+		/// Define but not implement, to prevent object copy.
+		engine& operator=(const engine& rhs) const;
 
 		void print(void);
-		void print(bitboard square);
+		std::string to_string(const bitboard& square);
 
 		void rotate(void);
 
 		void go(void);
 
 		void prompt(void);
-		void declare_winning(void);
+		void result(void);
 
 		void do_analyze(const std::vector<std::string>& args);
 		void do_black(const std::vector<std::string>& args);
@@ -42,7 +47,7 @@ namespace checkers
 		void do_set(const std::vector<std::string>& args);
 		void do_white(const std::vector<std::string>& args);
 
-		board _board;
+		checkers::board _board;
 		bool _rotate;
 		bool _force_mode;
 		int _depth_limit;
@@ -50,8 +55,6 @@ namespace checkers
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;
-
-		io& _io;
 	};
 }
 

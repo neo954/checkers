@@ -1,4 +1,7 @@
-/// @file board_i.hpp
+/** @file board_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __BOARD_I_HPP__
 #define __BOARD_I_HPP__

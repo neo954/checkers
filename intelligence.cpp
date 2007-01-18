@@ -91,20 +91,11 @@ namespace checkers
 		struct timeval start;
 		struct timeval end;
 
-		io& io = io::init();
-		if (depth_limit < INT_MAX)
-		{
-			io.write("  ");
-			io.write(depth_limit);
-			io.write(" ply(s) depth limit ...\n");
-		}
-		if (time_limit < INT_MAX)
-		{
-			io.write("  ");
-			io.write(time_limit);
-			io.write(" second(s) time limit ...\n");
-		}
-		io.process();
+		cio << io::nowait;
+
+		cio << "  " << depth_limit << " ply(s) depth limit ...\n";
+		cio << "  " << time_limit << " second(s) time limit ...\n";
+		cio << io::flush;
 
 		intelligence::set_timeout(time_limit);
 
@@ -113,7 +104,7 @@ namespace checkers
 		{
 			intelligence::_nodes = 0;
 			intelligence::_best_moves = best_moves;
-			intelligence::_reorder = false;
+			intelligence::_reorder = true;
 
 			intelligence intelligence(board);
 			::gettimeofday(&start, NULL);
@@ -169,13 +160,11 @@ namespace checkers
 			{
 				stream << "\n                                      ";
 			}
-			stream << " " << best_moves[i].to_string();
+			stream << " " << best_moves[i];
 		}
 		stream << '\n';
 
-		io& io = io::init();
-		io.write(stream.str());
-		io.process();
+		cio << stream.str() << io::flush;
 	}
 
 	std::vector<move> intelligence::_best_moves;

@@ -1,4 +1,7 @@
-/// @file bitboard.cpp
+/** @file bitboard.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <cassert>
 #include <sstream>

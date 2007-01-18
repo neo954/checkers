@@ -1,4 +1,7 @@
-/// @file board.cpp
+/** @file board.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <cassert>
 #include "board.hpp"
@@ -11,7 +14,7 @@ namespace checkers
 		bitboard square;
 		std::string::size_type p;
 
-		for (i = 0, p = 0; i < 32 && p < input.size(); ++i, ++p)
+		for (i = 0, p = 0; i < 32 && p < input.size(); ++p)
 		{
 			square = 0x1 << i;
 			switch (input[p])
@@ -21,62 +24,28 @@ namespace checkers
 				// Intentionally no break
 			case 'b':
 				this->_black_pieces |= square;
+				++i;
 				break;
 			case 'W':
 				this->_kings |= square;
 				// Intentionally no break
 			case 'w':
 				this->_white_pieces |= square;
+				++i;
 				break;
-			default:
-				--i;
-				break;
+			// Intentionally no default section
 			}
 		}	
-	}
 
-	std::string board::to_string(void) const
-	{
-		std::string output;
-		int i;
-		bitboard square;
-
-		output.reserve(39);
-		for (i = 0; i < 32; ++i)
+		p += 2;
+		if (p < input.size() && 'b' == input[p])
 		{
-			if (i > 0 && 0 == i % 4)
-			{
-				output += '/';
-			}
-			square = 0x1 << i;
-			if (this->_black_pieces & square)
-			{
-				if (this->_kings & square)
-				{
-					output += 'B';
-				}
-				else
-				{
-					output += 'b';
-				}
-			}
-			else if (this->_white_pieces & square)
-			{
-				if (this->_kings & square)
-				{
-					output += 'W';
-				}
-				else
-				{
-					output += 'w';
-				}
-			}
-			else
-			{
-				output += '0';
-			}
+			this->_player = BLACK;
 		}
-		return output;
+		else
+		{
+			this->_player = WHITE;
+		}
 	}
 
 	void board::opening(void)
@@ -587,6 +556,51 @@ namespace checkers
 		}
 
 		return moves;
+	}
+
+	std::ostream& operator <<(std::ostream& os, const board& rhs)
+	{
+		int i;
+		bitboard square;
+
+		for (i = 0; i < 32; ++i)
+		{
+			if (i > 0 && 0 == i % 4)
+			{
+				os << '/';
+			}
+			square = 0x1 << i;
+			if (rhs._black_pieces & square)
+			{
+				if (rhs._kings & square)
+				{
+					os << 'B';
+				}
+				else
+				{
+					os << 'b';
+				}
+			}
+			else if (rhs._white_pieces & square)
+			{
+				if (rhs._kings & square)
+				{
+					os << 'W';
+				}
+				else
+				{
+					os << 'w';
+				}
+			}
+			else
+			{
+				os << '0';
+			}
+		}
+		os << ' ';
+		os << (rhs.is_black_move() ? 'b' : 'w');
+
+		return os;
 	}
 }
 

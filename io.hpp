@@ -1,4 +1,7 @@
-/// @file io.hpp
+/** @file io.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __IO_HPP__
 #define __IO_HPP__
@@ -11,36 +14,39 @@ namespace checkers
 {
 	class io
 	{
-		enum wait
-		{
-			NOWAIT = 0,
-			AWHILE = 10000
-		};
-
 	public:
                 inline static io& init(void);
 
-		inline std::string read_line(void);
-
-		inline void write(char c);
-		inline void write(const std::string& str);
-		inline void write(const char* s);
 		template<typename T>
-        	void write(const T& v);
+		io& operator <<(const T& rhs);
+		inline io& operator <<(char rhs);
+		inline io& operator <<(const std::string& rhs);
+		inline io& operator <<(const char* rhs);
+		inline io& operator <<(io& (*op)(io&));
 
-		void process(wait sleep = AWHILE);
+		inline io& get_line(std::string& str);
+
+		static io& wait(io& io);
+		static io& nowait(io& io);
+		static io& flush(io& io);
+		static io& endl(io& io);
 
 	private:
 		io(void);
 		~io(void);
+		/// Define but not implement, to prevent object copy.
 		io(const io& rhs);
-		io& operator=(const io& rhs);
+		/// Define but not implement, to prevent object copy.
+		io& operator=(const io& rhs) const;
 
 		loopbuffer _read_buf;
 		loopbuffer _write_buf;
+		bool _wait;
 
 		void setfl(int fd, int flags);
 	};
+
+	extern io& cio;
 }
 
 #include "io_i.hpp"

@@ -1,14 +1,17 @@
-/// @file engine.cpp
+/** @file engine.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include "engine.hpp"
+#include "io.hpp"
 #include "intelligence.hpp"
 
 namespace checkers
 {
 	engine::engine(void) :
 		_board(), _rotate(false), _force_mode(false),
-		_depth_limit(INT_MAX), _time_limit(10),
-		_io(io::init())
+		_depth_limit(INT_MAX), _time_limit(10)
 	{
 		this->_action.push_back(std::make_pair("analyze",
 			&engine::do_analyze));
@@ -60,8 +63,8 @@ namespace checkers
 
 		for (;;)
 		{
-			this->_io.process();
-			line = this->_io.read_line();
+			cio << io::wait << io::flush;
+			cio.get_line(line);
 			if (line.empty())
 			{
 				continue;
@@ -121,21 +124,17 @@ namespace checkers
 					}
 
 					this->print();
-					this->declare_winning();
-					this->_io.process();
+					this->result();
+					cio << io::nowait << io::flush;
 					this->go();
 					goto done;
 				}
 
-				this->_io.write("Illegal move: ");
-				this->_io.write(args[0]);
-				this->_io.write('\n');
+				cio << "Illegal move: " << args[0] << '\n';
 				goto done;
 			}
 
-			this->_io.write("Error (unknown command): ");
-			this->_io.write(args[0]);
-			this->_io.write('\n');
+			cio << "Error (unknown command): " << args[0] << '\n';
 done:
 			args.clear();
 			this->prompt();
@@ -151,88 +150,79 @@ done:
 
 		if (this->_rotate)
 		{
-			this->_io.write("       H   G   F   E   D   C   B   A\n");
-			this->_io.write("     +---+---+---+---+---+---+---+---+\n");
+			cio << "       H   G   F   E   D   C   B   A\n";
+			cio << "     +---+---+---+---+---+---+---+---+\n";
 			for (i = 1; i <= 8; ++i)
 			{
-				this->_io.write("  ");
-				this->_io.write(i);
+				cio << "  " << i;
 				if (i % 2)
 				{
-					this->_io.write("  | ");
+					cio << "  | ";
 				}
 				for (j = i * 4 - 1; j >= i * 4 - 4; --j)
 				{
-					this->_io.write("  |");
-					this->print(0x1 << j);
-					this->_io.write("| ");
+					cio << "  |"
+						<< engine::to_string(0x1 << j)
+						<< "| ";
 				}
 				if (!(i % 2))
 				{
-					this->_io.write("  | ");
+					cio << "  | ";
 				}
-				this->_io.write(' ');
-				this->_io.write(i);
-				this->_io.write('\n');
-				this->_io.write("     +---+---+---+---+---+---+---+---+\n");
+				cio << ' ' << i << '\n';
+				cio << "     +---+---+---+---+---+---+---+---+\n";
 			}
-			this->_io.write("       H   G   F   E   D   C   B   A\n");
+			cio << "       H   G   F   E   D   C   B   A\n";
 		}
 		else
 		{
-			this->_io.write("       A   B   C   D   E   F   G   H\n");
-			this->_io.write("     +---+---+---+---+---+---+---+---+\n");
+			cio << "       A   B   C   D   E   F   G   H\n";
+			cio << "     +---+---+---+---+---+---+---+---+\n";
 			for (i = 8; i >= 1; --i)
 			{
-				this->_io.write("  ");
-				this->_io.write(i);
+				cio << "  " << i;
 				if (!(i % 2))
 				{
-					this->_io.write("  | ");
+					cio << "  | ";
 				}
 				for (j = i * 4 - 4; j <= i * 4 - 1; ++j)
 				{
-					this->_io.write("  |");
-					this->print(0x1 << j);
-					this->_io.write("| ");
+					cio << "  |"
+						<< engine::to_string(0x1 << j)
+						<< "| ";
 				}
 				if (i % 2)
 				{
-					this->_io.write("  | ");
+					cio << "  | ";
 				}
-				this->_io.write(' ');
-				this->_io.write(i);
-				this->_io.write('\n');
-				this->_io.write("     +---+---+---+---+---+---+---+---+\n");
+				cio << ' ' << i << '\n';
+				cio << "     +---+---+---+---+---+---+---+---+\n";
 			}
-			this->_io.write("       A   B   C   D   E   F   G   H\n");
+			cio << "       A   B   C   D   E   F   G   H\n";
 		}
 	}
 
-	void engine::print(bitboard square)
+	std::string engine::to_string(const bitboard& square)
 	{
 		assert(1 == square.bit_count());
 
 		if (this->_board.get_black_men() & square)
 		{
-			this->_io.write("(b)");
+			return "(b)";
 		}		
-		else if (this->_board.get_white_men() & square)
+		if (this->_board.get_white_men() & square)
 		{
-			this->_io.write("(w)");
+			return "(w)";
 		}		
-		else if (this->_board.get_black_kings() & square)
+		if (this->_board.get_black_kings() & square)
 		{
-			this->_io.write("(B)");
+			return "(B)";
 		}		
-		else if (this->_board.get_white_kings() & square)
+		if (this->_board.get_white_kings() & square)
 		{
-			this->_io.write("(W)");
+			return "(W)";
 		}
-		else
-		{
-			this->_io.write(" \\ ");
-		}
+		return " \\ ";
 	}
 
 	void engine::rotate(void)
@@ -252,7 +242,7 @@ done:
 		std::vector<move> best_moves;
 		std::vector<move>::size_type i;
 
-		this->_io.write("  Think ...\n");
+		cio << "  Think ...\n";
 
 		do
 		{
@@ -265,42 +255,40 @@ done:
 			i = 0;
 			do
 			{
-				this->_io.write("move ");
-				this->_io.write(best_moves[i].to_string());
-				this->_io.write('\n');
+				cio << "move " << best_moves[i] << '\n';
 				contin = this->_board.make_move(best_moves[i]);
 				this->print();
 				++i;
 			} while (contin && i < best_moves.size());
 		} while (contin);
-		this->declare_winning();
+		this->result();
 	}
 
 	void engine::prompt(void)
 	{
 		if (this->_board.is_black_move())
 		{
-			this->_io.write("  *** Black move\n");
+			cio << "  *** Black move\n";
 		}
 		else
 		{
-			this->_io.write("  *** White move\n");
+			cio << "  *** White move\n";
 		}
 	}
 
-	void engine::declare_winning(void)
+	void engine::result(void)
 	{
 		if (this->_board.is_winning())
 		{
-			this->_io.write("RESULT ");
-			this->_io.write(this->_board.is_black_move() ?
+			cio << "RESULT ";
+			cio << (this->_board.is_black_move() ?
 				"1-0 {Black win}\n" :
 				"0-1 {White win}\n");
 		}
 		else if (this->_board.is_losing())
 		{
-			this->_io.write("RESULT ");
-			this->_io.write(this->_board.is_black_move() ?
+			cio << "RESULT ";
+			cio << (this->_board.is_black_move() ?
 				"0-1 {White win}\n" :
 				"1-0 {Black win}\n");
 		}
@@ -311,7 +299,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io.write("  Analyzing ...\n");
+		cio << "  Analyzing ...\n";
 		(void)intelligence::think(this->_board, this->_depth_limit,
 			this->_time_limit);
 	}
@@ -353,13 +341,12 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io.write("pong");
+		cio << "pong";
 		if (1 < args.size())
 		{
-			this->_io.write(' ');
-			this->_io.write(args[1]);
+			cio << ' ' << args[1];
 		}
-		this->_io.write('\n');
+		cio << '\n';
 	}
 
 	void engine::do_go(const std::vector<std::string>& args)
@@ -376,21 +363,19 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io.write(
-			"  Help message\n"
-			"    analyze     Engine thinks about what move it make next if it were on move.\n"
-			"    black       Set Black on move.  Set the engine to play White.\n"
-			"    force       Set the engine to play neither color (\"force mode\").\n"
-			"    go          Leave force mode and set the engine to play the color that is\n"
-			"                on move.  Start thinking and eventually make a move.\n"
-			"    help        Show this help information.\n"
-			"    new         Reset the board to the standard starting position.\n"
-			"    ping N      N is a decimal number. Reply by sending the string \"pong N\"\n"
-			"    print       Show the current board.\n"
-			"    quit        Quit this program.\n"
-			"    rotate      Rotate the board 180 degrees.\n"
-			"    white       Set White on move.  Set the engine to play Black.\n"
-		);
+		cio << "  Help message\n";
+		cio << "    analyze     Engine thinks about what move it make next if it were on move.\n";
+		cio << "    black       Set Black on move.  Set the engine to play White.\n";
+		cio << "    force       Set the engine to play neither color (\"force mode\").\n";
+		cio << "    go          Leave force mode and set the engine to play the color that is\n";
+		cio << "                on move.  Start thinking and eventually make a move.\n";
+		cio << "    help        Show this help information.\n";
+		cio << "    new         Reset the board to the standard starting position.\n";
+		cio << "    ping N      N is a decimal number. Reply by sending the string \"pong N\"\n";
+		cio << "    print       Show the current board.\n";
+		cio << "    quit        Quit this program.\n";
+		cio << "    rotate      Rotate the board 180 degrees.\n";
+		cio << "    white       Set White on move.  Set the engine to play Black.\n";
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)
@@ -424,41 +409,33 @@ done:
 
 		if (size <= 1)
 		{
-			this->_io.write("Error (option missing): set\n");
+			cio << "Error (option missing): set\n";
 			return;
 		}
 
 		if ("all" == args[1])
 		{
-			if (this->_depth_limit < INT_MAX)
-			{
-				this->_io.write("  Depth limit: ");
-				this->_io.write(this->_depth_limit);
-				this->_io.write(" ply(s)\n");
-			}
-			if (this->_time_limit < INT_MAX)
-			{
-				this->_io.write("  Time limit:  ");
-				this->_io.write(this->_time_limit);
-				this->_io.write(" second(s)\n");
-			}
+			cio << "  Depth limit: " << this->_depth_limit
+				<< " ply(s)\n";
+			cio << "  Time limit:  " << this->_time_limit
+				<< " second(s)\n";
 		}
 		else if ("depth" == args[1])
 		{
 			if (size <= 2)
 			{
-				this->_io.write("Error (option missing): set depth\n");
+				cio << "Error (option missing): set depth\n";
 				return;
 			}
 			this->_depth_limit = strtol(args[2].c_str(),
 				static_cast<char**>(NULL), 10);
-			this->_time_limit = INT_MAX;
+			this->_time_limit = 86400 * 30;	// 30 days time limit
 		}
 		else if ("time" == args[1])
 		{
 			if (size <= 2)
 			{
-				this->_io.write("Error (option missing): set time\n");
+				cio << "Error (option missing): set time\n";
 				return;
 			}
 			this->_depth_limit = INT_MAX;
@@ -467,9 +444,7 @@ done:
 		}
 		else
 		{
-			this->_io.write("Error (unknown option): ");
-			this->_io.write(args[1]);
-			this->_io.write('\n');
+			cio << "Error (unknown option): " << args[1] << '\n';
 		}
 	}
 }

@@ -1,4 +1,7 @@
-/// @file io_i.hpp
+/** @file io_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __IO_I_HPP__
 #define __IO_I_HPP__
@@ -14,33 +17,61 @@ namespace checkers
 		return io;
 	}
 
-	inline std::string io::read_line(void)
-	{
-		return this->_read_buf.get_line();
-	}
-
-	inline void io::write(char c)
-	{
-		this->_write_buf.push_back(c);
-	}
-
-	inline void io::write(const std::string& str)
-	{
-		this->_write_buf.push_back(str);
-	}
-
-	inline void io::write(const char* s)
-	{
-		this->_write_buf.push_back(s);
-	}
-
 	template<typename T>
-	void io::write(const T& v)
+	io& io::operator <<(const T& rhs)
 	{
 		std::ostringstream stream;
 		stream.setf(std::ios::fixed);
-		stream << v;
+		stream << rhs;
 		this->_write_buf.push_back(stream.str());
+		return *this;
+	}
+
+	inline io& io::operator <<(char rhs)
+	{
+		this->_write_buf.push_back(rhs);
+		return *this;
+	}
+
+	inline io& io::operator <<(const std::string& rhs)
+	{
+		this->_write_buf.push_back(rhs);
+		return *this;
+	}
+
+	inline io& io::operator <<(const char* rhs)
+	{
+		this->_write_buf.push_back(rhs);
+		return *this;
+	}
+
+	inline io& io::operator <<(io& (*op)(io&))
+	{
+		return (*op)(*this);
+	}
+
+	inline io& io::get_line(std::string& str)
+	{
+		str = this->_read_buf.get_line();
+		return *this;
+	}
+
+	inline io& io::wait(io& io)
+	{
+		io._wait = true;
+		return io;
+	}
+
+	inline io& io::nowait(io& io)
+	{
+		io._wait = false;
+		return io;
+	}
+
+	inline io& io::endl(io& io)
+	{
+		io << '\n' << io::flush;
+		return io;
 	}
 }
 

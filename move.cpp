@@ -1,6 +1,10 @@
-/// @file move.cpp
+/** @file move.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <cassert>
+#include <ostream>
 #include "move.hpp"
 
 namespace checkers
@@ -11,20 +15,6 @@ namespace checkers
 
 		this->_orig = bitboard(str[0] - 'a', str[1] - '1');
 		this->_dest = bitboard(str[2] - 'a', str[3] - '1');
-	}
-
-	std::string move::to_string(void) const
-	{
-		assert(1 == this->_orig.bit_count());
-		assert(1 == this->_dest.bit_count());
-
-		std::pair<int, int> orig = this->_orig.to_square();
-		std::pair<int, int> dest = this->_dest.to_square();
-
-		return std::string(1, static_cast<char>(orig.first + 'a'))
-			+ static_cast<char>(orig.second + '1')
-			+ static_cast<char>(dest.first + 'a')
-			+ static_cast<char>(dest.second + '1');
 	}
 
 	bitboard move::is_valid_on_black_man(void) const
@@ -119,6 +109,22 @@ namespace checkers
 	{
 		bitboard capture = this->get_black_man_jump_capture();
 		return capture ? capture : this->get_white_man_jump_capture();
+	}
+
+	std::ostream& operator <<(std::ostream& os, const move& rhs)
+	{
+		assert(1 == rhs._orig.bit_count());
+		assert(1 == rhs._dest.bit_count());
+
+		std::pair<int, int> orig = rhs._orig.to_square();
+		std::pair<int, int> dest = rhs._dest.to_square();
+
+		os << static_cast<char>(orig.first + 'a')
+			<< static_cast<char>(orig.second + '1')
+			<< static_cast<char>(dest.first + 'a')
+			<< static_cast<char>(dest.second + '1');
+
+		return os;
 	}
 }
 

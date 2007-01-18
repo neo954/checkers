@@ -1,4 +1,7 @@
-/// @file bitboard_i.hpp
+/** @file bitboard_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __BITBOARD_I_HPP__
 #define __BITBOARD_I_HPP__

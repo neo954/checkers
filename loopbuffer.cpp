@@ -1,4 +1,7 @@
-/// @file loopbuffer.cpp
+/** @file loopbuffer.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <errno.h>
 #include <unistd.h>

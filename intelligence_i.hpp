@@ -1,4 +1,7 @@
-/// @file intelligence_i.hpp
+/** @file intelligence_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __INTELLIGENCE_I_HPP__
 #define __INTELLIGENCE_I_HPP__

@@ -1,4 +1,7 @@
-/// @file timeval_i.hpp
+/** @file timeval_i.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __TIMEVAL_I_HPP__
 #define __TIMEVAL_I_HPP__

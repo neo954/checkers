@@ -1,4 +1,7 @@
-/// @file ponder.cpp
+/** @file ponder.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #include <iostream>
 #include "engine.hpp"
@@ -10,11 +13,6 @@ int main(void)
 		checkers::engine& engine = checkers::engine::init();
 
 		engine.run();
-	}
-	catch (std::runtime_error& e)
-	{
-		std::cerr << "Runtime error: " << e.what() << std::endl;
-		exit(1);
 	}
 	catch (std::exception& e)
 	{

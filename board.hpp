@@ -1,8 +1,12 @@
-/// @file board.hpp
+/** @file board.hpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ */
 
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
+#include <ostream>
 #include <vector>
 #include "bitboard.hpp"
 #include "move.hpp"
@@ -21,8 +25,6 @@ namespace checkers
 
 		inline board(void);
 		explicit board(const std::string& input);
-
-		std::string to_string(void) const;
 
 		void opening(void);
 
@@ -79,7 +81,11 @@ namespace checkers
 		bitboard _white_pieces;
 		bitboard _kings;
 		player _player;
+
+		friend std::ostream& operator <<(std::ostream& os, const board& rhs);
 	};
+
+	std::ostream& operator <<(std::ostream& os, const board& rhs);
 }
 
 #include "board_i.hpp"
