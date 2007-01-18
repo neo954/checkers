@@ -1,3 +1,4 @@
+CXXFLAGS += -O9
 CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
 CXXFLAGS += -g -ggdb
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
@@ -8,7 +9,7 @@ TESTS = test_loopbuffer
 build: $(TARGETS)
 test: $(TESTS)
 
-ponder: engine.o bitboard.o board.o move.o loopbuffer.o io.o intelligence.o
+ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o
 test_loopbuffer: loopbuffer.o
 
 doc: Doxyfile *.cpp *.hpp

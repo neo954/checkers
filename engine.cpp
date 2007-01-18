@@ -422,9 +422,10 @@ done:
 	{
 		std::vector<move>::size_type size = args.size();
 
-		if (size < 1)
+		if (size <= 1)
 		{
 			this->_io.write("Error (option missing): set\n");
+			return;
 		}
 
 		if ("all" == args[1])
@@ -444,9 +445,10 @@ done:
 		}
 		else if ("depth" == args[1])
 		{
-			if (size < 2)
+			if (size <= 2)
 			{
 				this->_io.write("Error (option missing): set depth\n");
+				return;
 			}
 			this->_depth_limit = strtol(args[2].c_str(),
 				static_cast<char**>(NULL), 10);
@@ -454,9 +456,10 @@ done:
 		}
 		else if ("time" == args[1])
 		{
-			if (size < 2)
+			if (size <= 2)
 			{
 				this->_io.write("Error (option missing): set time\n");
+				return;
 			}
 			this->_depth_limit = INT_MAX;
 			this->_time_limit = strtol(args[2].c_str(),
