@@ -1,6 +1,8 @@
 /** @file board_i.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.7 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -14,7 +16,7 @@ namespace checkers
 	{
 	}
 
-	/// @return whether the same player move one more
+	/// @return Whether the same player move one more
 	inline bool board::make_move(const move& move)
 	{
 		assert(this->is_valid_move(move));
@@ -134,7 +136,7 @@ namespace checkers
 
 	// ================================================================
 
-	/// @return crowned black men
+	/// @return Crowned black men
 	inline bitboard board::black_man_crown(void)
 	{
 		bitboard crown = this->get_black_men() &
@@ -144,7 +146,7 @@ namespace checkers
 		return crown;
 	}
 
-	/// @return crowned white men
+	/// @return Crowned white men
 	inline bitboard board::white_man_crown(void)
 	{
 		bitboard crown = this->get_white_men() &

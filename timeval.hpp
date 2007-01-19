@@ -1,13 +1,15 @@
 /** @file timeval.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.3 $
  */
 
 #ifndef __TIMEVAL_HPP__
 #define __TIMEVAL_HPP__
 
 #include <sys/time.h>
-#include <time.h>
+#include <ctime>
 
 namespace checkers
 {

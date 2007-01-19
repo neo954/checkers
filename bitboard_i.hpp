@@ -1,6 +1,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.7 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -122,7 +124,7 @@ namespace checkers
 
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs)
 	{
-		return lhs._bitboard & rhs;
+		return lhs._bitboard ^ rhs;
 	}
 }
 

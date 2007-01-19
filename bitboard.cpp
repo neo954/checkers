@@ -1,6 +1,8 @@
 /** @file bitboard.cpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:55 $
+ *  @version $Revision: 1.9 $
  */
 
 #include <cassert>

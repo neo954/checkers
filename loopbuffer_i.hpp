@@ -1,6 +1,8 @@
 /** @file loopbuffer_i.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.4 $
  */
 
 #ifndef __LOOPBUFFER_I_HPP__

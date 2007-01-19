@@ -1,10 +1,11 @@
 /** @file engine.cpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.17 $
  */
 
 #include "engine.hpp"
-#include "io.hpp"
 #include "intelligence.hpp"
 
 namespace checkers
@@ -124,9 +125,11 @@ namespace checkers
 					}
 
 					this->print();
-					this->result();
-					cio << io::nowait << io::flush;
-					this->go();
+					if (!this->result())
+					{
+						cio << io::nowait << io::flush;
+						this->go();
+					}
 					goto done;
 				}
 
@@ -162,7 +165,8 @@ done:
 				for (j = i * 4 - 1; j >= i * 4 - 4; --j)
 				{
 					cio << "  |"
-						<< engine::to_string(0x1 << j)
+						<< this->to_string(
+							bitboard(0x1 << j))
 						<< "| ";
 				}
 				if (!(i % 2))
@@ -188,7 +192,8 @@ done:
 				for (j = i * 4 - 4; j <= i * 4 - 1; ++j)
 				{
 					cio << "  |"
-						<< engine::to_string(0x1 << j)
+						<< this->to_string(
+							bitboard(0x1 << j))
 						<< "| ";
 				}
 				if (i % 2)
@@ -223,6 +228,31 @@ done:
 			return "(W)";
 		}
 		return " \\ ";
+	}
+
+	std::string engine::to_string(int v)
+	{
+		if (UNLIMITED == v)
+		{
+			return "unlimited";
+		}
+		std::ostringstream stream;
+		stream << v;
+		return stream.str();
+	}
+
+	int engine::to_int(const std::string& str)
+	{
+		if ("unlimited" == str)
+		{
+			return UNLIMITED;
+		}
+		int v = ::strtol(str.c_str(), NULL, 10);
+		if (v < 0 || v > UNLIMITED)
+		{
+			return UNLIMITED;
+		}
+		return v;
 	}
 
 	void engine::rotate(void)
@@ -276,7 +306,7 @@ done:
 		}
 	}
 
-	void engine::result(void)
+	bool engine::result(void)
 	{
 		if (this->_board.is_winning())
 		{
@@ -284,6 +314,7 @@ done:
 			cio << (this->_board.is_black_move() ?
 				"1-0 {Black win}\n" :
 				"0-1 {White win}\n");
+			return true;
 		}
 		else if (this->_board.is_losing())
 		{
@@ -291,7 +322,10 @@ done:
 			cio << (this->_board.is_black_move() ?
 				"0-1 {White win}\n" :
 				"1-0 {Black win}\n");
+			return true;
 		}
+
+		return false;
 	}
 
 	void engine::do_analyze(const std::vector<std::string>& args)
@@ -415,26 +449,10 @@ done:
 
 		if ("all" == args[1])
 		{
-			cio << "  depth      (plys) ";
-			if (UNLIMITED == this->_depth_limit)
-			{
-				cio << "unlimited";
-			}
-			else
-			{
-				cio << this->_depth_limit;
-			}
-			cio << '\n';
-			cio << "  time    (seconds) ";
-			if (UNLIMITED == this->_time_limit)
-			{
-				cio << "unlimited";
-			}
-			else
-			{
-				cio << this->_time_limit;
-			}
-			cio << '\n';
+			cio << "  depth      (plys) "
+				<< this->to_string(this->_depth_limit) << '\n';
+			cio << "  time    (seconds) "
+				<< this->to_string(this->_time_limit) << '\n';
 		}
 		else if ("depth" == args[1])
 		{
@@ -443,9 +461,7 @@ done:
 				cio << "Error (option missing): set depth\n";
 				return;
 			}
-			this->_depth_limit = strtol(args[2].c_str(),
-				static_cast<char**>(NULL), 10);
-			this->_time_limit = UNLIMITED;
+			this->_depth_limit = this->to_int(args[2]);
 		}
 		else if ("time" == args[1])
 		{
@@ -454,9 +470,7 @@ done:
 				cio << "Error (option missing): set time\n";
 				return;
 			}
-			this->_depth_limit = UNLIMITED;
-			this->_time_limit = strtol(args[2].c_str(),
-				static_cast<char**>(NULL), 10);
+			this->_time_limit  = this->to_int(args[2]);
 		}
 		else
 		{

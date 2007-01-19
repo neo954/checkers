@@ -1,13 +1,14 @@
 /** @file engine.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.12 $
  */
 
 #ifndef __ENGINE_HPP__
 #define __ENGINE_HPP__
 
 #include "board.hpp"
-#include "io.hpp"
 
 namespace checkers
 {
@@ -26,13 +27,15 @@ namespace checkers
 
 		void print(void);
 		std::string to_string(const bitboard& square);
+		std::string to_string(int v);
+		int to_int(const std::string& str);
 
 		void rotate(void);
 
 		void go(void);
 
 		void prompt(void);
-		void result(void);
+		bool result(void);
 
 		void do_analyze(const std::vector<std::string>& args);
 		void do_black(const std::vector<std::string>& args);
@@ -47,13 +50,13 @@ namespace checkers
 		void do_set(const std::vector<std::string>& args);
 		void do_white(const std::vector<std::string>& args);
 
-		checkers::board _board;
+		board _board;
 		bool _rotate;
 		bool _force_mode;
 		int _depth_limit;
 		int _time_limit;
 
-		static const int UNLIMITED = INT_MAX;
+		static const int UNLIMITED = 99999;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::vector<std::pair<std::string, do_action> > _action;

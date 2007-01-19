@@ -1,6 +1,8 @@
 /** @file move_i.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.9 $
  */
 
 #ifndef __MOVE_I_HPP__

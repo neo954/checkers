@@ -1,6 +1,10 @@
-/// @file intelligence.cpp
+/** @file intelligence.cpp
+ *  @brief
+ *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.12 $
+ */
 
-#include <sstream>
 #include <iomanip>
 #include "intelligence.hpp"
 
@@ -105,13 +109,13 @@ namespace checkers
 			val = intelligence.alpha_beta_search(best_moves, depth);
 			::gettimeofday(&end, NULL);
 
+			intelligence::print(depth, val, end - start,
+				intelligence::_nodes, best_moves);
+
 			if (best_moves.empty())
 			{
 				break;
 			}
-
-			intelligence::print(depth, val, end - start,
-				intelligence::_nodes, best_moves);
 		}
 
 		return best_moves;
@@ -129,22 +133,21 @@ namespace checkers
 			stream << "  depth   value      time       nodes\n";
 			stream << "  ----------------------------------------------------------------------------\n";
 		}
-		stream << "  " << std::setw(4) << depth
-			<< (TIMEOUT == val ? '-': ' ' );
+		stream << "  " << std::setw(5) << depth;
 		stream << "  ";
 		if (TIMEOUT == val)
 		{
-			stream << "    :(";
+			stream << "     -";
 		}
 		else
 		{
 			stream << std::setw(6) << val;
 		}
-		stream << "  " << std::setw(4) << time.tv_sec << '.' <<
+		stream << ' ' << std::setw(5) << time.tv_sec << '.' <<
 			std::setw(3) << std::setfill('0') <<
 			(time.tv_usec / 1000) << std::setfill(' ');
-		stream << "  " << std::setw(10) << nodes;
-		stream << " ";
+		stream << ' ' << std::setw(11) << nodes;
+		stream << ' ';
 
 		std::vector<move>::size_type i;
 		std::vector<move>::size_type max_size = best_moves.size();
@@ -154,7 +157,7 @@ namespace checkers
 			{
 				stream << "\n                                      ";
 			}
-			stream << " " << best_moves[i];
+			stream << ' ' << best_moves[i];
 		}
 		stream << '\n';
 

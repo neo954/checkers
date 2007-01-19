@@ -1,6 +1,8 @@
 /** @file board.cpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.9 $
  */
 
 #include <cassert>
@@ -135,7 +137,7 @@ namespace checkers
 		this->_player = BLACK;
 	}
 
-	/// @return whether the same player move one more
+	/// @return Whether the same player move one more
 	bool board::make_black_jump(const move& move)
 	{
 		assert(this->is_valid_black_jump(move));
@@ -165,7 +167,7 @@ namespace checkers
 		return false;
 	}
 
-	/// @return whether the same player move one more
+	/// @return Whether the same player move one more
 	bool board::make_white_jump(const move& move)
 	{
 		assert(this->is_valid_white_jump(move));

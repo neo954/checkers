@@ -1,6 +1,8 @@
 /** @file intelligence.hpp
  *  @brief
  *  @author GONG Jie <neo@mamiyami.com>
+ *  @date $Date: 2007-01-19 14:40:56 $
+ *  @version $Revision: 1.11 $
  */
 
 #ifndef __INTELLIGENCE_HPP_
@@ -8,7 +10,6 @@
 
 #include "board.hpp"
 #include "io.hpp"
-#include "move.hpp"
 #include "timeval.hpp"
 
 namespace checkers
