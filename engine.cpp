@@ -1,8 +1,29 @@
+/* This file is a part of textual checkers, a English/American checkers
+   game.
+
+   Copyright (c) 2006, 2007 Mamiyami Information.
+                     Gong Jie <neo@mamiyami.com>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; see the file COPYING.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
+   Boston, MA 02110-1301, USA.
+ */
 /** @file engine.cpp
  *  @brief
- *  @author GONG Jie <neo@mamiyami.com>
- *  @date $Date: 2007-01-19 14:40:56 $
- *  @version $Revision: 1.17 $
+ *  @author Gong Jie <neo@mamiyami.com>
+ *  $Date: 2007-01-21 01:40:41 $
+ *  $Revision: 1.18 $
  */
 
 #include "engine.hpp"
@@ -11,7 +32,7 @@
 namespace checkers
 {
 	engine::engine(void) :
-		_board(), _rotate(false), _force_mode(false),
+		_board(), _rotate(false), _history(), _force_mode(false),
 		_depth_limit(UNLIMITED), _time_limit(10)
 	{
 		this->_action.push_back(std::make_pair("analyze",
@@ -28,14 +49,22 @@ namespace checkers
 			&engine::do_new));
 		this->_action.push_back(std::make_pair("ping",
 			&engine::do_ping));
+		this->_action.push_back(std::make_pair("ponder",
+			&engine::not_implemented));
 		this->_action.push_back(std::make_pair("print",
 			&engine::do_print));
 		this->_action.push_back(std::make_pair("quit",
 			&engine::do_quit));
 		this->_action.push_back(std::make_pair("rotate",
 			&engine::do_rotate));
-		this->_action.push_back(std::make_pair("set",
-			&engine::do_set));
+		this->_action.push_back(std::make_pair("sd",
+			&engine::do_sd));
+		this->_action.push_back(std::make_pair("st",
+			&engine::do_st));
+		this->_action.push_back(std::make_pair("setboard",
+			&engine::do_setboard));
+		this->_action.push_back(std::make_pair("undo",
+			&engine::do_undo));
 		this->_action.push_back(std::make_pair("white",
 			&engine::do_white));
 	}
@@ -60,22 +89,23 @@ namespace checkers
 
 		this->_board.opening();
 		this->print();
-		this->prompt();
 
 		for (;;)
 		{
-			cio << io::wait << io::flush;
-			cio.get_line(line);
-			if (line.empty())
+			this->prompt();
+
+			do
 			{
-				continue;
-			}
+				cio << io::wait << io::flush;
+				cio.get_line(line);
+			} while (line.empty());
 
 			assert('\n' == line.at(line.size() - 1));
 
 			idx_begin = 0;
 			idx_end = 0;
 			begin = line.begin();
+			args.clear();
 			while ((idx_end = line.find(' ', idx_begin))
 				!= std::string::npos)
 			{
@@ -97,7 +127,6 @@ namespace checkers
 
 			if (args.empty())
 			{
-				this->prompt();
 				continue;
 			}
 			// Args is produced
@@ -118,7 +147,7 @@ namespace checkers
 				move move(args[0]);
 				if (this->_board.is_valid_move(move))
 				{
-					if (this->_board.make_move(move))
+					if (this->make_move(move))
 					{
 						this->print();
 						goto done;
@@ -139,8 +168,8 @@ namespace checkers
 
 			cio << "Error (unknown command): " << args[0] << '\n';
 done:
-			args.clear();
-			this->prompt();
+			// Null statement
+			;
 		}
 	}
 
@@ -255,10 +284,10 @@ done:
 		return v;
 	}
 
-	void engine::rotate(void)
+	bool engine::make_move(const move& move)
 	{
-		this->_rotate = !this->_rotate;
-		this->print();
+		this->_history.push_back(this->_board);
+		return this->_board.make_move(move);
 	}
 
 	void engine::go(void)
@@ -286,7 +315,7 @@ done:
 			do
 			{
 				cio << "move " << best_moves[i] << '\n';
-				contin = this->_board.make_move(best_moves[i]);
+				contin = this->make_move(best_moves[i]);
 				this->print();
 				++i;
 			} while (contin && i < best_moves.size());
@@ -296,30 +325,25 @@ done:
 
 	void engine::prompt(void)
 	{
-		if (this->_board.is_black_move())
-		{
-			cio << "  *** Black move\n";
-		}
-		else
-		{
-			cio << "  *** White move\n";
-		}
+		cio << "  *** "
+			<< (this->_board.is_black_move() ? "Black" : "White")
+			<< " move ***\n";
 	}
 
 	bool engine::result(void)
 	{
 		if (this->_board.is_winning())
 		{
-			cio << "RESULT ";
-			cio << (this->_board.is_black_move() ?
+			cio << "RESULT "
+				<< (this->_board.is_black_move() ?
 				"1-0 {Black win}\n" :
 				"0-1 {White win}\n");
 			return true;
 		}
 		else if (this->_board.is_losing())
 		{
-			cio << "RESULT ";
-			cio << (this->_board.is_black_move() ?
+			cio << "RESULT "
+				<< (this->_board.is_black_move() ?
 				"0-1 {White win}\n" :
 				"1-0 {Black win}\n");
 			return true;
@@ -351,7 +375,8 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->rotate();
+		this->_rotate = !this->_rotate;
+		this->print();
 	}
 
 	void engine::do_black(const std::vector<std::string>& args)
@@ -398,18 +423,23 @@ done:
 		(void)args;
 
 		cio << "  Help message\n";
-		cio << "    analyze     Engine thinks about what move it make next if it were on move.\n";
-		cio << "    black       Set Black on move.  Set the engine to play White.\n";
-		cio << "    force       Set the engine to play neither color (\"force mode\").\n";
-		cio << "    go          Leave force mode and set the engine to play the color that is\n";
-		cio << "                on move.  Start thinking and eventually make a move.\n";
-		cio << "    help        Show this help information.\n";
-		cio << "    new         Reset the board to the standard starting position.\n";
-		cio << "    ping N      N is a decimal number. Reply by sending the string \"pong N\"\n";
-		cio << "    print       Show the current board.\n";
-		cio << "    quit        Quit this program.\n";
-		cio << "    rotate      Rotate the board 180 degrees.\n";
-		cio << "    white       Set White on move.  Set the engine to play Black.\n";
+		cio << "    analyze         Engine thinks about what move it make next if it were on\n";
+		cio << "                    move.\n";
+		cio << "    black           Set Black on move.  Set the engine to play White.\n";
+		cio << "    force           Set the engine to play neither color (\"force mode\").\n";
+		cio << "    go              Leave force mode and set the engine to play the color that\n";
+		cio << "                    is on move.  Start thinking and eventually make a move.\n";
+		cio << "    help            Show this help information.\n";
+		cio << "    new             Reset the board to the standard starting position.\n";
+		cio << "    ping N          N is a decimal number. Reply by sending the string \"pong N\"\n";
+		cio << "    print           Show the current board.\n";
+		cio << "    quit            Quit this program.\n";
+		cio << "    rotate          Rotate the board 180 degrees.\n";
+		cio << "    setboard FEN    Set up the pieces position on the board.\n";
+		cio << "    sd DEPTH        The engine should limit its thinking to DEPTH ply.\n";
+		cio << "    st TIME         Set the time control to TIME seconds per move.\n";
+		cio << "    white           Set White on move.  Set the engine to play Black.\n";
+		cio << "    undo            Back up a move.\n";
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)
@@ -418,6 +448,7 @@ done:
 		(void)args;
 
 		this->_board.opening();
+		this->_history.clear();
 		this->print();
 	}
 
@@ -437,45 +468,59 @@ done:
 		this->_force_mode = true;
 	}
 
-	void engine::do_set(const std::vector<std::string>& args)
+	void engine::do_sd(const std::vector<std::string>& args)
 	{
-		std::vector<move>::size_type size = args.size();
-
-		if (size <= 1)
+		if (args.size() <= 1)
 		{
-			cio << "Error (option missing): set\n";
+			cio << "Error (option missing): sd\n";
 			return;
 		}
+		this->_depth_limit = this->to_int(args[1]);
+	}
 
-		if ("all" == args[1])
+	void engine::do_st(const std::vector<std::string>& args)
+	{
+		if (args.size() <= 1)
 		{
-			cio << "  depth      (plys) "
-				<< this->to_string(this->_depth_limit) << '\n';
-			cio << "  time    (seconds) "
-				<< this->to_string(this->_time_limit) << '\n';
+			cio << "Error (option missing): st\n";
+			return;
 		}
-		else if ("depth" == args[1])
+		this->_time_limit  = this->to_int(args[1]);
+	}
+
+	void engine::do_setboard(const std::vector<std::string>& args)
+	{
+		if (args.size() <= 1)
 		{
-			if (size <= 2)
-			{
-				cio << "Error (option missing): set depth\n";
-				return;
-			}
-			this->_depth_limit = this->to_int(args[2]);
+			cio << "Error (option missing): setboard\n";
+			return;
 		}
-		else if ("time" == args[1])
+		this->_board = board(args.size() > 2 ?
+			(args[1] + ' ' + args[2]) : args[1]);
+		this->_history.clear();
+		this->print();
+	}
+
+	void engine::do_undo(const std::vector<std::string>& args)
+	{
+		// Void the warning: unused parameter ‘args’
+		(void)args;
+
+		if (this->_history.size() > 0)
 		{
-			if (size <= 2)
-			{
-				cio << "Error (option missing): set time\n";
-				return;
-			}
-			this->_time_limit  = this->to_int(args[2]);
+			this->_board = this->_history.back();
+			this->_history.pop_back();
+			this->print();
 		}
 		else
 		{
-			cio << "Error (unknown option): " << args[1] << '\n';
+			cio << "Error: No moves to undo!\n";
 		}
+	}
+
+	void engine::not_implemented(const std::vector<std::string>& args)
+	{
+		cio << "Error (command not implemented): " << args[0] << '\n';
 	}
 }
 

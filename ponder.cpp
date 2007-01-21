@@ -1,25 +1,48 @@
+/* This file is a part of textual checkers, a English/American checkers
+   game.
+
+   Copyright (c) 2006, 2007 Mamiyami Information.
+                     Gong Jie <neo@mamiyami.com>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; see the file COPYING.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
+   Boston, MA 02110-1301, USA.
+ */
 /** @file ponder.cpp
  *  @brief
- *  @author GONG Jie <neo@mamiyami.com>
- *  @date $Date: 2007-01-19 14:40:56 $
- *  @version $Revision: 1.6 $
+ *  @author Gong Jie <neo@mamiyami.com>
+ *  $Date: 2007-01-21 01:40:41 $
+ *  $Revision: 1.7 $
  */
 
 #include <iostream>
 #include "engine.hpp"
+#include "signal.hpp"
 
 int main(void)
 {
 	try
 	{
-		checkers::engine& engine = checkers::engine::init();
+		checkers::signal(SIGINT,  SIG_IGN);
+		checkers::signal(SIGQUIT, SIG_IGN);
 
-		engine.run();
+		checkers::engine::init().run();
 	}
 	catch (std::exception& e)
 	{
 		std::cerr << "Fatal error: " << e.what() << std::endl;
-		exit(1);
+		return 1;
 	}
 
 	return 0;

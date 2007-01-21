@@ -19,59 +19,36 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file io.hpp
+/** @file signal.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
  *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.8 $
+ *  $Revision: 1.1 $
  */
 
-#ifndef __IO_HPP__
-#define __IO_HPP__
-
-#include <fcntl.h>
-#include <string>
-#include "loopbuffer.hpp"
+#include <cerrno>
+#include <csignal>
+#include <stdexcept>
 
 namespace checkers
 {
-	class io
+	sighandler_t signal(int signum, sighandler_t handler)
 	{
-	public:
-                inline static io& init(void);
+		struct sigaction action;
+		struct sigaction old_action;
 
-		template<typename T>
-		io& operator <<(const T& rhs);
-		inline io& operator <<(char rhs);
-		inline io& operator <<(const std::string& rhs);
-		inline io& operator <<(const char* rhs);
-		inline io& operator <<(io& (*op)(io&));
+		action.sa_handler = handler;
+		// Block sigs of type being handled
+		sigemptyset(&action.sa_mask);
+		// Restart syscalls if possible
+		action.sa_flags = SA_RESTART;
 
-		inline io& get_line(std::string& str);
-
-		static io& wait(io& io);
-		static io& nowait(io& io);
-		static io& flush(io& io);
-		static io& endl(io& io);
-
-	private:
-		io(void);
-		~io(void);
-		/// Define but not implement, to prevent object copy.
-		io(const io& rhs);
-		/// Define but not implement, to prevent object copy.
-		io& operator=(const io& rhs) const;
-
-		loopbuffer _read_buf;
-		loopbuffer _write_buf;
-		bool _wait;
-
-		void setfl(int fd, int flags);
-	};
-
-	extern io& cio;
+		if (::sigaction(signum, &action, &old_action) < 0) {
+			throw std::runtime_error(std::string("Signal error: ")
+				+ std::strerror(errno));
+		}
+		return (old_action.sa_handler);
+	}
 }
 
-#include "io_i.hpp"
-#endif // __IO_HPP__
 // End of file

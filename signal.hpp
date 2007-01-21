@@ -19,59 +19,22 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file io.hpp
+/** @file signal.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
  *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.8 $
+ *  $Revision: 1.1 $
  */
 
-#ifndef __IO_HPP__
-#define __IO_HPP__
+#ifndef __SIGNAL_H__
+#define __SIGNAL_H__
 
-#include <fcntl.h>
-#include <string>
-#include "loopbuffer.hpp"
+#include <signal.h>
 
 namespace checkers
 {
-	class io
-	{
-	public:
-                inline static io& init(void);
-
-		template<typename T>
-		io& operator <<(const T& rhs);
-		inline io& operator <<(char rhs);
-		inline io& operator <<(const std::string& rhs);
-		inline io& operator <<(const char* rhs);
-		inline io& operator <<(io& (*op)(io&));
-
-		inline io& get_line(std::string& str);
-
-		static io& wait(io& io);
-		static io& nowait(io& io);
-		static io& flush(io& io);
-		static io& endl(io& io);
-
-	private:
-		io(void);
-		~io(void);
-		/// Define but not implement, to prevent object copy.
-		io(const io& rhs);
-		/// Define but not implement, to prevent object copy.
-		io& operator=(const io& rhs) const;
-
-		loopbuffer _read_buf;
-		loopbuffer _write_buf;
-		bool _wait;
-
-		void setfl(int fd, int flags);
-	};
-
-	extern io& cio;
+	sighandler_t signal(int signum, sighandler_t handler);
 }
 
-#include "io_i.hpp"
-#endif // __IO_HPP__
+#endif // __SIGNAL_HPP__
 // End of file

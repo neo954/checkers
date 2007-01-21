@@ -1,8 +1,29 @@
+/* This file is a part of textual checkers, a English/American checkers
+   game.
+
+   Copyright (c) 2006, 2007 Mamiyami Information.
+                     Gong Jie <neo@mamiyami.com>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; see the file COPYING.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
+   Boston, MA 02110-1301, USA.
+ */
 /** @file engine.hpp
  *  @brief
- *  @author GONG Jie <neo@mamiyami.com>
- *  @date $Date: 2007-01-19 14:40:56 $
- *  @version $Revision: 1.12 $
+ *  @author Gong Jie <neo@mamiyami.com>
+ *  $Date: 2007-01-21 01:40:41 $
+ *  $Revision: 1.13 $
  */
 
 #ifndef __ENGINE_HPP__
@@ -30,7 +51,7 @@ namespace checkers
 		std::string to_string(int v);
 		int to_int(const std::string& str);
 
-		void rotate(void);
+		bool make_move(const move& move);
 
 		void go(void);
 
@@ -47,11 +68,16 @@ namespace checkers
 		void do_print(const std::vector<std::string>& args);
 		void do_quit(const std::vector<std::string>& args);
 		void do_rotate(const std::vector<std::string>& args);
-		void do_set(const std::vector<std::string>& args);
+		void do_sd(const std::vector<std::string>& args);
+		void do_st(const std::vector<std::string>& args);
+		void do_setboard(const std::vector<std::string>& args);
 		void do_white(const std::vector<std::string>& args);
+		void do_undo(const std::vector<std::string>& args);
+		void not_implemented(const std::vector<std::string>& args);
 
 		board _board;
 		bool _rotate;
+		std::vector<board> _history;
 		bool _force_mode;
 		int _depth_limit;
 		int _time_limit;

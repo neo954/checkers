@@ -8,7 +8,8 @@ TARGETS = ponder
 
 build: $(TARGETS)
 
-ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o
+ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o \
+	signal.o
 
 doc: Doxyfile *.cpp *.hpp
 	mkdir -p doc
