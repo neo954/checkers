@@ -22,8 +22,8 @@
 /** @file signal.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.1 $
+ *  $Date: 2007-01-21 14:31:39 $
+ *  $Revision: 1.2 $
  */
 
 #ifndef __SIGNAL_H__
@@ -33,6 +33,7 @@
 
 namespace checkers
 {
+	typedef void (*sighandler_t)(int);
 	sighandler_t signal(int signum, sighandler_t handler);
 }
 

@@ -22,13 +22,14 @@
 /** @file signal.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.1 $
+ *  $Date: 2007-01-21 14:31:39 $
+ *  $Revision: 1.2 $
  */
 
 #include <cerrno>
 #include <csignal>
 #include <stdexcept>
+#include "signal.hpp"
 
 namespace checkers
 {
