@@ -22,8 +22,8 @@
 /** @file loopbuffer.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.8 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.9 $
  */
 
 #include <cerrno>
@@ -63,7 +63,7 @@ namespace checkers
 			n = ::read(fd, &c, 1);
 			if (n < 0)
 			{
-				if (EWOULDBLOCK == errno)
+				if (EAGAIN == errno || EWOULDBLOCK == errno)
 				{
 					break;
 				}
@@ -94,7 +94,7 @@ namespace checkers
 			n = ::write(fd, &c, 1);
 			if (n < 0)
 			{
-				if (EWOULDBLOCK == errno)
+				if (EAGAIN == errno || EWOULDBLOCK == errno)
 				{
 					break;
 				}
@@ -115,25 +115,25 @@ namespace checkers
 		return true;
 	}
 
-	std::string loopbuffer::get_line(void)
+	void loopbuffer::getline(std::string& str)
 	{
-		std::string line;
 		char c;
+		str.erase();
 
 		if (this->_lines)
 		{
 			for (;;)
 			{
 				c = this->front();
-				line += c;
-				this->pop_front();
 				if ('\n' == c)
 				{
+					this->pop_front();
 					break;
 				}
+				str += c;
+				this->pop_front();
 			}
 		}
-		return line;
 	}
 
 	void loopbuffer::push_back(char c)

@@ -19,52 +19,24 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file loopbuffer.hpp
+/** @file pipe.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
  *  $Date: 2007-01-24 15:43:56 $
- *  $Revision: 1.7 $
+ *  $Revision: 1.1 $
  */
 
-#ifndef __LOOPBUFFER_HPP__
-#define __LOOPBUFFER_HPP__
+#ifndef __PIPE_HPP__
+#define __PIPE_HPP__
+
+#include <unistd.h>
+#include <cerrno>
+#include <stdexcept>
 
 namespace checkers
 {
-	class loopbuffer
-	{
-	public:
-		explicit inline loopbuffer(int max_size = 512);
-		inline ~loopbuffer(void);
-
-		inline int max_size(void) const;
-		inline int size(void) const;
-		inline bool is_full(void) const;
-		inline bool is_empty(void) const;
-		char front(void) const;
-		void pop_front(void);
-		bool read(int fd);
-		bool write(int fd);
-
-		void getline(std::string& str);
-		void push_back(char c);
-		void push_back(const std::string& str);
-		void push_back(const char* s);
-
-	private:
-		loopbuffer(const loopbuffer& rhs);
-		loopbuffer& operator=(const loopbuffer& rhs);
-
-		void enlarge(void);
-
-		char* _buffer;
-		int _max_size;
-		int _front;
-		int _rear;
-		int _lines;
-	};
+	std::pair<int, int> pipe_open(const std::string& path);
 }
 
-#include "loopbuffer_i.hpp"
-#endif // __LOOPBUFFER_HPP__
+#endif // __PIPE_HPP__
 // End of file

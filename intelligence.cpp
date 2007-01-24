@@ -22,8 +22,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.14 $
  */
 
 #include <iomanip>
@@ -108,7 +108,7 @@ namespace checkers
 	}
 
 	std::vector<move> intelligence::think(const board& board,
-		int depth_limit, time_t time_limit)
+		int depth_limit, time_t time_limit, io* p_io)
 	{
 		std::vector<move> best_moves;
 		int depth;
@@ -121,6 +121,8 @@ namespace checkers
 		for (depth = 1, val = 0;
 			depth <= depth_limit && val != TIMEOUT; ++depth)
 		{
+			best_moves.reserve(depth);
+
 			intelligence::_nodes = 0;
 			intelligence::_best_moves = best_moves;
 			intelligence::_reorder = true;
@@ -130,8 +132,12 @@ namespace checkers
 			val = intelligence.alpha_beta_search(best_moves, depth);
 			::gettimeofday(&end, NULL);
 
-			intelligence::print(depth, val, end - start,
-				intelligence::_nodes, best_moves);
+			if (NULL != p_io)
+			{
+				intelligence::show_think(*p_io, depth, val,
+					end - start, intelligence::_nodes,
+					best_moves);
+			}
 
 			if (best_moves.size() <
 				static_cast<unsigned int>(depth))
@@ -145,7 +151,7 @@ namespace checkers
 
 	// ================================================================
 
-	void intelligence::print(int depth, int val, struct timeval time,
+	void intelligence::show_think(io& io, int depth, int val, struct timeval time,
 		long int nodes, const std::vector<move>& best_moves)
 	{
 		std::ostringstream stream;
@@ -183,7 +189,7 @@ namespace checkers
 		}
 		stream << '\n';
 
-		cio << stream.str() << io::nowait << io::flush;
+		io << stream.str() << io::nowait << io::flush;
 	}
 
 	std::vector<move> intelligence::_best_moves;

@@ -22,14 +22,15 @@
 /** @file engine.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.14 $
  */
 
 #ifndef __ENGINE_HPP__
 #define __ENGINE_HPP__
 
 #include "board.hpp"
+#include "io.hpp"
 
 namespace checkers
 {
@@ -81,6 +82,7 @@ namespace checkers
 		bool _force_mode;
 		int _depth_limit;
 		int _time_limit;
+		io _io;
 
 		static const int UNLIMITED = 99999;
 

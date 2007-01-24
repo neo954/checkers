@@ -22,8 +22,8 @@
 /** @file io.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.8 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.9 $
  */
 
 #ifndef __IO_HPP__
@@ -38,7 +38,9 @@ namespace checkers
 	class io
 	{
 	public:
-                inline static io& init(void);
+		io(int in_fd, int out_fd);
+		explicit io(std::pair<int, int> fds);
+		~io(void);
 
 		template<typename T>
 		io& operator <<(const T& rhs);
@@ -47,7 +49,8 @@ namespace checkers
 		inline io& operator <<(const char* rhs);
 		inline io& operator <<(io& (*op)(io&));
 
-		inline io& get_line(std::string& str);
+		inline void getline(std::string& str);
+		inline bool state(void) const;
 
 		static io& wait(io& io);
 		static io& nowait(io& io);
@@ -55,8 +58,6 @@ namespace checkers
 		static io& endl(io& io);
 
 	private:
-		io(void);
-		~io(void);
 		/// Define but not implement, to prevent object copy.
 		io(const io& rhs);
 		/// Define but not implement, to prevent object copy.
@@ -64,7 +65,10 @@ namespace checkers
 
 		loopbuffer _read_buf;
 		loopbuffer _write_buf;
+		int _in_fd;
+		int _out_fd;
 		bool _wait;
+		bool _state;
 
 		void setfl(int fd, int flags);
 	};

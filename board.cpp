@@ -22,8 +22,8 @@
 /** @file board.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.10 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.11 $
  */
 
 #include <cassert>
@@ -347,6 +347,7 @@ namespace checkers
 	std::vector<move> board::generate_black_moves(void) const
 	{
 		std::vector<move> moves;
+		moves.reserve(48);
 		bitboard black_movers = this->get_black_movers();
 		bitboard orig;
 		bitboard dest;
@@ -394,6 +395,7 @@ namespace checkers
 	std::vector<move> board::generate_white_moves(void) const
 	{
 		std::vector<move> moves;
+		moves.reserve(48);
 		bitboard white_movers = this->get_white_movers();
 		bitboard orig;
 		bitboard dest;
@@ -442,6 +444,7 @@ namespace checkers
 	std::vector<move> board::generate_black_jumps(void) const
 	{
 		std::vector<move> moves;
+		moves.reserve(48);
 		bitboard black_jumpers = this->get_black_jumpers();
 		bitboard orig;
 		bitboard dest;
@@ -514,6 +517,7 @@ namespace checkers
 	std::vector<move> board::generate_white_jumps(void) const
 	{
 		std::vector<move> moves;
+		moves.reserve(48);
 		bitboard white_jumpers = this->get_white_jumpers();
 		bitboard orig;
 		bitboard dest;

@@ -22,12 +22,14 @@
 /** @file intelligence_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.7 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.8 $
  */
 
 #ifndef __INTELLIGENCE_I_HPP__
 #define __INTELLIGENCE_I_HPP__
+
+#include "intelligence_x.hpp"
 
 namespace checkers
 {
@@ -44,27 +46,29 @@ namespace checkers
 	 */
 	inline int intelligence::evaluate(void)
 	{
-		return this->evaluate_pieces_strength() * 256 +
-			this->evaluate_movers() * 2 +
-			this->evaluate_kings_row() * 16 +
-			this->evaluate_edges() * 8;
+		return this->evaluate_pieces() * evaluate::WEIGHT_PIECES +
+			this->evaluate_kings() * evaluate::WEIGHT_KINGS +
+			this->evaluate_movers() * evaluate::WEIGHT_MOVERS +
+			this->evaluate_kings_row() * evaluate::WEIGHT_KINGS_ROW +
+			this->evaluate_edges() * evaluate::WEIGHT_EDGES;
 	}
 
-	/**
-	 *  A  man get 1 points
-	 *  A king get 2 points
-	 */
-	inline int intelligence::evaluate_pieces_strength(void)
+	inline int intelligence::evaluate_pieces(void)
 	{
 		return this->_board.is_black_move() ?
-			((this->_board.get_black_pieces().bit_count() -
-			  this->_board.get_white_pieces().bit_count()) +
+			(this->_board.get_black_pieces().bit_count() -
+			 this->_board.get_white_pieces().bit_count()) :
+			(this->_board.get_white_pieces().bit_count() -
+			 this->_board.get_black_pieces().bit_count());
+	}
+
+	inline int intelligence::evaluate_kings(void)
+	{
+		return this->_board.is_black_move() ?
 			 (this->_board.get_black_kings().bit_count() -
-			  this->_board.get_white_kings().bit_count())) :
-			((this->_board.get_white_pieces().bit_count() -
-			  this->_board.get_black_pieces().bit_count()) +
+			  this->_board.get_white_kings().bit_count()) :
 			 (this->_board.get_white_kings().bit_count() -
-			  this->_board.get_black_kings().bit_count()));
+			  this->_board.get_black_kings().bit_count());
 	}
 
 	inline int intelligence::evaluate_movers(void)

@@ -22,8 +22,8 @@
 /** @file intelligence.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.12 $
+ *  $Date: 2007-01-24 15:43:56 $
+ *  $Revision: 1.13 $
  */
 
 #ifndef __INTELLIGENCE_HPP_
@@ -38,21 +38,24 @@ namespace checkers
 	class intelligence
 	{
 	public:
+		static std::vector<move> think(const board& board,
+			int depth_limit, time_t second, io* p_io = NULL);
+
+	private:
 		inline explicit intelligence(const board& board);
 
 		int alpha_beta_search(std::vector<move>& best_moves,
 			int depth, int alpha = -INFINITY, int beta = INFINITY,
 			int ply = 0);
-		static std::vector<move> think(const board& board,
-			int depth_limit, time_t second);
 
-	private:
 		/// Print think output
-		static void print(int depth, int val, struct timeval time,
-			long int nodes, const std::vector<move>& best_moves);
+		static void show_think(io& io, int depth, int val,
+			struct timeval time, long int nodes,
+			const std::vector<move>& best_moves);
 
 		inline int evaluate(void);
-		inline int evaluate_pieces_strength(void);
+		inline int evaluate_pieces(void);
+		inline int evaluate_kings(void);
 		inline int evaluate_movers(void);
 		inline int evaluate_kings_row(void);
 		inline int evaluate_edges(void);
