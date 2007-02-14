@@ -22,8 +22,8 @@
 /** @file engine.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-24 15:43:56 $
- *  $Revision: 1.19 $
+ *  $Date: 2007-02-14 14:52:34 $
+ *  $Revision: 1.20 $
  */
 
 #include "engine.hpp"
@@ -436,7 +436,7 @@ done:
 		this->_io << "                    is on move.  Start thinking and eventually make a move.\n";
 		this->_io << "    help            Show this help information.\n";
 		this->_io << "    new             Reset the board to the standard starting position.\n";
-		this->_io << "    ping N          N is a decimal number.  Reply by sending the string";
+		this->_io << "    ping N          N is a decimal number.  Reply by sending the string\n";
 		this->_io << "                    \"pong N\"\n";
 		this->_io << "    print           Show the current board.\n";
 		this->_io << "    quit            Quit this program.\n";
