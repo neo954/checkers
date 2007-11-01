@@ -22,8 +22,8 @@
 /** @file board_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-11-01 10:15:05 $
- *  $Revision: 1.9 $
+ *  $Date: 2007-11-01 16:31:01 $
+ *  $Revision: 1.10 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -110,12 +110,12 @@ namespace checkers
 
 	inline void board::set_black(void)
 	{
-		this->_player = board::BLACK;
+		this->_player = BLACK;
 	}
 
 	inline void board::set_white(void)
 	{
-		this->_player = board::WHITE;
+		this->_player = WHITE;
 	}
 
 	inline bool board::is_winning(void) const

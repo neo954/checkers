@@ -22,14 +22,15 @@
 /** @file move.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-11-01 10:15:05 $
- *  $Revision: 1.12 $
+ *  $Date: 2007-11-01 16:31:01 $
+ *  $Revision: 1.13 $
  */
 
 #ifndef __MOVE_HPP__
 #define __MOVE_HPP__
 
 #include "bitboard.hpp"
+#include "player.hpp"
 
 namespace checkers
 {
@@ -37,19 +38,15 @@ namespace checkers
 	{
 	public:
 		inline move(bitboard orig, bitboard dest, bitboard capture,
-			bool is_capture_a_king, bool will_crown);
+			bool will_capture_a_king, bool will_crown);
 		explicit move(const std::string& str);
 
 		inline bitboard get_orig(void) const;
 		inline bitboard get_dest(void) const;
 		inline bitboard get_capture(void) const;
 
-		inline bool is_capture_a_king(void) const;
+		inline bool will_capture_a_king(void) const;
 		inline bool will_crown(void) const;
-
-		bitboard is_valid_on_black_man(void) const;
-		bitboard is_valid_on_white_man(void) const;
-		bitboard is_valid_on_king(void) const;
 
 		inline static bool is_valid(const std::string& str);
 
@@ -63,7 +60,7 @@ namespace checkers
 		bitboard _orig;
 		bitboard _dest;
 		bitboard _capture;
-		bool _is_capture_a_king;
+		bool _will_capture_a_king;
 		bool _will_crown;
 	};
 

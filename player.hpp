@@ -19,42 +19,24 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file move.cpp
+/** @file player.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-11-01 16:31:01 $
- *  $Revision: 1.10 $
+ *  $Date: 2007-11-01 16:32:10 $
+ *  $Revision: 1.5 $
  */
 
-#include <cassert>
-#include <ostream>
-#include "move.hpp"
+#ifndef __PLAYER_HPP__
+#define __PLAYER_HPP__
 
 namespace checkers
 {
-	move::move(const std::string& str)
+	enum player
 	{
-		assert(move::is_valid(str));
-
-		this->_orig = bitboard(str[0] - 'a', str[1] - '1');
-		this->_dest = bitboard(str[2] - 'a', str[3] - '1');
-	}
-
-	std::ostream& operator <<(std::ostream& os, const move& rhs)
-	{
-		assert(1 == rhs._orig.bit_count());
-		assert(1 == rhs._dest.bit_count());
-
-		std::pair<int, int> orig = rhs._orig.to_square();
-		std::pair<int, int> dest = rhs._dest.to_square();
-
-		os << static_cast<char>(orig.first + 'a')
-			<< static_cast<char>(orig.second + '1')
-			<< static_cast<char>(dest.first + 'a')
-			<< static_cast<char>(dest.second + '1');
-
-		return os;
-	}
+		BLACK = 1,
+		WHITE = -BLACK
+	};
 }
 
+#endif // __PLAYER_HPP__
 // End of file

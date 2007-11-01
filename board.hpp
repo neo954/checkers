@@ -22,8 +22,8 @@
 /** @file board.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-11-01 10:15:05 $
- *  $Revision: 1.10 $
+ *  $Date: 2007-11-01 16:31:01 $
+ *  $Revision: 1.11 $
  */
 
 #ifndef __BOARD_HPP__
@@ -32,6 +32,7 @@
 #include <ostream>
 #include <vector>
 #include "move.hpp"
+#include "player.hpp"
 
 namespace checkers
 {
@@ -39,23 +40,12 @@ namespace checkers
 	class board
 	{
 	public:
-		enum player
-		{
-			BLACK = 1,
-			WHITE = -BLACK
-		};
-
 		inline board(void);
 		explicit board(const std::string& input);
 
 		/** Reset all pieces to initial position and set the current
 		 *  player to black */
 		void opening(void);
-
-		bool is_valid_black_move(const move& move) const;
-		bool is_valid_white_move(const move& move) const;
-		bool is_valid_black_jump(const move& move) const;
-		bool is_valid_white_jump(const move& move) const;
 
 		/// Check if move is legal based on current situation
 		bool is_valid_move(const move& move) const;
@@ -65,6 +55,8 @@ namespace checkers
 
 		/// Move piece
 		inline bool make_move(const move& move);
+		/// Undo piece
+		inline bool undo_move(const move& move);
 
 		inline bitboard get_black_pieces(void) const;
 		inline bitboard get_white_pieces(void) const;

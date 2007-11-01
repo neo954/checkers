@@ -22,8 +22,8 @@
 /** @file move_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-11-01 10:15:05 $
- *  $Revision: 1.11 $
+ *  $Date: 2007-11-01 16:31:01 $
+ *  $Revision: 1.12 $
  */
 
 #ifndef __MOVE_I_HPP__
@@ -35,9 +35,10 @@
 namespace checkers
 {
 	inline move::move(bitboard orig, bitboard dest, bitboard capture,
-    		bool is_capture_a_king, bool will_crown) :
+		bool will_capture_a_king, bool will_crown) :
 		_orig(orig), _dest(dest), _capture(capture),
-		_is_capture_a_king(is_capture_a_king), _will_crown(will_crown)
+		_will_capture_a_king(will_capture_a_king),
+		_will_crown(will_crown)
 	{
 		assert(1 == this->_orig.bit_count());
 		assert(1 == this->_dest.bit_count());
@@ -61,9 +62,9 @@ namespace checkers
 		return this->_capture;
 	}
 
-	inline bool move::is_capture_a_king(void) const
+	inline bool move::will_capture_a_king(void) const
 	{
-		return this->_is_capture_a_king;
+		return this->_will_capture_a_king;
 	}
 
 	inline bool move::will_crown(void) const
@@ -84,7 +85,10 @@ namespace checkers
 
 	inline bool operator ==(const move& lhs, const move& rhs)
 	{
-		return lhs._orig == rhs._orig && lhs._dest == rhs._dest;
+		return  lhs._orig == rhs._orig && lhs._dest == rhs._dest &&
+			lhs._capture == rhs._capture &&
+			lhs._will_capture_a_king == rhs._will_capture_a_king &&
+			lhs._will_crown == rhs._will_crown;
 	}
 
 	inline bool operator !=(const move& lhs, const move& rhs)
