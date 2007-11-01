@@ -1,5 +1,4 @@
-/* This file is a part of textual checkers, a English/American checkers
-   game.
+/* This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -22,8 +21,8 @@
 /** @file loopbuffer.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-24 15:43:56 $
- *  $Revision: 1.9 $
+ *  @date $Date: 2007-11-01 16:50:07 $
+ *  @version $Revision: 1.10 $
  */
 
 #include <cerrno>

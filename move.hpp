@@ -1,5 +1,4 @@
-/* This file is a part of textual checkers, a English/American checkers
-   game.
+/* This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -22,8 +21,8 @@
 /** @file move.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-11-01 16:31:01 $
- *  $Revision: 1.13 $
+ *  @date $Date: 2007-11-01 16:50:07 $
+ *  @version $Revision: 1.14 $
  */
 
 #ifndef __MOVE_HPP__
