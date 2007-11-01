@@ -22,8 +22,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.8 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.9 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -36,7 +36,7 @@ namespace checkers
 	{
 	}
 
-	inline int bitboard::bit_count(void) const
+	inline unsigned int bitboard::bit_count(void) const
 	{
 		uint32_t x = this->_bitboard;
 

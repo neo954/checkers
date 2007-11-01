@@ -22,8 +22,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.9 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.10 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -62,7 +62,7 @@ namespace checkers
 
 		std::pair<int, int> to_square(void) const;
 		/// Clasical way to count set bits in bitboard
-		inline int bit_count(void) const;
+		inline unsigned int bit_count(void) const;
 		/// Get the Least Significant Bit
 		inline bitboard get_lsb(void) const;
 		/// Empty bitboard

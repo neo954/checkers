@@ -22,8 +22,8 @@
 /** @file board.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-24 15:43:56 $
- *  $Revision: 1.11 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.12 $
  */
 
 #include <cassert>
@@ -94,10 +94,7 @@ namespace checkers
 	{
 		return (this->_black_pieces & move.get_orig()) &&
 			(this->get_not_occupied() & move.get_dest()) &&
-			(this->_white_pieces &
-			((this->_kings & move.get_orig()) ?
-			move.get_king_jump_capture() :
-			move.get_black_man_jump_capture()));
+			(this->_white_pieces & move.get_capture());
 	}
 
 	bool board::is_valid_white_move(const move& move) const
@@ -113,10 +110,7 @@ namespace checkers
 	{
 		return (this->_white_pieces & move.get_orig()) &&
 			(this->get_not_occupied() & move.get_dest()) &&
-			(this->_black_pieces &
-			((this->_kings & move.get_orig()) ?
-			move.get_king_jump_capture() :
-			move.get_white_man_jump_capture()));
+			(this->_black_pieces & move.get_capture());
 	}
 
 	bool board::is_valid_move(const move& move) const
@@ -130,60 +124,34 @@ namespace checkers
 			 this->is_valid_white_move(move));
 	}
 
-	void board::make_black_move(const move& move)
-	{
-		assert(this->is_valid_black_move(move));
-
-		if (this->_kings & move.get_orig())
-		{
-			this->_kings &= ~move.get_orig();
-			this->_kings |= move.get_dest();
-		}
-		this->_black_pieces &= ~move.get_orig();
-		this->_black_pieces |= move.get_dest();
-		(void)this->black_man_crown();
-		this->_player = WHITE;
-	}
-
-	void board::make_white_move(const move& move)
-	{
-		assert(this->is_valid_white_move(move));
-
-		if (this->_kings & move.get_orig())
-		{
-			this->_kings &= ~move.get_orig();
-			this->_kings |= move.get_dest();
-		}
-		this->_white_pieces &= ~move.get_orig();
-		this->_white_pieces |= move.get_dest();
-		(void)this->white_man_crown();
-		this->_player = BLACK;
-	}
-
 	/// @return Whether the same player move one more
-	bool board::make_black_jump(const move& move)
+	bool board::make_black_move(const move& move)
 	{
-		assert(this->is_valid_black_jump(move));
-
-		bool is_king = this->_kings & move.get_orig();
-
-		if (is_king)
+		this->_black_pieces &= ~move.get_orig();
+		this->_black_pieces |= move.get_dest();
+		if (this->_kings & move.get_orig())
 		{
 			this->_kings &= ~move.get_orig();
 			this->_kings |= move.get_dest();
 		}
-		this->_black_pieces &= ~move.get_orig();
-		this->_black_pieces |= move.get_dest();
 
-		bitboard capture = is_king ?
-			move.get_king_jump_capture() :
-			move.get_black_man_jump_capture();
-		this->_kings &= ~capture;
-		this->_white_pieces &= ~capture;
-		if (!this->black_man_crown() &&
-			(move.get_dest() & this->get_black_jumpers()))
+		if (move.will_crown())
 		{
-			return true;
+			this->_kings &= move.get_dest();
+		}
+
+		if (move.get_capture())
+		{
+			this->_white_pieces &= ~move.get_capture();
+			if (move.is_capture_a_king())
+			{
+				this->_kings &= ~move.get_capture();
+			}
+
+			if (move.get_dest() & this->get_black_jumpers())
+			{
+				return true;
+			}
 		}
 
 		this->_player = WHITE;
@@ -191,29 +159,33 @@ namespace checkers
 	}
 
 	/// @return Whether the same player move one more
-	bool board::make_white_jump(const move& move)
+	bool board::make_white_move(const move& move)
 	{
-		assert(this->is_valid_white_jump(move));
-
-		bool is_king = this->_kings & move.get_orig();
-
-		if (is_king)
+		this->_white_pieces &= ~move.get_orig();
+		this->_white_pieces |= move.get_dest();
+		if (this->_kings & move.get_orig())
 		{
 			this->_kings &= ~move.get_orig();
 			this->_kings |= move.get_dest();
 		}
-		this->_white_pieces &= ~move.get_orig();
-		this->_white_pieces |= move.get_dest();
 
-		bitboard capture = is_king ?
-			move.get_king_jump_capture() :
-			move.get_white_man_jump_capture();
-		this->_kings &= ~capture;
-		this->_black_pieces &= ~capture;
-		if (!this->white_man_crown() &&
-			(move.get_dest() & this->get_white_jumpers()))
+		if (move.will_crown())
 		{
-			return true;
+			this->_kings &= move.get_dest();
+		}
+
+		if (move.get_capture())
+		{
+			this->_black_pieces &= ~move.get_capture();
+			if (move.is_capture_a_king())
+			{
+				this->_kings &= ~move.get_capture();
+			}
+
+			if (move.get_dest() & get_white_jumpers())
+			{
+				return true;
+			}
 		}
 
 		this->_player = BLACK;
@@ -361,7 +333,10 @@ namespace checkers
 			dest = (orig >> 4) & not_occupied; 
 			if (dest)
 			{
-				moves.push_back(move(orig, dest));
+				moves.push_back(move(orig, dest,
+					bitboard::EMPTY, false,
+					!(orig & this->_kings) &&
+					(dest & bitboard::BLACK_KINGS_ROW)));
 			}
 
 			dest = (((orig & bitboard::MASK_R3) >> 3) |
@@ -369,7 +344,10 @@ namespace checkers
 				not_occupied;
 			if (dest)
 			{
-				moves.push_back(move(orig, dest));
+				moves.push_back(move(orig, dest,
+					bitboard::EMPTY, false,
+					!(orig & this->_kings) &&
+					(dest & bitboard::BLACK_KINGS_ROW)));
 			}
 
 			if (orig & this->_kings)
@@ -377,14 +355,18 @@ namespace checkers
 				dest = (orig << 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						bitboard::EMPTY, false,
+						false));
 				}
 
 				dest = (((orig & bitboard::MASK_L3) << 3) |
 					((orig & bitboard::MASK_L5) << 5)) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						bitboard::EMPTY, false,
+						false));
 				}
 			}
 		}
@@ -409,7 +391,10 @@ namespace checkers
 			dest = (orig << 4) & not_occupied; 
 			if (dest)
 			{
-				moves.push_back(move(orig, dest));
+				moves.push_back(move(orig, dest,
+					bitboard::EMPTY, false,
+					!(orig & this->_kings) &&
+					(dest & bitboard::WHITE_KINGS_ROW)));
 			}
 
 			dest = (((orig & bitboard::MASK_L3) << 3) |
@@ -417,7 +402,10 @@ namespace checkers
 				not_occupied;
 			if (dest)
 			{
-				moves.push_back(move(orig, dest));
+				moves.push_back(move(orig, dest,
+					bitboard::EMPTY, false,
+					!(orig & this->_kings) &&
+					(dest & bitboard::WHITE_KINGS_ROW)));
 			}
 
 			if (orig & this->_kings)
@@ -425,7 +413,9 @@ namespace checkers
 				dest = (orig >> 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						bitboard::EMPTY, false,
+						false));
 				}
 
 				dest = (((orig & bitboard::MASK_R3) >> 3) |
@@ -433,7 +423,9 @@ namespace checkers
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						bitboard::EMPTY, false,
+						false));
 				}
 			}
 		}
@@ -448,7 +440,7 @@ namespace checkers
 		bitboard black_jumpers = this->get_black_jumpers();
 		bitboard orig;
 		bitboard dest;
-		bitboard temp;
+		bitboard capture;
 		const bitboard not_occupied = this->get_not_occupied();
 
 		while (black_jumpers)
@@ -456,56 +448,68 @@ namespace checkers
 			orig = black_jumpers.get_lsb();
 			black_jumpers &= ~orig;
 
-			temp = (orig >> 4) & this->_white_pieces;
-			if (temp)
+			capture = (orig >> 4) & this->_white_pieces;
+			if (capture)
 			{
-				dest = (((temp & bitboard::MASK_R3) >> 3) |
-					((temp & bitboard::MASK_R5) >> 5)) &
+				dest = (((capture & bitboard::MASK_R3) >> 3) |
+					((capture & bitboard::MASK_R5) >> 5)) &
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						capture,
+						capture & this->_kings,
+						!(orig & this->_kings) && (dest
+						& bitboard::BLACK_KINGS_ROW)));
 				}
 			}
 
-			temp = (((orig & bitboard::MASK_R3) >> 3) |
+			capture = (((orig & bitboard::MASK_R3) >> 3) |
 				((orig & bitboard::MASK_R5) >> 5)) &
 				this->_white_pieces;
-			if (temp)
+			if (capture)
 			{
-				dest = (temp >> 4) & not_occupied;
+				dest = (capture >> 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						capture,
+						capture & this->_kings,
+						!(orig & this->_kings) && (dest
+						& bitboard::BLACK_KINGS_ROW)));
 				}
 			}
 
 			if (orig & this->_kings)
 			{
-				temp = (orig << 4) & this->_white_pieces;
-				if (temp)
+				capture = (orig << 4) & this->_white_pieces;
+				if (capture)
 				{
-					dest = (((temp & bitboard::MASK_L3)
+					dest = (((capture & bitboard::MASK_L3)
 							<< 3) |
-						((temp & bitboard::MASK_L5)
+						((capture & bitboard::MASK_L5)
 							<< 5)) & not_occupied;
 					if (dest)
 					{
-						moves.push_back(
-							move(orig, dest));
+						moves.push_back(move(orig, dest,
+							capture,
+							capture & this->_kings,
+							false));
 					}
 				}
 
-				temp = (((orig & bitboard::MASK_L3) << 3) |
+				capture = (((orig & bitboard::MASK_L3) << 3) |
 					((orig & bitboard::MASK_L5) << 5)) &
 					this->_white_pieces;
-				if (temp)
+				if (capture)
 				{
-					dest = (temp << 4) & not_occupied;
+					dest = (capture << 4) & not_occupied;
 					if (dest)
 					{
-						moves.push_back(
-							move(orig, dest));
+						moves.push_back(move(orig, dest,
+							capture,
+							capture & this->_kings,
+							false));
 					}
 				}
 			}
@@ -521,7 +525,7 @@ namespace checkers
 		bitboard white_jumpers = this->get_white_jumpers();
 		bitboard orig;
 		bitboard dest;
-		bitboard temp;
+		bitboard capture;
 		const bitboard not_occupied = this->get_not_occupied();
 
 		while (white_jumpers)
@@ -529,56 +533,68 @@ namespace checkers
 			orig = white_jumpers.get_lsb();
 			white_jumpers &= ~orig;
 
-			temp = (orig << 4) & this->_black_pieces;
-			if (temp)
+			capture = (orig << 4) & this->_black_pieces;
+			if (capture)
 			{
-				dest = (((temp & bitboard::MASK_L3) << 3) |
-					((temp & bitboard::MASK_L5) << 5)) &
+				dest = (((capture & bitboard::MASK_L3) << 3) |
+					((capture & bitboard::MASK_L5) << 5)) &
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						capture,
+						capture & this->_kings,
+						!(orig & this->_kings) && (dest
+						& bitboard::WHITE_KINGS_ROW)));
 				}
 			}
 
-			temp = (((orig & bitboard::MASK_L3) << 3) |
+			capture = (((orig & bitboard::MASK_L3) << 3) |
 				((orig & bitboard::MASK_L5) << 5)) &
 				this->_black_pieces;
-			if (temp)
+			if (capture)
 			{
-				dest = (temp << 4) & not_occupied;
+				dest = (capture << 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest));
+					moves.push_back(move(orig, dest,
+						capture,
+						capture & this->_kings,
+						!(orig & this->_kings) && (dest
+						& bitboard::WHITE_KINGS_ROW)));
 				}
 			}
 
 			if (orig & this->_kings)
 			{
-				temp = (orig >> 4) & this->_black_pieces;
-				if (temp)
+				capture = (orig >> 4) & this->_black_pieces;
+				if (capture)
 				{
-					dest = (((temp & bitboard::MASK_R3)
+					dest = (((capture & bitboard::MASK_R3)
 							>> 3) |
-						((temp & bitboard::MASK_R5)
+						((capture & bitboard::MASK_R5)
 							>> 5)) & not_occupied;
 					if (dest)
 					{
-						moves.push_back(
-							move(orig, dest));
+						moves.push_back(move(orig, dest,
+							capture,
+							capture & this->_kings,
+							false));
 					}
 				}
 
-				temp = (((orig & bitboard::MASK_R3) >> 3) |
+				capture = (((orig & bitboard::MASK_R3) >> 3) |
 					((orig & bitboard::MASK_R5) >> 5)) &
 					this->_black_pieces;
-				if (temp)
+				if (capture)
 				{
-					dest = (temp >> 4) & not_occupied;
+					dest = (capture >> 4) & not_occupied;
 					if (dest)
 					{
-						moves.push_back(
-							move(orig, dest));
+						moves.push_back(move(orig, dest,
+							capture,
+							capture & this->_kings,
+							false));
 					}
 				}
 			}

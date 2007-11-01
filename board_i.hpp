@@ -22,8 +22,8 @@
 /** @file board_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.8 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.9 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -42,30 +42,9 @@ namespace checkers
 	{
 		assert(this->is_valid_move(move));
 
-		if (this->is_black_move())
-		{
-			if (move.is_jump())
-			{
-				return this->make_black_jump(move);
-			}
-			else
-			{
-				this->make_black_move(move);
-			}
-		}
-		else // WHITE
-		{
-			if (move.is_jump())
-			{
-				return this->make_white_jump(move);
-			}
-			else
-			{
-				this->make_white_move(move);
-			}
-		}
-
-		return false;
+		return this->is_black_move() ?
+			this->make_black_move(move) :
+			this->make_white_move(move);
 	}
 
 	inline bitboard board::get_black_pieces(void) const
@@ -153,28 +132,6 @@ namespace checkers
 			  this->get_black_movers()) :
 			!(this->get_white_jumpers() ||
 			  this->get_white_movers());
-	}
-
-	// ================================================================
-
-	/// @return Crowned black men
-	inline bitboard board::black_man_crown(void)
-	{
-		bitboard crown = this->get_black_men() &
-			bitboard::BLACK_KINGS_ROW;
-		this->_kings |= crown;
-
-		return crown;
-	}
-
-	/// @return Crowned white men
-	inline bitboard board::white_man_crown(void)
-	{
-		bitboard crown = this->get_white_men() &
-			bitboard::WHITE_KINGS_ROW;
-		this->_kings |= crown;
-
-		return crown;
 	}
 }
 

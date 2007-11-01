@@ -22,8 +22,8 @@
 /** @file move_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.10 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.11 $
  */
 
 #ifndef __MOVE_I_HPP__
@@ -34,12 +34,16 @@
 
 namespace checkers
 {
-	inline move::move(bitboard orig, bitboard dest) :
-		_orig(orig), _dest(dest)
+	inline move::move(bitboard orig, bitboard dest, bitboard capture,
+    		bool is_capture_a_king, bool will_crown) :
+		_orig(orig), _dest(dest), _capture(capture),
+		_is_capture_a_king(is_capture_a_king), _will_crown(will_crown)
 	{
 		assert(1 == this->_orig.bit_count());
 		assert(1 == this->_dest.bit_count());
-		assert(this->is_jump() || this->is_move());
+		assert(this->_capture.bit_count() < 2);
+		/// @todo Add more assert to verify.
+		// assert(this->is_jump() || this->is_move());
 	}
 
 	inline bitboard move::get_orig(void) const
@@ -52,20 +56,19 @@ namespace checkers
 		return this->_dest;
 	}
 
-	inline bool move::is_jump(void) const
+	inline bitboard move::get_capture(void) const
 	{
-		return (this->_orig > this->_dest) ?
-			((this->_orig >> 7 | this->_orig >> 9) & this->_dest) :
-			((this->_orig << 7 | this->_orig << 9) & this->_dest);
+		return this->_capture;
 	}
 
-	inline bool move::is_move(void) const
+	inline bool move::is_capture_a_king(void) const
 	{
-		return (this->_orig > this->_dest) ?
-			((this->_orig >> 3 | this->_orig >> 4 |
-			  this->_orig >> 5) & this->_dest) :
-			((this->_orig << 3 | this->_orig << 4 |
-			  this->_orig << 5) & this->_dest);
+		return this->_is_capture_a_king;
+	}
+
+	inline bool move::will_crown(void) const
+	{
+		return this->_will_crown;
 	}
 
 	inline bool move::is_valid(const std::string& str)

@@ -22,8 +22,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-24 15:43:56 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.15 $
  */
 
 #include <iomanip>
@@ -73,7 +73,7 @@ namespace checkers
 			legal_moves.begin(); pos != legal_moves.end(); ++pos)
 		{
 			// When capture piece in the last ply, search deeper
-			if (1 == depth && pos->is_jump())
+			if (1 == depth && pos->get_capture())
 			{
 				++depth;
 			}

@@ -22,8 +22,8 @@
 /** @file board.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.9 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.10 $
  */
 
 #ifndef __BOARD_HPP__
@@ -60,10 +60,8 @@ namespace checkers
 		/// Check if move is legal based on current situation
 		bool is_valid_move(const move& move) const;
 
-		void make_black_move(const move& move);
-		void make_white_move(const move& move);
-		bool make_black_jump(const move& move);
-		bool make_white_jump(const move& move);
+		bool make_black_move(const move& move);
+		bool make_white_move(const move& move);
 
 		/// Move piece
 		inline bool make_move(const move& move);
@@ -107,11 +105,6 @@ namespace checkers
 		inline bool is_losing(void) const;
 		
 	private:
-		/// Crown black men on kings row
-		inline bitboard black_man_crown(void);
-		/// Crown white men on kings row
-		inline bitboard white_man_crown(void);
-
 		/// Black pieces
 		bitboard _black_pieces;
 		/// White pieces

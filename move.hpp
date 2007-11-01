@@ -22,8 +22,8 @@
 /** @file move.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  $Date: 2007-01-21 01:40:41 $
- *  $Revision: 1.11 $
+ *  $Date: 2007-11-01 10:15:05 $
+ *  $Revision: 1.12 $
  */
 
 #ifndef __MOVE_HPP__
@@ -36,22 +36,20 @@ namespace checkers
 	class move
 	{
 	public:
-		inline move(bitboard orig, bitboard dest);
+		inline move(bitboard orig, bitboard dest, bitboard capture,
+			bool is_capture_a_king, bool will_crown);
 		explicit move(const std::string& str);
 
 		inline bitboard get_orig(void) const;
 		inline bitboard get_dest(void) const;
+		inline bitboard get_capture(void) const;
 
-		inline bool is_jump(void) const;
-		inline bool is_move(void) const;
+		inline bool is_capture_a_king(void) const;
+		inline bool will_crown(void) const;
 
 		bitboard is_valid_on_black_man(void) const;
 		bitboard is_valid_on_white_man(void) const;
 		bitboard is_valid_on_king(void) const;
-
-		bitboard get_black_man_jump_capture(void) const;
-		bitboard get_white_man_jump_capture(void) const;
-		bitboard get_king_jump_capture(void) const;
 
 		inline static bool is_valid(const std::string& str);
 
@@ -64,6 +62,9 @@ namespace checkers
 	private:
 		bitboard _orig;
 		bitboard _dest;
+		bitboard _capture;
+		bool _is_capture_a_king;
+		bool _will_crown;
 	};
 
 	inline bool operator ==(const move& lhs, const move& rhs);
