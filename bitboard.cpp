@@ -21,147 +21,82 @@
 /** @file bitboard.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.11 $
+ *  @date $Date: 2007-11-02 19:01:17 $
+ *  @version $Revision: 1.12 $
  */
 
 #include <cassert>
-#include <sstream>
 #include <stdexcept>
 #include "bitboard.hpp"
 
 namespace checkers
 {
-	bitboard::bitboard(int file, int rank) :
-		_bitboard(0x1 << (rank * 4 + file / 2))
+	bitboard::bitboard(char file, char rank)
 	{
-		assert(0 <= file && file < 8);
-		assert(0 <= rank && rank < 8);
-		assert(file % 2 == rank % 2);
+		if (file < 'a' || file > 'h')
+		{
+			throw std::logic_error("Error (illegal file):"
+				" square");
+		}
+		if (rank < '1' || rank > '8')
+		{
+			throw std::logic_error("Error (illegal rank):"
+				" square");
+		}
+		if (file % 2 != rank % 2)
+		{
+			throw std::logic_error("Error (dark square only):"
+				" square");
+		}
+
+		this->_bitboard = 0x1 << ((rank - '1') * 4 + (file - 'a') / 2);
 	}
 
-	std::pair<int, int> bitboard::to_square(void) const
+	std::ostream& operator <<(std::ostream& os, const bitboard& rhs)
 	{
-		assert(1 == this->bit_count());
+		assert(1 == rhs.bit_count());
 
-		int file;
-		int rank;
-
-		switch (this->_bitboard)
+		switch (rhs._bitboard)
 		{
-		case 0x1 <<  0:
-		case 0x1 <<  8:
-		case 0x1 << 16:
-		case 0x1 << 24:
-			file = 0;
-			break;
-		case 0x1 <<  4:
-		case 0x1 << 12:
-		case 0x1 << 20:
-		case 0x1 << 28:
-			file = 1;
-			break;
-		case 0x1 <<  1:
-		case 0x1 <<  9:
-		case 0x1 << 17:
-		case 0x1 << 25:
-			file = 2;
-			break;
-		case 0x1 <<  5:
-		case 0x1 << 13:
-		case 0x1 << 21:
-		case 0x1 << 29:
-			file = 3;
-			break;
-		case 0x1 <<  2:
-		case 0x1 << 10:
-		case 0x1 << 18:
-		case 0x1 << 26:
-			file = 4;
-			break;
-		case 0x1 <<  6:
-		case 0x1 << 14:
-		case 0x1 << 22:
-		case 0x1 << 30:
-			file = 5;
-			break;
-		case 0x1 <<  3:
-		case 0x1 << 11:
-		case 0x1 << 19:
-		case 0x1 << 27:
-			file = 6;
-			break;
-		case 0x1 <<  7:
-		case 0x1 << 15:
-		case 0x1 << 23:
-		case 0x1 << 31:
-			file = 7;
-			break;
+		case 0x1 <<  0: os << "a1"; break;
+		case 0x1 <<  1: os << "c1"; break;
+		case 0x1 <<  2: os << "e1"; break;
+		case 0x1 <<  3: os << "g1"; break;
+		case 0x1 <<  4: os << "b2"; break;
+		case 0x1 <<  5: os << "d2"; break;
+		case 0x1 <<  6: os << "f2"; break;
+		case 0x1 <<  7: os << "h2"; break;
+		case 0x1 <<  8: os << "a3"; break;
+		case 0x1 <<  9: os << "c3"; break;
+		case 0x1 << 10: os << "e3"; break;
+		case 0x1 << 11: os << "g3"; break;
+		case 0x1 << 12: os << "b4"; break;
+		case 0x1 << 13: os << "d4"; break;
+		case 0x1 << 14: os << "f4"; break;
+		case 0x1 << 15: os << "h4"; break;
+		case 0x1 << 16: os << "a5"; break;
+		case 0x1 << 17: os << "c5"; break;
+		case 0x1 << 18: os << "e5"; break;
+		case 0x1 << 19: os << "g5"; break;
+		case 0x1 << 20: os << "b6"; break;
+		case 0x1 << 21: os << "d6"; break;
+		case 0x1 << 22: os << "f6"; break;
+		case 0x1 << 23: os << "h6"; break;
+		case 0x1 << 24: os << "a7"; break;
+		case 0x1 << 25: os << "c7"; break;
+		case 0x1 << 26: os << "e7"; break;
+		case 0x1 << 27: os << "g7"; break;
+		case 0x1 << 28: os << "b8"; break;
+		case 0x1 << 29: os << "d8"; break;
+		case 0x1 << 30: os << "f8"; break;
+		case 0x1 << 31: os << "h8"; break;
 		default:
-			// Should not reach here
-			file = -1;
-			assert(file);
+			assert("Should not reach here");
+			throw std::logic_error("Error (unknown error): ...");
 			break;
 		}
 
-		switch (this->_bitboard)
-		{
-		case 0x1 <<  0:
-		case 0x1 <<  1:
-		case 0x1 <<  2:
-		case 0x1 <<  3:
-			rank = 0;
-			break;
-		case 0x1 <<  4:
-		case 0x1 <<  5:
-		case 0x1 <<  6:
-		case 0x1 <<  7:
-			rank = 1;
-			break;
-		case 0x1 <<  8:
-		case 0x1 <<  9:
-		case 0x1 << 10:
-		case 0x1 << 11:
-			rank = 2;
-			break;
-		case 0x1 << 12:
-		case 0x1 << 13:
-		case 0x1 << 14:
-		case 0x1 << 15:
-			rank = 3;
-			break;
-		case 0x1 << 16:
-		case 0x1 << 17:
-		case 0x1 << 18:
-		case 0x1 << 19:
-			rank = 4;
-			break;
-		case 0x1 << 20:
-		case 0x1 << 21:
-		case 0x1 << 22:
-		case 0x1 << 23:
-			rank = 5;
-			break;
-		case 0x1 << 24:
-		case 0x1 << 25:
-		case 0x1 << 26:
-		case 0x1 << 27:
-			rank = 6;
-			break;
-		case 0x1 << 28:
-		case 0x1 << 29:
-		case 0x1 << 30:
-		case 0x1 << 31:
-			rank = 7;
-			break;
-		default:
-			// Should not reach here
-			rank = -1;
-			assert(rank);
-			break;
-		}
-
-		return std::pair<int, int>(file, rank);
+		return os;
 	}
 }
 

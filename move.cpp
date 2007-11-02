@@ -21,8 +21,8 @@
 /** @file move.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 09:44:30 $
- *  @version $Revision: 1.12 $
+ *  @date $Date: 2007-11-02 19:01:18 $
+ *  @version $Revision: 1.13 $
  */
 
 #include <cassert>
@@ -36,13 +36,7 @@ namespace checkers
 		assert(1 == rhs._orig.bit_count());
 		assert(1 == rhs._dest.bit_count());
 
-		std::pair<int, int> orig = rhs._orig.to_square();
-		std::pair<int, int> dest = rhs._dest.to_square();
-
-		os << static_cast<char>(orig.first + 'a')
-			<< static_cast<char>(orig.second + '1')
-			<< static_cast<char>(dest.first + 'a')
-			<< static_cast<char>(dest.second + '1');
+		os << rhs._orig << rhs._dest;
 
 		return os;
 	}

@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 09:44:29 $
- *  @version $Revision: 1.22 $
+ *  @date $Date: 2007-11-02 19:01:18 $
+ *  @version $Revision: 1.23 $
  */
 
 #include "engine.hpp"
@@ -516,7 +516,7 @@ done:
 		}
 		else
 		{
-			this->_io << "Error: No moves to undo!\n";
+			this->_io << "Error (no moves to undo): undo\n";
 		}
 	}
 

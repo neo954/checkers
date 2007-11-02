@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 09:44:29 $
- *  @version $Revision: 1.15 $
+ *  @date $Date: 2007-11-02 19:01:17 $
+ *  @version $Revision: 1.16 $
  */
 
 #include <cstdlib>
@@ -101,7 +101,7 @@ namespace checkers
 
 		if (move.will_crown())
 		{
-			this->_kings &= move.get_dest();
+			this->_kings |= move.get_dest();
 		}
 
 		if (move.get_capture())
@@ -135,7 +135,7 @@ namespace checkers
 
 		if (move.will_crown())
 		{
-			this->_kings &= move.get_dest();
+			this->_kings |= move.get_dest();
 		}
 
 		if (move.get_capture())
@@ -564,35 +564,17 @@ namespace checkers
 	{
 		if (4 != str.length())
 		{
-			throw std::logic_error("Illegal move: 1 " + str);
+			throw std::logic_error("Error (illegal move,"
+				" wrong command length): " + str);
 		}
-		int orig_file = str[0] - 'a';
-		int orig_rank = str[1] - '1';
-                if (!(orig_file % 2 == orig_rank % 2 &&
-			0 <= orig_file && orig_file < 8 &&
-			0 <= orig_rank && orig_rank < 8))
-		{
-			throw std::logic_error("Illegal move: 2 " + str);
-		}
-		bitboard orig = bitboard(orig_file, orig_rank);
 
-		int dest_file = str[2] - 'a';
-		int dest_rank = str[3] - '1';
-                if (!(dest_file % 2 == dest_rank % 2 &&
-			0 <= dest_file && dest_file < 8 &&
-			0 <= dest_rank && dest_rank < 8))
-		{
-			throw std::logic_error("Illegal move: 3 " + str);
-		}
-		bitboard dest = bitboard(dest_file, dest_rank);
-
+		bitboard orig(str[0], str[1]);
+		bitboard dest(str[2], str[3]);
 		bitboard capture = bitboard::EMPTY;
-		if (2 == abs(dest_file - orig_file) &&
-			2 == abs(dest_rank - orig_rank))
+		if (2 == abs(str[2] - str[0]))
 		{
-			int capture_file = (orig_file + dest_file) / 2;
-			int capture_rank = (orig_rank + dest_rank) / 2;
-			capture = bitboard(capture_file, capture_rank);
+			capture = bitboard((str[0] + str[2]) / 2,
+				(str[1] + str[3]) / 2);
 		}
 		
 		bool will_capture_a_king = capture ?
@@ -605,7 +587,7 @@ namespace checkers
 		move move(orig, dest, capture, will_capture_a_king, will_crown);
 		if (!this->is_valid_move(move))
 		{	
-			throw std::logic_error("Illegal move: 4 " + str);
+			throw std::logic_error("Error (illegal move): " + str);
 		}
 
 		return move;

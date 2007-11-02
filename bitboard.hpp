@@ -21,14 +21,15 @@
 /** @file bitboard.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.11 $
+ *  @date $Date: 2007-11-02 19:01:17 $
+ *  @version $Revision: 1.12 $
  */
 
 #ifndef __BITBOARD_HPP__
 #define __BITBOARD_HPP__
 
 #include <stdint.h>
+#include <ostream>
 
 namespace checkers
 {
@@ -57,9 +58,8 @@ namespace checkers
 	{
 	public:
 		inline bitboard(uint32_t x = 0);
-		bitboard(int file, int rank);
+		bitboard(char file, char rank);
 
-		std::pair<int, int> to_square(void) const;
 		/// Clasical way to count set bits in bitboard
 		inline unsigned int bit_count(void) const;
 		/// Get the Least Significant Bit
@@ -120,15 +120,22 @@ namespace checkers
 
 		inline operator uint32_t(void) const;
 
-		friend bitboard operator |(const bitboard& lhs, const bitboard& rhs);
-		friend bitboard operator |(uint32_t lhs, const bitboard& rhs);
+		friend bitboard operator |(const bitboard& lhs,
+			const bitboard& rhs);
+		friend bitboard operator |(uint32_t lhs,
+			const bitboard& rhs);
 		friend bitboard operator |(const bitboard& lhs, uint32_t rhs);
-		friend bitboard operator &(const bitboard& lhs, const bitboard& rhs);
+		friend bitboard operator &(const bitboard& lhs,
+			const bitboard& rhs);
 		friend bitboard operator &(uint32_t, const bitboard& rhs);
 		friend bitboard operator &(const bitboard& lhs, uint32_t rhs);
-		friend bitboard operator ^(const bitboard& lhs, const bitboard& rhs);
+		friend bitboard operator ^(const bitboard& lhs,
+			const bitboard& rhs);
 		friend bitboard operator ^(uint32_t, const bitboard& rhs);
 		friend bitboard operator ^(const bitboard& lhs, uint32_t rhs);
+
+		friend std::ostream& operator <<(std::ostream& os,
+			const bitboard& rhs);
 
 	private:
 		uint32_t _bitboard;
@@ -143,6 +150,8 @@ namespace checkers
 	inline bitboard operator ^(const bitboard& lhs, const bitboard& rhs);
 	inline bitboard operator ^(uint32_t, const bitboard& rhs);
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs);
+
+	std::ostream& operator <<(std::ostream& os, const bitboard& rhs);
 }
 
 #include "bitboard_i.hpp"

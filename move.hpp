@@ -21,8 +21,8 @@
 /** @file move.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 09:44:30 $
- *  @version $Revision: 1.15 $
+ *  @date $Date: 2007-11-02 19:01:18 $
+ *  @version $Revision: 1.16 $
  */
 
 #ifndef __MOVE_HPP__
@@ -47,8 +47,6 @@ namespace checkers
 
 		inline bool will_capture_a_king(void) const;
 		inline bool will_crown(void) const;
-
-		inline static bool is_valid(const std::string& str);
 
 		friend bool operator ==(const move& lhs, const move& rhs);
 		friend bool operator !=(const move& lhs, const move& rhs);

@@ -21,8 +21,8 @@
 /** @file move_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.13 $
+ *  @date $Date: 2007-11-02 19:01:18 $
+ *  @version $Revision: 1.14 $
  */
 
 #ifndef __MOVE_I_HPP__
@@ -41,9 +41,8 @@ namespace checkers
 	{
 		assert(1 == this->_orig.bit_count());
 		assert(1 == this->_dest.bit_count());
-		assert(this->_capture.bit_count() < 2);
+		assert(this->_capture.bit_count() <= 1);
 		/// @todo Add more assert to verify.
-		// assert(this->is_jump() || this->is_move());
 	}
 
 	inline bitboard move::get_orig(void) const
@@ -69,17 +68,6 @@ namespace checkers
 	inline bool move::will_crown(void) const
 	{
 		return this->_will_crown;
-	}
-
-	inline bool move::is_valid(const std::string& str)
-	{
-		return (4 == str.size() &&
-			'a' <= str[0] && str[0] <= 'h' &&
-			'1' <= str[1] && str[1] <= '8' &&
-			'a' <= str[2] && str[2] <= 'h' &&
-			'1' <= str[3] && str[3] <= '8' &&
-			(str[0] - 'a') % 2 == (str[1] - '1') % 2 &&
-			(str[2] - 'a') % 2 == (str[3] - '1') % 2);
 	}
 
 	inline bool operator ==(const move& lhs, const move& rhs)
