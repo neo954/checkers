@@ -21,8 +21,8 @@
 /** @file move.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.14 $
+ *  @date $Date: 2007-11-02 09:44:30 $
+ *  @version $Revision: 1.15 $
  */
 
 #ifndef __MOVE_HPP__
@@ -33,12 +33,13 @@
 
 namespace checkers
 {
+	class board;
+
 	class move
 	{
 	public:
 		inline move(bitboard orig, bitboard dest, bitboard capture,
 			bool will_capture_a_king, bool will_crown);
-		explicit move(const std::string& str);
 
 		inline bitboard get_orig(void) const;
 		inline bitboard get_dest(void) const;

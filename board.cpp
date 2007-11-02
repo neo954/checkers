@@ -21,11 +21,11 @@
 /** @file board.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.14 $
+ *  @date $Date: 2007-11-02 09:44:29 $
+ *  @version $Revision: 1.15 $
  */
 
-#include <cassert>
+#include <cstdlib>
 #include "board.hpp"
 
 namespace checkers
@@ -558,6 +558,57 @@ namespace checkers
 		}
 
 		return moves;
+	}
+
+	move board::generate_move(const std::string& str) const
+	{
+		if (4 != str.length())
+		{
+			throw std::logic_error("Illegal move: 1 " + str);
+		}
+		int orig_file = str[0] - 'a';
+		int orig_rank = str[1] - '1';
+                if (!(orig_file % 2 == orig_rank % 2 &&
+			0 <= orig_file && orig_file < 8 &&
+			0 <= orig_rank && orig_rank < 8))
+		{
+			throw std::logic_error("Illegal move: 2 " + str);
+		}
+		bitboard orig = bitboard(orig_file, orig_rank);
+
+		int dest_file = str[2] - 'a';
+		int dest_rank = str[3] - '1';
+                if (!(dest_file % 2 == dest_rank % 2 &&
+			0 <= dest_file && dest_file < 8 &&
+			0 <= dest_rank && dest_rank < 8))
+		{
+			throw std::logic_error("Illegal move: 3 " + str);
+		}
+		bitboard dest = bitboard(dest_file, dest_rank);
+
+		bitboard capture = bitboard::EMPTY;
+		if (2 == abs(dest_file - orig_file) &&
+			2 == abs(dest_rank - orig_rank))
+		{
+			int capture_file = (orig_file + dest_file) / 2;
+			int capture_rank = (orig_rank + dest_rank) / 2;
+			capture = bitboard(capture_file, capture_rank);
+		}
+		
+		bool will_capture_a_king = capture ?
+			static_cast<bool>(capture & this->_kings) : false;
+		bool will_crown = !(orig & this->_kings) &&
+			(this->_player == BLACK ?
+				dest & bitboard::BLACK_KINGS_ROW :
+				dest & bitboard::WHITE_KINGS_ROW);
+
+		move move(orig, dest, capture, will_capture_a_king, will_crown);
+		if (!this->is_valid_move(move))
+		{	
+			throw std::logic_error("Illegal move: 4 " + str);
+		}
+
+		return move;
 	}
 
 	std::ostream& operator <<(std::ostream& os, const board& rhs)

@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.21 $
+ *  @date $Date: 2007-11-02 09:44:29 $
+ *  @version $Revision: 1.22 $
  */
 
 #include "engine.hpp"
@@ -131,7 +131,7 @@ namespace checkers
 			{
 				continue;
 			}
-			// Args is produced
+			// Vector args is filled
 
 			for (pos = this->_action.begin();
 				pos != this->_action.end(); ++pos)
@@ -143,34 +143,31 @@ namespace checkers
 				}
 			}
 
-			// Process user move
-			if (1 == args.size() && move::is_valid(args[0]))
+			if (1 != args.size())
 			{
-				move move(args[0]);
-				if (this->_board.is_valid_move(move))
-				{
-					if (this->make_move(move))
-					{
-						this->print();
-						goto done;
-					}
-
-					this->print();
-					if (!this->result())
-					{
-						this->_io << io::nowait
-							<< io::flush;
-						this->go();
-					}
-					goto done;
-				}
-
-				this->_io << "Illegal move: " << args[0] << '\n';
+				this->_io << "Error (unknown command): " << args[0]
+					<< '\n';
 				goto done;
 			}
 
-			this->_io << "Error (unknown command): " << args[0]
-				<< '\n';
+			// Process user move
+			try
+			{
+				move move = this->_board.generate_move(args[0]);
+				assert(this->_board.is_valid_move(move));
+				bool contin = this->make_move(move);
+				this->print();
+				if (!contin && !this->result())
+				{
+					this->_io << io::nowait
+						<< io::flush;
+					this->go();
+				}
+			}
+			catch (const std::logic_error& e)
+			{
+				this->_io << e.what() << '\n';
+			}
 done:
 			// Null statement
 			;

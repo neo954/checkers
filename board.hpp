@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.12 $
+ *  @date $Date: 2007-11-02 09:44:29 $
+ *  @version $Revision: 1.13 $
  */
 
 #ifndef __BOARD_HPP__
@@ -31,7 +31,6 @@
 #include <ostream>
 #include <vector>
 #include "move.hpp"
-#include "player.hpp"
 
 namespace checkers
 {
@@ -85,6 +84,8 @@ namespace checkers
 
 		/// Generate all legal moves based on current situation
 		inline std::vector<move> generate_moves(void) const;
+		/// Generate a legal move based on user input
+		move generate_move(const std::string& str) const;
 
 		/// Set the player on move black
 		inline void set_black(void);

@@ -21,8 +21,8 @@
 /** @file io.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.10 $
+ *  @date $Date: 2007-11-02 09:44:30 $
+ *  @version $Revision: 1.11 $
  */
 
 #ifndef __IO_HPP__
@@ -51,10 +51,10 @@ namespace checkers
 		inline void getline(std::string& str);
 		inline bool state(void) const;
 
-		static io& wait(io& io);
-		static io& nowait(io& io);
+		static inline io& wait(io& io);
+		static inline io& nowait(io& io);
 		static io& flush(io& io);
-		static io& endl(io& io);
+		static inline io& endl(io& io);
 
 	private:
 		/// Define but not implement, to prevent object copy.

@@ -21,8 +21,8 @@
 /** @file move.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.11 $
+ *  @date $Date: 2007-11-02 09:44:30 $
+ *  @version $Revision: 1.12 $
  */
 
 #include <cassert>
@@ -31,14 +31,6 @@
 
 namespace checkers
 {
-	move::move(const std::string& str)
-	{
-		assert(move::is_valid(str));
-
-		this->_orig = bitboard(str[0] - 'a', str[1] - '1');
-		this->_dest = bitboard(str[2] - 'a', str[3] - '1');
-	}
-
 	std::ostream& operator <<(std::ostream& os, const move& rhs)
 	{
 		assert(1 == rhs._orig.bit_count());
