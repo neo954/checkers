@@ -21,8 +21,8 @@
 /** @file engine.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.15 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.16 $
  */
 
 #ifndef __ENGINE_HPP__
@@ -77,7 +77,7 @@ namespace checkers
 
 		board _board;
 		bool _rotate;
-		std::vector<board> _history;
+		std::vector<move> _history;
 		bool _force_mode;
 		int _depth_limit;
 		int _time_limit;

@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 09:44:29 $
- *  @version $Revision: 1.13 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.14 $
  */
 
 #ifndef __BOARD_HPP__
@@ -51,10 +51,13 @@ namespace checkers
 		bool make_black_move(const move& move);
 		bool make_white_move(const move& move);
 
+		void undo_black_move(const move& move);
+		void undo_white_move(const move& move);
+
 		/// Move piece
 		inline bool make_move(const move& move);
 		/// Undo piece
-		inline bool undo_move(const move& move);
+		inline void undo_move(const move& move);
 
 		inline bitboard get_black_pieces(void) const;
 		inline bitboard get_white_pieces(void) const;

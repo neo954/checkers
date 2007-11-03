@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.11 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.12 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -44,6 +44,20 @@ namespace checkers
 		return this->is_black_move() ?
 			this->make_black_move(move) :
 			this->make_white_move(move);
+	}
+
+	inline void board::undo_move(const move& move)
+	{
+		if (move.get_dest() & this->_black_pieces)
+		{
+			this->undo_black_move(move);
+		}
+		else
+		{
+			this->undo_white_move(move);
+		}
+
+		assert(this->is_valid_move(move));
 	}
 
 	inline bitboard board::get_black_pieces(void) const

@@ -2,7 +2,7 @@ PROJECT = checkers
 CXXFLAGS += -DNDEBUG
 CXXFLAGS += -g -ggdb
 CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
-CXXFLAGS += -O9 --param max-inline-insns-single=9000
+CXXFLAGS += -O9 --param max-inline-insns-single=9999
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 TARGETS = ponder runer
@@ -25,7 +25,7 @@ clean:
 	$(RM) -r doc
 
 deps: *.cpp *.hpp
-	$(CXX) -M $(CPPFLAGS) $^ >$@
+	$(CXX) -M $(CPPFLAGS) $^ >$@ 2>/dev/null
 
 include deps
 .PHONY: build clean doc

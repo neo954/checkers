@@ -21,8 +21,8 @@
 /** @file move.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 19:01:18 $
- *  @version $Revision: 1.16 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.17 $
  */
 
 #ifndef __MOVE_HPP__
@@ -49,7 +49,6 @@ namespace checkers
 		inline bool will_crown(void) const;
 
 		friend bool operator ==(const move& lhs, const move& rhs);
-		friend bool operator !=(const move& lhs, const move& rhs);
 
 		friend std::ostream& operator <<(std::ostream& os,
 			const move& rhs);

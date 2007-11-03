@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 19:01:17 $
- *  @version $Revision: 1.12 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.13 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -33,7 +33,8 @@
 
 namespace checkers
 {
-/*       A   B   C   D   E   F   G   H
+/**
+ *       A   B   C   D   E   F   G   H
  *     +---+---+---+---+---+---+---+---+
  *  8  |   | 28|   | 29|   | 30|   | 31|  8  Black
  *     +---+---+---+---+---+---+---+---+
@@ -54,6 +55,12 @@ namespace checkers
  *       A   B   C   D   E   F   G   H
  */
 
+	/** @class bitboard
+	 *  @brief A bitboard, used for boardgames such as chess, checkers,
+	 *   is a type of data structure and bitset, where each bit represents
+	 *   a game position or state, designed for optimization of speed
+	 *   and/or memory or disk use in mass calculations.
+	 */
 	class bitboard
 	{
 	public:
@@ -122,22 +129,23 @@ namespace checkers
 
 		friend bitboard operator |(const bitboard& lhs,
 			const bitboard& rhs);
-		friend bitboard operator |(uint32_t lhs,
-			const bitboard& rhs);
+		friend bitboard operator |(uint32_t lhs, const bitboard& rhs);
 		friend bitboard operator |(const bitboard& lhs, uint32_t rhs);
 		friend bitboard operator &(const bitboard& lhs,
 			const bitboard& rhs);
-		friend bitboard operator &(uint32_t, const bitboard& rhs);
+		friend bitboard operator &(uint32_t lhs, const bitboard& rhs);
 		friend bitboard operator &(const bitboard& lhs, uint32_t rhs);
 		friend bitboard operator ^(const bitboard& lhs,
 			const bitboard& rhs);
-		friend bitboard operator ^(uint32_t, const bitboard& rhs);
+		friend bitboard operator ^(uint32_t lhs, const bitboard& rhs);
 		friend bitboard operator ^(const bitboard& lhs, uint32_t rhs);
 
 		friend std::ostream& operator <<(std::ostream& os,
 			const bitboard& rhs);
 
 	private:
+		/// The 32-bit unsigned integer, one bit hold the state of one
+		/// square on the game board.
 		uint32_t _bitboard;
 	};
 

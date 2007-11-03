@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 19:01:17 $
- *  @version $Revision: 1.16 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.17 $
  */
 
 #include <cstdlib>
@@ -55,20 +55,21 @@ namespace checkers
 				this->_white_pieces |= square;
 				// Intentionally no break
 			case '0':
+				// Intentionally no break
+			default:
 				++i;
 				break;
-			// Intentionally no default section
 			}
 		}	
 
 		p += 2;
-		if (p < input.size() && 'w' == input[p])
+		if (p < input.size() && 'b' == input[p])
 		{
-			this->_player = WHITE;
+			this->_player = BLACK;
 		}
 		else
 		{
-			this->_player = BLACK;
+			this->_player = WHITE;
 		}
 	}
 
@@ -154,6 +155,60 @@ namespace checkers
 
 		this->_player = BLACK;
 		return false;
+	}
+
+	void board::undo_black_move(const move& move)
+	{
+		if (move.get_capture())
+		{
+			if (move.will_capture_a_king())
+			{
+				this->_kings |= move.get_capture();
+			}
+			this->_white_pieces |= move.get_capture();
+		}
+
+		if (move.will_crown())
+		{
+			this->_kings &= ~move.get_dest();
+		}
+
+		if (this->_kings & move.get_dest())
+		{
+			this->_kings &= ~move.get_dest();
+			this->_kings |= move.get_orig();
+		}
+		this->_black_pieces &= ~move.get_dest();
+		this->_black_pieces |= move.get_orig();
+
+		this->_player = BLACK;
+	}
+
+	void board::undo_white_move(const move& move)
+	{
+		if (move.get_capture())
+		{
+			if (move.will_capture_a_king())
+			{
+				this->_kings |= move.get_capture();
+			}
+			this->_black_pieces |= move.get_capture();
+		}
+
+		if (move.will_crown())
+		{
+			this->_kings &= ~move.get_dest();
+		}
+
+		if (this->_kings & move.get_dest())
+		{
+			this->_kings &= ~move.get_dest();
+			this->_kings |= move.get_orig();
+		}
+		this->_white_pieces &= ~move.get_dest();
+		this->_white_pieces |= move.get_orig();
+
+		this->_player = WHITE;
 	}
 
 	bitboard board::get_black_movers(void) const

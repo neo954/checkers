@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 19:01:18 $
- *  @version $Revision: 1.23 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.24 $
  */
 
 #include "engine.hpp"
@@ -287,7 +287,7 @@ done:
 
 	bool engine::make_move(const move& move)
 	{
-		this->_history.push_back(this->_board);
+		this->_history.push_back(move);
 		return this->_board.make_move(move);
 	}
 
@@ -510,7 +510,7 @@ done:
 
 		if (this->_history.size() > 0)
 		{
-			this->_board = this->_history.back();
+			this->_board.undo_move(this->_history.back());
 			this->_history.pop_back();
 			this->print();
 		}

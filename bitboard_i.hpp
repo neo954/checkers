@@ -21,8 +21,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.10 $
+ *  @date $Date: 2007-11-03 14:18:25 $
+ *  @version $Revision: 1.11 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -99,7 +99,7 @@ namespace checkers
 
 	inline bitboard::operator uint32_t(void) const
 	{
-		return static_cast<uint32_t>(this->_bitboard);
+		return this->_bitboard;
 	}
 
 	inline bitboard operator |(const bitboard& lhs, const bitboard& rhs)
