@@ -21,8 +21,8 @@
 /** @file intelligence_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.9 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.10 $
  */
 
 #ifndef __INTELLIGENCE_I_HPP__
@@ -55,54 +55,54 @@ namespace checkers
 	inline int intelligence::evaluate_pieces(void)
 	{
 		return this->_board.is_black_move() ?
-			(this->_board.get_black_pieces().bit_count() -
-			 this->_board.get_white_pieces().bit_count()) :
-			(this->_board.get_white_pieces().bit_count() -
-			 this->_board.get_black_pieces().bit_count());
+			(this->_board.get_black_pieces().bitcount() -
+			 this->_board.get_white_pieces().bitcount()) :
+			(this->_board.get_white_pieces().bitcount() -
+			 this->_board.get_black_pieces().bitcount());
 	}
 
 	inline int intelligence::evaluate_kings(void)
 	{
 		return this->_board.is_black_move() ?
-			 (this->_board.get_black_kings().bit_count() -
-			  this->_board.get_white_kings().bit_count()) :
-			 (this->_board.get_white_kings().bit_count() -
-			  this->_board.get_black_kings().bit_count());
+			 (this->_board.get_black_kings().bitcount() -
+			  this->_board.get_white_kings().bitcount()) :
+			 (this->_board.get_white_kings().bitcount() -
+			  this->_board.get_black_kings().bitcount());
 	}
 
 	inline int intelligence::evaluate_movers(void)
 	{
 		return this->_board.is_black_move() ?
-			(this->_board.get_black_movers().bit_count() -
-			 this->_board.get_white_movers().bit_count()) :
-			(this->_board.get_white_movers().bit_count() -
-			 this->_board.get_black_movers().bit_count());
+			(this->_board.get_black_movers().bitcount() -
+			 this->_board.get_white_movers().bitcount()) :
+			(this->_board.get_white_movers().bitcount() -
+			 this->_board.get_black_movers().bitcount());
 	}
 
 	inline int intelligence::evaluate_kings_row(void)
 	{
 		return this->_board.is_black_move() ?
 			((this->_board.get_black_pieces() &
-				bitboard::WHITE_KINGS_ROW).bit_count() -
+				bitboard::WHITE_KINGS_ROW).bitcount() -
 			 (this->_board.get_white_pieces() &
-				bitboard::BLACK_KINGS_ROW).bit_count()) :
+				bitboard::BLACK_KINGS_ROW).bitcount()) :
 			((this->_board.get_white_pieces() &
-				bitboard::BLACK_KINGS_ROW).bit_count() -
+				bitboard::BLACK_KINGS_ROW).bitcount() -
 			 (this->_board.get_black_pieces() &
-				bitboard::WHITE_KINGS_ROW).bit_count());
+				bitboard::WHITE_KINGS_ROW).bitcount());
 	}
 
 	inline int intelligence::evaluate_edges(void)
 	{
 		return this->_board.is_black_move() ?
 			((this->_board.get_black_pieces() &
-				bitboard::EDGES).bit_count() -
+				bitboard::EDGES).bitcount() -
 			 (this->_board.get_white_pieces() &
-				bitboard::EDGES).bit_count()) :
+				bitboard::EDGES).bitcount()) :
 			((this->_board.get_white_pieces() &
-				bitboard::EDGES).bit_count() -
+				bitboard::EDGES).bitcount() -
 			 (this->_board.get_black_pieces() &
-				bitboard::EDGES).bit_count());
+				bitboard::EDGES).bitcount());
 	}
 
 	inline void intelligence::reorder_moves(std::vector<move>& moves, int ply)

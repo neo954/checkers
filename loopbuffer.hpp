@@ -21,8 +21,8 @@
 /** @file loopbuffer.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.8 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.9 $
  */
 
 #ifndef __LOOPBUFFER_HPP__
@@ -40,12 +40,14 @@ namespace checkers
 		inline int size(void) const;
 		inline bool is_full(void) const;
 		inline bool is_empty(void) const;
+		inline int lines(void) const;
+
 		char front(void) const;
 		void pop_front(void);
 		bool read(int fd);
 		bool write(int fd);
 
-		void getline(std::string& str);
+		std::string getline(void);
 		void push_back(char c);
 		void push_back(const std::string& str);
 		void push_back(const char* s);

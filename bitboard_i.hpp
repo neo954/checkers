@@ -21,8 +21,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-03 14:18:25 $
- *  @version $Revision: 1.11 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.12 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -35,7 +35,7 @@ namespace checkers
 	{
 	}
 
-	inline unsigned int bitboard::bit_count(void) const
+	inline unsigned int bitboard::bitcount(void) const
 	{
 		uint32_t x = this->_bitboard;
 
@@ -47,7 +47,41 @@ namespace checkers
 		return static_cast<int>(x & 0x0000003f);
 	}
 
-	inline bitboard bitboard::get_lsb(void) const
+	inline unsigned int bitboard::ntz(void) const
+	{
+		uint32_t x = this->_bitboard;
+
+		if (0 == x)
+		{
+			return 32;
+		}
+
+		unsigned int n = 1;
+
+		if (0 == (x & 0x0000ffff))
+		{
+			n += 16;
+			x >>= 16;
+		}
+		if (0 == (x & 0x000000ff))
+		{
+			n += 8;
+			x >>= 8;
+		}
+		if (0 == (x & 0x0000000f))
+		{
+			n += 4;
+			x >>= 4;
+		}
+		if (0 == (x & 0x00000003))
+		{
+			n += 2;
+			x >>= 2;
+		}
+		return n - (x & 1);
+	}
+
+	inline bitboard bitboard::lsb(void) const
 	{
 		return this->_bitboard & (-this->_bitboard);
 	}

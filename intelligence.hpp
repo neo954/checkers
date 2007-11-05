@@ -21,8 +21,8 @@
 /** @file intelligence.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.14 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.15 $
  */
 
 #ifndef __INTELLIGENCE_HPP_
@@ -37,13 +37,13 @@ namespace checkers
 	class intelligence
 	{
 	public:
-		static std::vector<move> think(const board& board,
-			int depth_limit, time_t second, io* p_io = NULL);
+		static void think(io& io, std::vector<move>& best_moves,
+			const board& board, int depth_limit, time_t second);
 
 	private:
 		inline explicit intelligence(const board& board);
 
-		int alpha_beta_search(std::vector<move>& best_moves,
+		int alpha_beta_search(io& io, std::vector<move>& best_moves,
 			int depth, int alpha = -INFINITY, int beta = INFINITY,
 			int ply = 0);
 
@@ -64,6 +64,7 @@ namespace checkers
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);
 
+		/// TIMEOUT == -TIMEOUT
 		static const int TIMEOUT  = INT_MIN;
 		static const int INFINITY = INT_MAX;
 		static const int WIN      = 65535;

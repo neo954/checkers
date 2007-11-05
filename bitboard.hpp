@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 16:23:06 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-05 17:29:55 $
+ *  $Revision: 1.15 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -66,10 +66,12 @@ namespace checkers
 		inline bitboard(uint32_t x = 0);
 		bitboard(char file, char rank);
 
-		/// Clasical way to count set bits in bitboard
-		inline unsigned int bit_count(void) const;
+		/// Classical way to count set bits in bitboard
+		inline unsigned int bitcount(void) const;
+		/// Count the tail zero
+		inline unsigned int ntz(void) const;
 		/// Get the Least Significant Bit
-		inline bitboard get_lsb(void) const;
+		inline bitboard lsb(void) const;
 		/// Empty bitboard
 		static const uint32_t EMPTY = 0x0;
 		/// Black pieces initial position

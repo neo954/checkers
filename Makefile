@@ -1,5 +1,5 @@
 PROJECT = checkers
-CXXFLAGS += -DNDEBUG
+#CXXFLAGS += -DNDEBUG
 CXXFLAGS += -g -ggdb
 CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
 CXXFLAGS += -O9 --param max-inline-insns-single=9999

@@ -80,10 +80,6 @@ int main(int argc, char* argv[])
 	
 		io_black << "go\n";
 	
-		io << checkers::io::nowait;
-		io_black << checkers::io::nowait;
-		io_white << checkers::io::nowait;
-	
 		for (;;)
 		{
 			line_black.erase();
@@ -91,9 +87,9 @@ int main(int argc, char* argv[])
 			do
 			{
 				io_black << checkers::io::flush;
-				io_black.getline(line_black);
+				io_black >> line_black;
 				io_white << checkers::io::flush;
-				io_white.getline(line_white);
+				io_white >> line_white;
 				if (line_black.empty() && line_white.empty())
 				{
 					usleep(500);

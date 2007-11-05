@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.16 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.17 $
  */
 
 #include <iomanip>
@@ -33,12 +33,13 @@ namespace checkers
 	/**
 	 *  @return TIMEOUT when timeout
 	 */
-	int intelligence::alpha_beta_search(std::vector<move>& best_moves,
+	int intelligence::alpha_beta_search(io& io, std::vector<move>& best_moves,
 		 int depth, int alpha, int beta, int ply)
 	{
-		if (0 == static_cast<int16_t>(this->_nodes))
+		if (0xffffU == static_cast<uint16_t>(this->_nodes))
 		{
-			if (!this->_reorder && this->is_timeout())
+			io << io::flush;
+			if (this->is_timeout() || io.lines_to_read())
 			{
 				// TIMEOUT == -TIMEOUT
 				return TIMEOUT;
@@ -79,9 +80,9 @@ namespace checkers
 
 			intelligence intelligence(*this);
 			val = intelligence._board.make_move(*pos) ?
-				 intelligence.alpha_beta_search(moves,
+				 intelligence.alpha_beta_search(io, moves,
 					depth,     alpha,   beta, ply + 1) :
-				-intelligence.alpha_beta_search(moves,
+				-intelligence.alpha_beta_search(io, moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
 			if (TIMEOUT == val)
@@ -106,10 +107,9 @@ namespace checkers
 		return alpha;
 	}
 
-	std::vector<move> intelligence::think(const board& board,
-		int depth_limit, time_t time_limit, io* p_io)
+	void intelligence::think(io& io, std::vector<move>& best_moves,
+		const board& board, int depth_limit, time_t time_limit)
 	{
-		std::vector<move> best_moves;
 		int depth;
 		int val;
 		struct timeval start;
@@ -117,23 +117,22 @@ namespace checkers
 
 		intelligence::set_timeout(time_limit);
 
-		for (depth = 1, val = 0;
+		for (depth = std::max(best_moves.size(), 1U), val = 0;
 			depth <= depth_limit && val != TIMEOUT; ++depth)
 		{
-			best_moves.reserve(depth);
-
 			intelligence::_nodes = 0;
 			intelligence::_best_moves = best_moves;
 			intelligence::_reorder = true;
 
 			intelligence intelligence(board);
 			::gettimeofday(&start, NULL);
-			val = intelligence.alpha_beta_search(best_moves, depth);
+			val = intelligence.alpha_beta_search(io, best_moves,
+				depth);
 			::gettimeofday(&end, NULL);
 
-			if (NULL != p_io)
+			if (true)
 			{
-				intelligence::show_think(*p_io, depth, val,
+				intelligence::show_think(io, depth, val,
 					end - start, intelligence::_nodes,
 					best_moves);
 			}
@@ -144,8 +143,6 @@ namespace checkers
 				break;
 			}
 		}
-
-		return best_moves;
 	}
 
 	// ================================================================
@@ -188,7 +185,7 @@ namespace checkers
 		}
 		stream << '\n';
 
-		io << stream.str() << io::nowait << io::flush;
+		io << stream.str() << io::flush;
 	}
 
 	std::vector<move> intelligence::_best_moves;

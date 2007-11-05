@@ -21,8 +21,8 @@
 /** @file loopbuffer.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.10 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.11 $
  */
 
 #include <cerrno>
@@ -114,10 +114,10 @@ namespace checkers
 		return true;
 	}
 
-	void loopbuffer::getline(std::string& str)
+	std::string loopbuffer::getline(void)
 	{
 		char c;
-		str.erase();
+		std::string str;
 
 		if (this->_lines)
 		{
@@ -129,10 +129,14 @@ namespace checkers
 					this->pop_front();
 					break;
 				}
+				/// @warning This is not exception-safe, may
+				/// cause data lose when operator +=() fail
 				str += c;
 				this->pop_front();
 			}
 		}
+
+		return str;
 	}
 
 	void loopbuffer::push_back(char c)

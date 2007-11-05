@@ -21,8 +21,8 @@
 /** @file move_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 19:01:18 $
- *  @version $Revision: 1.14 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.15 $
  */
 
 #ifndef __MOVE_I_HPP__
@@ -39,9 +39,9 @@ namespace checkers
 		_will_capture_a_king(will_capture_a_king),
 		_will_crown(will_crown)
 	{
-		assert(1 == this->_orig.bit_count());
-		assert(1 == this->_dest.bit_count());
-		assert(this->_capture.bit_count() <= 1);
+		assert(1 == this->_orig.bitcount());
+		assert(1 == this->_dest.bitcount());
+		assert(this->_capture.bitcount() <= 1);
 		/// @todo Add more assert to verify.
 	}
 

@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-03 14:18:25 $
- *  @version $Revision: 1.17 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.18 $
  */
 
 #include <cstdlib>
@@ -346,7 +346,7 @@ namespace checkers
 
 		while (black_movers)
 		{
-			orig = black_movers.get_lsb();
+			orig = black_movers.lsb();
 			black_movers &= ~orig;
 
 			dest = (orig >> 4) & not_occupied; 
@@ -403,7 +403,7 @@ namespace checkers
 
 		while (white_movers)
 		{
-			orig = white_movers.get_lsb();
+			orig = white_movers.lsb();
 			white_movers &= ~orig;
 
 			dest = (orig << 4) & not_occupied; 
@@ -461,7 +461,7 @@ namespace checkers
 
 		while (black_jumpers)
 		{
-			orig = black_jumpers.get_lsb();
+			orig = black_jumpers.lsb();
 			black_jumpers &= ~orig;
 
 			capture = (orig >> 4) & this->_white_pieces;
@@ -544,7 +544,7 @@ namespace checkers
 
 		while (white_jumpers)
 		{
-			orig = white_jumpers.get_lsb();
+			orig = white_jumpers.lsb();
 			white_jumpers &= ~orig;
 
 			capture = (orig << 4) & this->_black_pieces;

@@ -21,8 +21,8 @@
 /** @file io.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.10 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.11 $
  */
 
 #include <sys/select.h>
@@ -33,7 +33,7 @@ namespace checkers
 {
 	io::io(int in_fd, int out_fd) :
 		_read_buf(), _write_buf(), _in_fd(in_fd), _out_fd(out_fd),
-		_wait(true), _state(true)
+		_state(true)
 	{
 		// Set stdin and stdout nonblock I/O
 		this->setfl(this->_in_fd,  O_NONBLOCK);
@@ -43,7 +43,7 @@ namespace checkers
 	io::io(std::pair<int, int> fds) :
 		_read_buf(), _write_buf(),
 		_in_fd(fds.first), _out_fd(fds.second),
-		_wait(true), _state(true)
+		_state(true)
 	{
 		// Set stdin and stdout nonblock I/O
 		this->setfl(this->_in_fd,  O_NONBLOCK);
@@ -60,7 +60,6 @@ namespace checkers
 
 	io& io::flush(io& io)
 	{
-		const unsigned long int wait = 500;
 		fd_set read_set;
 		fd_set write_set;
 		int n;
@@ -70,10 +69,6 @@ namespace checkers
 		FD_SET(io._in_fd,  &read_set);
 		FD_SET(io._out_fd, &write_set);
 
-		if (io._wait)
-		{
-			usleep(wait);
-		}
 		n = select(std::max(io._in_fd, io._out_fd) + 1,
 			&read_set, &write_set, NULL, NULL);
 		if (n < 0)

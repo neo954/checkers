@@ -21,8 +21,8 @@
 /** @file bitboard.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 16:24:04 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-05 17:29:55 $
+ *  $Revision: 1.14 $
  */
 
 #include <cassert>
@@ -54,47 +54,17 @@ namespace checkers
 
 	std::ostream& operator <<(std::ostream& os, const bitboard& rhs)
 	{
-		assert(1 == rhs.bit_count());
+		assert(1 == rhs.bitcount());
 
-		switch (rhs._bitboard)
+		static const char* const square[] =
 		{
-		case 0x1 <<  0: os << "a1"; break;
-		case 0x1 <<  1: os << "c1"; break;
-		case 0x1 <<  2: os << "e1"; break;
-		case 0x1 <<  3: os << "g1"; break;
-		case 0x1 <<  4: os << "b2"; break;
-		case 0x1 <<  5: os << "d2"; break;
-		case 0x1 <<  6: os << "f2"; break;
-		case 0x1 <<  7: os << "h2"; break;
-		case 0x1 <<  8: os << "a3"; break;
-		case 0x1 <<  9: os << "c3"; break;
-		case 0x1 << 10: os << "e3"; break;
-		case 0x1 << 11: os << "g3"; break;
-		case 0x1 << 12: os << "b4"; break;
-		case 0x1 << 13: os << "d4"; break;
-		case 0x1 << 14: os << "f4"; break;
-		case 0x1 << 15: os << "h4"; break;
-		case 0x1 << 16: os << "a5"; break;
-		case 0x1 << 17: os << "c5"; break;
-		case 0x1 << 18: os << "e5"; break;
-		case 0x1 << 19: os << "g5"; break;
-		case 0x1 << 20: os << "b6"; break;
-		case 0x1 << 21: os << "d6"; break;
-		case 0x1 << 22: os << "f6"; break;
-		case 0x1 << 23: os << "h6"; break;
-		case 0x1 << 24: os << "a7"; break;
-		case 0x1 << 25: os << "c7"; break;
-		case 0x1 << 26: os << "e7"; break;
-		case 0x1 << 27: os << "g7"; break;
-		case 0x1 << 28: os << "b8"; break;
-		case 0x1 << 29: os << "d8"; break;
-		case 0x1 << 30: os << "f8"; break;
-		case 0x1 << 31: os << "h8"; break;
-		default:
-			assert("Should not reach here");
-			throw std::logic_error("Error (unknown error): ...");
-			break;
-		}
+			"a1", "c1", "e1", "g1", "b2", "d2", "f2", "h2",
+			"a3", "c3", "e3", "g3", "b4", "d4", "f4", "h4",
+			"a5", "c5", "e5", "g5", "b6", "d6", "f6", "h6",
+			"a7", "c7", "e7", "g7", "b8", "d8", "f8", "h8"
+		};
+
+		os << square[rhs.ntz()];
 
 		return os;
 	}

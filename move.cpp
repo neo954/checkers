@@ -21,8 +21,8 @@
 /** @file move.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 19:01:18 $
- *  @version $Revision: 1.13 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.14 $
  */
 
 #include <cassert>
@@ -33,8 +33,8 @@ namespace checkers
 {
 	std::ostream& operator <<(std::ostream& os, const move& rhs)
 	{
-		assert(1 == rhs._orig.bit_count());
-		assert(1 == rhs._dest.bit_count());
+		assert(1 == rhs._orig.bitcount());
+		assert(1 == rhs._dest.bitcount());
 
 		os << rhs._orig << rhs._dest;
 

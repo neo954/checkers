@@ -21,8 +21,8 @@
 /** @file io.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-02 09:44:30 $
- *  @version $Revision: 1.11 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.12 $
  */
 
 #ifndef __IO_HPP__
@@ -48,11 +48,12 @@ namespace checkers
 		inline io& operator <<(const char* rhs);
 		inline io& operator <<(io& (*op)(io&));
 
-		inline void getline(std::string& str);
+		// Get one line from read buffer
+		inline io& operator >>(std::string& rhs);
+
+		inline int lines_to_read(void);
 		inline bool state(void) const;
 
-		static inline io& wait(io& io);
-		static inline io& nowait(io& io);
 		static io& flush(io& io);
 		static inline io& endl(io& io);
 
@@ -66,7 +67,6 @@ namespace checkers
 		loopbuffer _write_buf;
 		int _in_fd;
 		int _out_fd;
-		bool _wait;
 		bool _state;
 
 		void setfl(int fd, int flags);

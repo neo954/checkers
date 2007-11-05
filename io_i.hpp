@@ -21,8 +21,8 @@
 /** @file io_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.9 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.10 $
  */
 
 #ifndef __IO_I_HPP__
@@ -65,26 +65,20 @@ namespace checkers
 		return (*op)(*this);
 	}
 
-	inline void io::getline(std::string& str)
+	inline int io::lines_to_read(void)
 	{
-		this->_read_buf.getline(str);
+		return this->_read_buf.lines();
+	}
+
+	inline io& io::operator >>(std::string& rhs)
+	{
+		this->_read_buf.getline().swap(rhs);
+		return *this;
 	}
 
 	inline bool io::state(void) const
 	{
 		return this->_state;
-	}
-
-	inline io& io::wait(io& io)
-	{
-		io._wait = true;
-		return io;
-	}
-
-	inline io& io::nowait(io& io)
-	{
-		io._wait = false;
-		return io;
 	}
 
 	inline io& io::endl(io& io)

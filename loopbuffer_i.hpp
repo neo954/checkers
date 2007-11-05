@@ -21,8 +21,8 @@
 /** @file loopbuffer_i.hpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.6 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.7 $
  */
 
 #ifndef __LOOPBUFFER_I_HPP__
@@ -60,6 +60,11 @@ namespace checkers
 	inline bool loopbuffer::is_empty(void) const
 	{
 		return this->_front == this->_rear;
+	}
+
+	inline int loopbuffer::lines(void) const
+	{
+		return this->_lines;
 	}
 }
 

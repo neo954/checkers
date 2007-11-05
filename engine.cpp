@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-03 14:18:25 $
- *  @version $Revision: 1.24 $
+ *  @date $Date: 2007-11-05 17:29:55 $
+ *  @version $Revision: 1.25 $
  */
 
 #include "engine.hpp"
@@ -31,8 +31,8 @@
 namespace checkers
 {
 	engine::engine(void) :
-		_board(), _rotate(false), _history(), _force_mode(false),
-		_depth_limit(UNLIMITED), _time_limit(10),
+		_board(), _rotate(false), _history(), _best_moves(),
+		_force_mode(false), _depth_limit(UNLIMITED), _time_limit(10),
 		_io(STDIN_FILENO, STDOUT_FILENO)
 	{
 		this->_action.push_back(std::make_pair("analyze",
@@ -94,15 +94,11 @@ namespace checkers
 		{
 			this->prompt();
 
-			do
-			{
-				this->_io << io::wait << io::flush;
-				if (!this->_io.state())
-				{
-					exit(0);
-				}
-				this->_io.getline(line);
-			} while (line.empty());
+			// Background think
+			intelligence::think(this->_io, this->_best_moves,
+				this->_board, 99999, 99999);
+
+			this->_io >> line;
 
 			idx_begin = 0;
 			idx_end = 0;
@@ -159,8 +155,7 @@ namespace checkers
 				this->print();
 				if (!contin && !this->result())
 				{
-					this->_io << io::nowait
-						<< io::flush;
+					this->_io << io::flush;
 					this->go();
 				}
 			}
@@ -239,7 +234,7 @@ done:
 
 	std::string engine::to_string(const bitboard& square)
 	{
-		assert(1 == square.bit_count());
+		assert(1 == square.bitcount());
 
 		if (this->_board.get_black_men() & square)
 		{
@@ -288,7 +283,23 @@ done:
 	bool engine::make_move(const move& move)
 	{
 		this->_history.push_back(move);
-		return this->_board.make_move(move);
+
+		bool ret = this->_board.make_move(move);
+
+		if (this->_best_moves.size() > 0)
+		{
+			if (move == this->_best_moves[0])
+			{
+				this->_best_moves.erase(
+					this->_best_moves.begin());
+			}
+			else
+			{
+				this->_best_moves.clear();
+			}
+		}
+
+		return ret;
 	}
 
 	void engine::go(void)
@@ -299,28 +310,25 @@ done:
 		}
 
 		bool contin;
-		std::vector<move> best_moves;
-		std::vector<move>::size_type i;
 
 		this->_io << "  Thinking ...\n";
 
 		do
 		{
-			best_moves = intelligence::think(this->_board,
-				this->_depth_limit, this->_time_limit,
-				&this->_io);
-			if (best_moves.empty())
+			intelligence::think(this->_io, this->_best_moves,
+				this->_board, this->_depth_limit,
+				this->_time_limit);
+			if (this->_best_moves.empty())
 			{
 				break;
 			}
-			i = 0;
 			do
 			{
-				this->_io << "move " << best_moves[i] << '\n';
-				contin = this->make_move(best_moves[i]);
+				this->_io << "move " << this->_best_moves[0]
+					<< '\n';
+				contin = this->make_move(this->_best_moves[0]);
 				this->print();
-				++i;
-			} while (contin && i < best_moves.size());
+			} while (contin && !this->_best_moves.empty());
 		} while (contin);
 		this->result();
 	}
@@ -360,8 +368,8 @@ done:
 		(void)args;
 
 		this->_io << "  Analyzing ...\n";
-		(void)intelligence::think(this->_board, this->_depth_limit,
-			this->_time_limit, &this->_io);
+		intelligence::think(this->_io, this->_best_moves, this->_board,
+			this->_depth_limit, this->_time_limit);
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -387,6 +395,7 @@ done:
 		(void)args;
 
 		this->_board.set_black();
+		this->_best_moves.clear();
 	}
 
 	void engine::do_white(const std::vector<std::string>& args)
@@ -395,6 +404,7 @@ done:
 		(void)args;
 
 		this->_board.set_white();
+		this->_best_moves.clear();
 	}
 
 	void engine::do_ping(const std::vector<std::string>& args)
@@ -451,6 +461,7 @@ done:
 
 		this->_board.opening();
 		this->_history.clear();
+		this->_best_moves.clear();
 		this->print();
 	}
 
@@ -512,6 +523,7 @@ done:
 		{
 			this->_board.undo_move(this->_history.back());
 			this->_history.pop_back();
+			this->_best_moves.clear();
 			this->print();
 		}
 		else
