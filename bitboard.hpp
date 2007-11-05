@@ -20,15 +20,14 @@
  */
 /** @file bitboard.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-03 14:18:25 $
- *  @version $Revision: 1.13 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 16:23:06 $
+ *  $Revision: 1.14 $
  */
 
 #ifndef __BITBOARD_HPP__
 #define __BITBOARD_HPP__
 
-#include <stdint.h>
 #include <ostream>
 
 namespace checkers
