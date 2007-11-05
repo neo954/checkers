@@ -20,9 +20,9 @@
  */
 /** @file board.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-03 14:18:25 $
- *  @version $Revision: 1.14 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:53 $
+ *  $Revision: 1.15 $
  */
 
 #ifndef __BOARD_HPP__

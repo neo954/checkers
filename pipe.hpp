@@ -20,9 +20,9 @@
  */
 /** @file pipe.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:07 $
- *  @version $Revision: 1.2 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:53 $
+ *  $Revision: 1.3 $
  */
 
 #ifndef __PIPE_HPP__

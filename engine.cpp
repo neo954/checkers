@@ -20,9 +20,9 @@
  */
 /** @file engine.cpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-05 17:29:55 $
- *  @version $Revision: 1.25 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:53 $
+ *  $Revision: 1.26 $
  */
 
 #include "engine.hpp"

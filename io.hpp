@@ -20,9 +20,9 @@
  */
 /** @file io.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-05 17:29:55 $
- *  @version $Revision: 1.12 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:53 $
+ *  $Revision: 1.13 $
  */
 
 #ifndef __IO_HPP__

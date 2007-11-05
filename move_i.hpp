@@ -20,9 +20,9 @@
  */
 /** @file move_i.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-05 17:29:55 $
- *  @version $Revision: 1.15 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:53 $
+ *  $Revision: 1.16 $
  */
 
 #ifndef __MOVE_I_HPP__

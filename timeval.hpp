@@ -20,9 +20,9 @@
  */
 /** @file timeval.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-01 16:50:08 $
- *  @version $Revision: 1.5 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:54 $
+ *  $Revision: 1.6 $
  */
 
 #ifndef __TIMEVAL_HPP__

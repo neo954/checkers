@@ -20,9 +20,9 @@
  */
 /** @file engine.hpp
  *  @brief
- *  @author Gong Jie <neo@mamiyami.com>
- *  @date $Date: 2007-11-05 17:29:55 $
- *  @version $Revision: 1.17 $
+ *  $Author: neo $
+ *  $Date: 2007-11-05 17:39:53 $
+ *  $Revision: 1.18 $
  */
 
 #ifndef __ENGINE_HPP__
