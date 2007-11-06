@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.26 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.27 $
  */
 
 #include "engine.hpp"
@@ -97,6 +97,11 @@ namespace checkers
 			// Background think
 			intelligence::think(this->_io, this->_best_moves,
 				this->_board, 99999, 99999);
+
+			if (!this->_io.state())
+			{
+				exit(0);
+			}
 
 			this->_io >> line;
 

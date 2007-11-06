@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.14 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -36,7 +36,11 @@ namespace checkers
 	{
 	}
 
-	/// @return Whether the same player move one more
+	/** @return true if multiple opposing pieces may be captured in a
+	 *   single turn, and this move is not the last move in a single turn.
+	 *   The same player is on move once more.
+	 *  @return false if the other player is on move.
+	 */
 	inline bool board::make_move(const move& move)
 	{
 		assert(this->is_valid_move(move));
@@ -131,6 +135,9 @@ namespace checkers
 		this->_player = WHITE;
 	}
 
+	/** @return true when the player on move is winning.
+	 *  @return false in other situation.
+	 */
 	inline bool board::is_winning(void) const
 	{
 		return this->is_black_move() ?
@@ -138,6 +145,9 @@ namespace checkers
 			!this->get_black_pieces();
 	}
 
+	/** @return true when the player on move is losing.
+	 *  @return false in other situation.
+	 */
 	inline bool board::is_losing(void) const
 	{
 		return this->is_black_move() ?

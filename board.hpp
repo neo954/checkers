@@ -21,14 +21,13 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.15 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.16 $
  */
 
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-#include <ostream>
 #include <vector>
 #include "move.hpp"
 
@@ -41,33 +40,46 @@ namespace checkers
 		inline board(void);
 		explicit board(const std::string& input);
 
-		/** Reset all pieces to initial position and set the current
-		 *  player to black */
+		/** @brief Reset all pieces to initial position and set the
+		 *   the player has dark pieces on move.
+		 */
 		void opening(void);
 
 		/// Check if move is legal based on current situation
 		bool is_valid_move(const move& move) const;
 
+		/// Make a move by the player has dark pieces.
 		bool make_black_move(const move& move);
+		/// Make a move by the player has light pieces.
 		bool make_white_move(const move& move);
 
+		/// Undo a move made by the player has dark pieces.
 		void undo_black_move(const move& move);
+		/// Undo a move made by the player has light pieces.
 		void undo_white_move(const move& move);
 
-		/// Move piece
+		/// Make one move.
 		inline bool make_move(const move& move);
-		/// Undo piece
+		/// Undo one move.
 		inline void undo_move(const move& move);
 
+		/// Get all dark pieces on the game board.
 		inline bitboard get_black_pieces(void) const;
+		/// Get all light pieces on the game board.
 		inline bitboard get_white_pieces(void) const;
 
+		/// Get all occupied squares on the game board.
 		inline bitboard get_occupied(void) const;
+		/// Get all not occupied squares on the game board.
 		inline bitboard get_not_occupied(void) const;
 
+		/// Get all dark men on the game board.
 		inline bitboard get_black_men(void) const;
+		/// Get all white men on the game board.
 		inline bitboard get_white_men(void) const;
+		/// Get all dark kings on the game board.
 		inline bitboard get_black_kings(void) const;
+		/// Get all light kings on the game board.
 		inline bitboard get_white_kings(void) const;
 
 		/// Check if the player on move is black
@@ -75,36 +87,48 @@ namespace checkers
 		/// Check if the player on move is white
 		inline bool is_white_move(void) const;
 
+		/// Get all dark pieces, which can move.
 		bitboard get_black_movers(void) const;
+		/// Get all light pieces, which can move.
 		bitboard get_white_movers(void) const;
+		/** @brief Get all dark pieces, which can jump and capture an
+		 *   enemy piece.
+		 */
 		bitboard get_black_jumpers(void) const;
+		/** @brief Get all light pieces, which can jump and capture an
+		 *   enemy piece.
+		 */
 		bitboard get_white_jumpers(void) const;
 
+		/// Generate all legal moves for dark pieces.
 		std::vector<move> generate_black_moves(void) const;
+		/// Generate all legal moves for light pieces.
 		std::vector<move> generate_white_moves(void) const;
+		/// Generate all legal jumps for dark pieces.
 		std::vector<move> generate_black_jumps(void) const;
+		/// Generate all legal jumps for light pieces.
 		std::vector<move> generate_white_jumps(void) const;
 
-		/// Generate all legal moves based on current situation
+		/// Generate all legal moves based on current situation.
 		inline std::vector<move> generate_moves(void) const;
-		/// Generate a legal move based on user input
+		/// Generate one legal move based on user input.
 		move generate_move(const std::string& str) const;
 
-		/// Set the player on move black
+		/// Set the player has dark pieces on move.
 		inline void set_black(void);
-		/// Set the player on move white
+		/// Set the player has light pieces on move.
 		inline void set_white(void);
-		/// Check whether the player on move is winning
+		/// Check whether the player on move is winning.
 		inline bool is_winning(void) const;
-		/// Check whether the player on move is losing
+		/// Check whether the player on move is losing.
 		inline bool is_losing(void) const;
 		
 	private:
-		/// Black pieces
+		/// All the black pieces on the game board.
 		bitboard _black_pieces;
-		/// White pieces
+		/// All the white pieces on the game board.
 		bitboard _white_pieces;
-		/// Kings for both black and white
+		/// All the kings pieces for both black and white.
 		bitboard _kings;
 		/// The player on move
 		player _player;

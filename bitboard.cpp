@@ -21,8 +21,8 @@
 /** @file bitboard.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:29:55 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.15 $
  */
 
 #include <cassert>
@@ -31,22 +31,30 @@
 
 namespace checkers
 {
+	/** @param file ASCII lowercase character, `a' to 'h'.
+	 *  @param rank ASCII digit character `1' to `8'.
+	 */
 	bitboard::bitboard(char file, char rank)
 	{
 		if (file < 'a' || file > 'h')
 		{
+			/// @throw std::logic_error when @e file is illegal.
 			throw std::logic_error("Error (illegal file):"
-				" square");
+				" indecate a dark square");
 		}
 		if (rank < '1' || rank > '8')
 		{
+			/// @throw std::logic_error when @e rank is illegal.
 			throw std::logic_error("Error (illegal rank):"
-				" square");
+				" indecate a dark square");
 		}
 		if (file % 2 != rank % 2)
 		{
+			/** @throw std::logic_error when @e file and @e rank
+			 *   does not indecate a dark sqare on the game board.
+			 */
 			throw std::logic_error("Error (dark square only):"
-				" square");
+				" indecate a dark square");
 		}
 
 		this->_bitboard = 0x1 << ((rank - '1') * 4 + (file - 'a') / 2);

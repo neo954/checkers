@@ -21,8 +21,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.14 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -44,7 +44,7 @@ namespace checkers
 		x = (x + (x >> 4)) & 0x0f0f0f0f;
 		x = x + (x >> 8);
 		x = x + (x >> 16);
-		return static_cast<int>(x & 0x0000003f);
+		return x & 0x0000003f;
 	}
 
 	inline unsigned int bitboard::ntz(void) const

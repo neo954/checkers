@@ -21,8 +21,8 @@
 /** @file intelligence_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.11 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.12 $
  */
 
 #ifndef __INTELLIGENCE_I_HPP__
@@ -48,7 +48,8 @@ namespace checkers
 		return this->evaluate_pieces() * evaluate::WEIGHT_PIECES +
 			this->evaluate_kings() * evaluate::WEIGHT_KINGS +
 			this->evaluate_movers() * evaluate::WEIGHT_MOVERS +
-			this->evaluate_kings_row() * evaluate::WEIGHT_KINGS_ROW +
+			this->evaluate_kings_row() *
+			evaluate::WEIGHT_KINGS_ROW +
 			this->evaluate_edges() * evaluate::WEIGHT_EDGES;
 	}
 

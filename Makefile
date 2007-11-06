@@ -25,7 +25,7 @@ clean:
 	$(RM) -r doc
 
 deps: *.cpp *.hpp
-	$(CXX) -M $(CPPFLAGS) $^ >$@ 2>/dev/null
+	$(CXX) -M $(CPPFLAGS) $^ >$@
 
 include deps
 .PHONY: build clean doc

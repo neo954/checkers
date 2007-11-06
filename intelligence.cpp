@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.18 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.19 $
  */
 
 #include <iomanip>
@@ -36,10 +36,11 @@ namespace checkers
 	int intelligence::alpha_beta_search(io& io, std::vector<move>& best_moves,
 		 int depth, int alpha, int beta, int ply)
 	{
-		if (0xffffU == static_cast<uint16_t>(this->_nodes))
+		if (0 == static_cast<uint16_t>(this->_nodes) && this->_nodes)
 		{
 			io << io::flush;
-			if (this->is_timeout() || io.lines_to_read())
+			if (this->is_timeout() || io.lines_to_read() ||
+				!io.state())
 			{
 				// TIMEOUT == -TIMEOUT
 				return TIMEOUT;
@@ -117,7 +118,8 @@ namespace checkers
 
 		intelligence::set_timeout(time_limit);
 
-		for (depth = std::max(best_moves.size(), 1U), val = 0;
+		for (depth = std::max(best_moves.size(),
+			static_cast<std::vector<move>::size_type>(1U)), val = 0;
 			depth <= depth_limit && val != TIMEOUT; ++depth)
 		{
 			intelligence::_nodes = 0;

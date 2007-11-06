@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:29:55 $
- *  $Revision: 1.15 $
+ *  $Date: 2007-11-06 10:01:42 $
+ *  $Revision: 1.16 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -32,43 +32,52 @@
 
 namespace checkers
 {
-/**
- *       A   B   C   D   E   F   G   H
- *     +---+---+---+---+---+---+---+---+
- *  8  |   | 28|   | 29|   | 30|   | 31|  8  Black
- *     +---+---+---+---+---+---+---+---+
- *  7  | 24|   | 25|   | 26|   | 27|   |  7
- *     +---+---+---+---+---+---+---+---+
- *  6  |   | 20|   | 21|   | 22|   | 23|  6
- *     +---+---+---+---+---+---+---+---+
- *  5  | 16|   | 17|   | 18|   | 19|   |  5
- *     +---+---+---+---+---+---+---+---+
- *  4  |   | 12|   | 13|   | 14|   | 15|  4
- *     +---+---+---+---+---+---+---+---+
- *  3  |  8|   |  9|   | 10|   | 11|   |  3
- *     +---+---+---+---+---+---+---+---+
- *  2  |   |  4|   |  5|   |  6|   |  7|  2
- *     +---+---+---+---+---+---+---+---+
- *  1  |  0|   |  1|   |  2|   |  3|   |  1  White
- *     +---+---+---+---+---+---+---+---+
- *       A   B   C   D   E   F   G   H
- */
-
 	/** @class bitboard
 	 *  @brief A bitboard, used for boardgames such as chess, checkers,
 	 *   is a type of data structure and bitset, where each bit represents
 	 *   a game position or state, designed for optimization of speed
 	 *   and/or memory or disk use in mass calculations.
 	 */
+	/**  This is the official game board of English/American checkers game,
+	 *   8 x 8 board size.  The playable surface consists only of the dark
+	 *   squares.  One dark square is at the lower left corner.  The square
+	 *   `a1' is marked as `0', it is the Least Significant Bit of the
+	 *   bitboard, and square `h8' is marked  as `31', is the Most
+	 *   Significant Bit of the bitboard.
+	 *  @verbatim
+	        A   B   C   D   E   F   G   H
+	      +---+---+---+---+---+---+---+---+
+	   8  |   | 28|   | 29|   | 30|   | 31|  8  Black
+	      +---+---+---+---+---+---+---+---+
+	   7  | 24|   | 25|   | 26|   | 27|   |  7
+	      +---+---+---+---+---+---+---+---+
+	   6  |   | 20|   | 21|   | 22|   | 23|  6
+	      +---+---+---+---+---+---+---+---+
+	   5  | 16|   | 17|   | 18|   | 19|   |  5
+	      +---+---+---+---+---+---+---+---+
+	   4  |   | 12|   | 13|   | 14|   | 15|  4
+	      +---+---+---+---+---+---+---+---+
+	   3  |  8|   |  9|   | 10|   | 11|   |  3
+	      +---+---+---+---+---+---+---+---+
+	   2  |   |  4|   |  5|   |  6|   |  7|  2
+	      +---+---+---+---+---+---+---+---+
+	   1  |  0|   |  1|   |  2|   |  3|   |  1  White
+	      +---+---+---+---+---+---+---+---+
+	        A   B   C   D   E   F   G   H       @endverbatim
+	 */
 	class bitboard
 	{
 	public:
+		/// Construct from a 32-bit unsigned integer
 		inline bitboard(uint32_t x = 0);
+		/** @brief Construct a bitboard with only one bit set.
+		 *   According to the file and rank on the game board.
+		 */
 		bitboard(char file, char rank);
 
-		/// Classical way to count set bits in bitboard
+		/// Count set bits in bitboard, with traditional method.
 		inline unsigned int bitcount(void) const;
-		/// Count the tail zero
+		/// Count the Number of Tail Zeros
 		inline unsigned int ntz(void) const;
 		/// Get the Least Significant Bit
 		inline bitboard lsb(void) const;
@@ -104,28 +113,41 @@ namespace checkers
 			0x1 <<  9 | 0x1 << 10 | 0x1 << 11 | 0x1 << 17 |
 			0x1 << 18 | 0x1 << 19 | 0x1 << 25 | 0x1 << 26 |
 			0x1 << 27;
-		/// The bit mask for checkers board edges
+		/// The bit mask for the game board edges
 		static const uint32_t EDGES =
 			0x1 <<  7 | 0x1 <<  8 | 0x1 << 15 | 0x1 << 16 |
 			0x1 << 23 | 0x1 << 24;
-		/// Kings row for black
+		/** @brief Kings row for black.  Black man will become king
+		 *   when reach this row.
+		 */
 		static const uint32_t BLACK_KINGS_ROW =
 			0x1 <<  0 | 0x1 <<  1 | 0x1 <<  2 | 0x1 <<  3;
-		/// Kings row for white
+		/** @brief Kings row for white.  White man will become king
+		 *   when reach this row.
+		 */
 		static const uint32_t WHITE_KINGS_ROW =
 			0x1 << 28 | 0x1 << 29 | 0x1 << 30 | 0x1 << 31;
 
+		/// Logical left shift by @e rhs bit(s).
 		inline bitboard operator <<(int rhs) const;
+		/// Logical right shift by @e rhs bit(s).
 		inline bitboard operator >>(int rhs) const;
 
+		/// Logical left shift by @e rhs bit(s).  Unary operation.
 		inline bitboard& operator <<=(int rhs);
+		/// Logical right shift by @e rhs bit(s).  Unary operation.
 		inline bitboard& operator >>=(int rhs);
 
+		/// Bitwise NOT.
 		inline bitboard operator ~(void) const;
+		/// Bitwise OR.  Unary operation.
 		inline bitboard& operator |=(const bitboard& rhs);
+		/// Bitwise AND.  Unary operation.
 		inline bitboard& operator &=(const bitboard& rhs);
+		/// Bitwise XOR.  Unary operation.
 		inline bitboard& operator ^=(const bitboard& rhs);
 
+		/// Implicit convert to 32-bit unsigned integer.
 		inline operator uint32_t(void) const;
 
 		friend bitboard operator |(const bitboard& lhs,
@@ -145,21 +167,30 @@ namespace checkers
 			const bitboard& rhs);
 
 	private:
-		/// The 32-bit unsigned integer, one bit hold the state of one
-		/// square on the game board.
+		/// The 32-bit unsigned integer to hold the actual bit pattern
 		uint32_t _bitboard;
 	};
 
+	/// Bitwise OR.
 	inline bitboard operator |(const bitboard& lhs, const bitboard& rhs);
+	/// Bitwise OR.
 	inline bitboard operator |(uint32_t lhs, const bitboard& rhs);
+	/// Bitwise OR.
 	inline bitboard operator |(const bitboard& lhs, uint32_t rhs);
+	/// Bitwise AND.
 	inline bitboard operator &(const bitboard& lhs, const bitboard& rhs);
+	/// Bitwise AND.
 	inline bitboard operator &(uint32_t, const bitboard& rhs);
+	/// Bitwise AND.
 	inline bitboard operator &(const bitboard& lhs, uint32_t rhs);
+	/// Bitwise XOR.
 	inline bitboard operator ^(const bitboard& lhs, const bitboard& rhs);
+	/// Bitwise XOR.
 	inline bitboard operator ^(uint32_t, const bitboard& rhs);
+	/// Bitwise XOR.
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs);
 
+	/// Stream out the square name of @e rhs on the game board.
 	std::ostream& operator <<(std::ostream& os, const bitboard& rhs);
 }
 
