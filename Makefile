@@ -10,7 +10,7 @@ TARGETS = ponder runer
 build: $(TARGETS)
 
 ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o \
-	signal.o
+	signal.o zobrist.o
 
 runer: io.o loopbuffer.o pipe.o signal.o
 

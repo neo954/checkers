@@ -18,54 +18,17 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file move.hpp
+/** @file zobrist.cpp
  *  @brief
  *  $Author: neo $
  *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.19 $
+ *  $Revision: 1.1 $
  */
 
-#ifndef __MOVE_HPP__
-#define __MOVE_HPP__
-
-#include "bitboard.hpp"
+#include "zobrist.hpp"
 
 namespace checkers
 {
-	class board;
-
-	class move
-	{
-	public:
-		inline move(bitboard orig, bitboard dest, bitboard capture,
-			bool will_capture_a_king, bool will_crown);
-
-		inline bitboard get_orig(void) const;
-		inline bitboard get_dest(void) const;
-		inline bitboard get_capture(void) const;
-
-		inline bool will_capture_a_king(void) const;
-		inline bool will_crown(void) const;
-
-		friend bool operator ==(const move& lhs, const move& rhs);
-
-		friend std::ostream& operator <<(std::ostream& os,
-			const move& rhs);
-
-	private:
-		bitboard _orig;
-		bitboard _dest;
-		bitboard _capture;
-		bool _will_capture_a_king;
-		bool _will_crown;
-	};
-
-	inline bool operator ==(const move& lhs, const move& rhs);
-	inline bool operator !=(const move& lhs, const move& rhs);
-
-	std::ostream& operator <<(std::ostream& os, const move& rhs);
 }
 
-#include "move_i.hpp"
-#endif // __MOVE_HPP__
 // End of file

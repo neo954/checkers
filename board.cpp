@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.19 $
+ *  $Date: 2007-11-07 09:44:43 $
+ *  $Revision: 1.20 $
  */
 
 #include <cstdlib>
@@ -635,7 +635,7 @@ namespace checkers
 		bool will_capture_a_king = capture ?
 			static_cast<bool>(capture & this->_kings) : false;
 		bool will_crown = !(orig & this->_kings) &&
-			(this->_player == BLACK ?
+			(this->is_black_move() ?
 				dest & bitboard::BLACK_KINGS_ROW :
 				dest & bitboard::WHITE_KINGS_ROW);
 

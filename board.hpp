@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-07 09:44:43 $
+ *  $Revision: 1.17 $
  */
 
 #ifndef __BOARD_HPP__
@@ -30,6 +30,7 @@
 
 #include <vector>
 #include "move.hpp"
+#include "player.hpp"
 
 namespace checkers
 {

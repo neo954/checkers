@@ -21,10 +21,11 @@
 /** @file bitboard.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.15 $
+ *  $Date: 2007-11-07 09:44:43 $
+ *  $Revision: 1.16 $
  */
 
+#include <stdint.h>
 #include <cassert>
 #include <stdexcept>
 #include "bitboard.hpp"

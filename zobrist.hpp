@@ -18,54 +18,51 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file move.hpp
+/** @file zobrist.hpp
  *  @brief
  *  $Author: neo $
  *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.19 $
+ *  $Revision: 1.1 $
  */
 
-#ifndef __MOVE_HPP__
-#define __MOVE_HPP__
+#ifndef __ZOBRIST_HPP__
+#define __ZOBRIST_HPP__
 
-#include "bitboard.hpp"
+#include <stdint.h>
+#include "board.hpp"
+#include "move.hpp"
 
 namespace checkers
 {
-	class board;
-
-	class move
+	/** @class zobrist
+	 *  @brief
+	 */
+	class zobrist
 	{
 	public:
-		inline move(bitboard orig, bitboard dest, bitboard capture,
-			bool will_capture_a_king, bool will_crown);
+		explicit zobrist(uint64_t key);
+		explicit zobrist(const board& board);
 
-		inline bitboard get_orig(void) const;
-		inline bitboard get_dest(void) const;
-		inline bitboard get_capture(void) const;
-
-		inline bool will_capture_a_king(void) const;
-		inline bool will_crown(void) const;
-
-		friend bool operator ==(const move& lhs, const move& rhs);
-
-		friend std::ostream& operator <<(std::ostream& os,
-			const move& rhs);
+		inline uint64_t key(void) const;
+		void make_move(const move& move);
 
 	private:
-		bitboard _orig;
-		bitboard _dest;
-		bitboard _capture;
-		bool _will_capture_a_king;
-		bool _will_crown;
+		static void init(void);
+		static uint64_t rand64(void);
+
+		static uint64_t _zobrist[3][32];
+
+		enum zobrist_index
+		{
+			BLACK = 0,
+			WHITE = 1,
+			KING  = 2
+		};
+
+		uint64_t _zobrist_key;
 	};
-
-	inline bool operator ==(const move& lhs, const move& rhs);
-	inline bool operator !=(const move& lhs, const move& rhs);
-
-	std::ostream& operator <<(std::ostream& os, const move& rhs);
 }
 
-#include "move_i.hpp"
-#endif // __MOVE_HPP__
+#include "zobrist_i.hpp"
+#endif // __ZOBRIST_HPP__
 // End of file
