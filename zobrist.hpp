@@ -21,8 +21,8 @@
 /** @file zobrist.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.1 $
+ *  $Date: 2007-11-07 16:18:13 $
+ *  $Revision: 1.2 $
  */
 
 #ifndef __ZOBRIST_HPP__
@@ -40,7 +40,7 @@ namespace checkers
 	class zobrist
 	{
 	public:
-		explicit zobrist(uint64_t key);
+		explicit inline zobrist(uint64_t key);
 		explicit zobrist(const board& board);
 
 		inline uint64_t key(void) const;
@@ -50,14 +50,10 @@ namespace checkers
 		static void init(void);
 		static uint64_t rand64(void);
 
-		static uint64_t _zobrist[3][32];
-
-		enum zobrist_index
-		{
-			BLACK = 0,
-			WHITE = 1,
-			KING  = 2
-		};
+		static uint64_t _zobrist_black[32];
+		static uint64_t _zobrist_white[32];
+		static uint64_t _zobrist_king[32];
+		static uint64_t _zobrist_player;
 
 		uint64_t _zobrist_key;
 	};

@@ -21,7 +21,7 @@ doc: Doxyfile *.cpp *.hpp
 	doxygen
 
 clean:
-	$(RM) $(TARGETS) *.o deps core gmon.out
+	$(RM) $(TARGETS) *.gcov *.o deps core gmon.out
 	$(RM) -r doc
 
 deps: *.cpp *.hpp

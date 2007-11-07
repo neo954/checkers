@@ -21,8 +21,8 @@
 /** @file intelligence_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.12 $
+ *  $Date: 2007-11-07 16:18:13 $
+ *  $Revision: 1.13 $
  */
 
 #ifndef __INTELLIGENCE_I_HPP__
@@ -106,14 +106,14 @@ namespace checkers
 				bitboard::EDGES).bitcount());
 	}
 
-	inline void intelligence::reorder_moves(std::vector<move>& moves, int ply)
+	inline void intelligence::reorder_moves(std::vector<move>& moves,
+		unsigned int ply)
 	{
 		if (!this->_reorder)
 		{
 			return;
 		}
-		if (static_cast<std::vector<move>::size_type>(ply)
-			>= this->_best_moves.size())
+		if (ply >= this->_best_moves.size())
 		{
 			this->_reorder = false;
 			return;

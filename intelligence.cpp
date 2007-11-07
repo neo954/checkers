@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.19 $
+ *  $Date: 2007-11-07 16:18:13 $
+ *  $Revision: 1.20 $
  */
 
 #include <iomanip>
@@ -33,8 +33,9 @@ namespace checkers
 	/**
 	 *  @return TIMEOUT when timeout
 	 */
-	int intelligence::alpha_beta_search(io& io, std::vector<move>& best_moves,
-		 int depth, int alpha, int beta, int ply)
+	int intelligence::alpha_beta_search(io& io,
+		std::vector<move>& best_moves, unsigned int depth, int alpha,
+		int beta, unsigned int ply)
 	{
 		if (0 == static_cast<uint16_t>(this->_nodes) && this->_nodes)
 		{
@@ -109,9 +110,9 @@ namespace checkers
 	}
 
 	void intelligence::think(io& io, std::vector<move>& best_moves,
-		const board& board, int depth_limit, time_t time_limit)
+		const board& board, unsigned int depth_limit, time_t time_limit)
 	{
-		int depth;
+		unsigned int depth;
 		int val;
 		struct timeval start;
 		struct timeval end;
@@ -132,7 +133,7 @@ namespace checkers
 				depth);
 			::gettimeofday(&end, NULL);
 
-			if (true)
+			if (false)
 			{
 				intelligence::show_think(io, depth, val,
 					end - start, intelligence::_nodes,
@@ -149,8 +150,9 @@ namespace checkers
 
 	// ================================================================
 
-	void intelligence::show_think(io& io, int depth, int val, struct timeval time,
-		long int nodes, const std::vector<move>& best_moves)
+	void intelligence::show_think(io& io, unsigned int depth, int val,
+		struct timeval time, long unsigned int nodes,
+		const std::vector<move>& best_moves)
 	{
 		std::ostringstream stream;
 
@@ -192,8 +194,8 @@ namespace checkers
 
 	std::vector<move> intelligence::_best_moves;
 	bool intelligence::_reorder = false;
-	long int intelligence::_nodes = 0;
-	struct timeval intelligence::_deadline = {0, 0};
+	long unsigned int intelligence::_nodes = 0;
+	struct timeval intelligence::_deadline = { 0, 0 };
 }
 
 // End of file

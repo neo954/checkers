@@ -21,8 +21,8 @@
 /** @file intelligence.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-07 16:18:13 $
+ *  $Revision: 1.17 $
  */
 
 #ifndef __INTELLIGENCE_HPP_
@@ -38,18 +38,19 @@ namespace checkers
 	{
 	public:
 		static void think(io& io, std::vector<move>& best_moves,
-			const board& board, int depth_limit, time_t second);
+			const board& board, unsigned int depth_limit,
+			time_t second);
 
 	private:
 		inline explicit intelligence(const board& board);
 
 		int alpha_beta_search(io& io, std::vector<move>& best_moves,
-			int depth, int alpha = -INFINITY, int beta = INFINITY,
-			int ply = 0);
+			unsigned int depth, int alpha = -INFINITY,
+			int beta = INFINITY, unsigned int ply = 0);
 
 		/// Print think output
-		static void show_think(io& io, int depth, int val,
-			struct timeval time, long int nodes,
+		static void show_think(io& io, unsigned int depth, int val,
+			struct timeval time, long unsigned int nodes,
 			const std::vector<move>& best_moves);
 
 		inline int evaluate(void);
@@ -59,7 +60,7 @@ namespace checkers
 		inline int evaluate_kings_row(void);
 		inline int evaluate_edges(void);
 
-		inline void reorder_moves(std::vector<move>& moves, int ply);
+		inline void reorder_moves(std::vector<move>& moves, unsigned int ply);
 
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);
@@ -74,7 +75,7 @@ namespace checkers
 		static std::vector<move> _best_moves;
 		static bool _reorder;
 
-		static long int _nodes;
+		static long unsigned int _nodes;
 		static struct timeval _deadline;
 	};
 }
