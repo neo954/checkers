@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.15 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -72,6 +72,11 @@ namespace checkers
 	inline bitboard board::get_white_pieces(void) const
 	{
 		return this->_white_pieces;
+	}
+
+	inline bitboard board::get_kings(void) const
+	{
+		return this->_kings;
 	}
 
 	inline bitboard board::get_occupied(void) const

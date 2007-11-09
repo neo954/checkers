@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.17 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -147,6 +147,8 @@ namespace checkers
 		/// Bitwise XOR.  Unary operation.
 		inline bitboard& operator ^=(const bitboard& rhs);
 
+		/// Implicit convert to bool.
+		inline operator bool(void) const;
 		/// Implicit convert to 32-bit unsigned integer.
 		inline operator uint32_t(void) const;
 
@@ -162,6 +164,10 @@ namespace checkers
 			const bitboard& rhs);
 		friend bitboard operator ^(uint32_t lhs, const bitboard& rhs);
 		friend bitboard operator ^(const bitboard& lhs, uint32_t rhs);
+		friend bool operator ==(const bitboard& lhs,
+			 const bitboard& rhs);
+		friend bool operator !=(const bitboard& lhs,
+			 const bitboard& rhs);
 
 		friend std::ostream& operator <<(std::ostream& os,
 			const bitboard& rhs);
@@ -189,6 +195,10 @@ namespace checkers
 	inline bitboard operator ^(uint32_t, const bitboard& rhs);
 	/// Bitwise XOR.
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs);
+	///
+	inline bool operator ==(const bitboard& lhs, const bitboard& rhs);
+	///
+	inline bool operator !=(const bitboard& lhs, const bitboard& rhs);
 
 	/// Stream out the square name of @e rhs on the game board.
 	std::ostream& operator <<(std::ostream& os, const bitboard& rhs);

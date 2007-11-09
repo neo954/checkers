@@ -21,8 +21,8 @@
 /** @file zobrist.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 16:18:13 $
- *  $Revision: 1.2 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.3 $
  */
 
 #ifndef __ZOBRIST_HPP__
@@ -44,18 +44,19 @@ namespace checkers
 		explicit zobrist(const board& board);
 
 		inline uint64_t key(void) const;
+		void make_black_move(const move& move);
+		void make_white_move(const move& move);
 		void make_move(const move& move);
 
 	private:
-		static void init(void);
 		static uint64_t rand64(void);
 
-		static uint64_t _zobrist_black[32];
-		static uint64_t _zobrist_white[32];
-		static uint64_t _zobrist_king[32];
-		static uint64_t _zobrist_player;
+		static uint64_t _black_pieces[32];
+		static uint64_t _white_pieces[32];
+		static uint64_t _kings[32];
+		static uint64_t _player;
 
-		uint64_t _zobrist_key;
+		uint64_t _key;
 	};
 }
 

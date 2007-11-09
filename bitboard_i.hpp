@@ -21,8 +21,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.15 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -131,6 +131,11 @@ namespace checkers
 		return *this;
 	}
 
+	inline bitboard::operator bool(void) const
+	{
+		return this->_bitboard;
+	}
+
 	inline bitboard::operator uint32_t(void) const
 	{
 		return this->_bitboard;
@@ -179,6 +184,16 @@ namespace checkers
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs)
 	{
 		return lhs._bitboard ^ rhs;
+	}
+
+	inline bool operator ==(const bitboard& lhs, const bitboard& rhs)
+	{
+		return lhs._bitboard == rhs._bitboard;
+	}
+
+	inline bool operator !=(const bitboard& lhs, const bitboard& rhs)
+	{
+		return !(lhs == rhs);
 	}
 }
 

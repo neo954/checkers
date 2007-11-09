@@ -21,14 +21,83 @@
 /** @file zobrist.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.1 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.2 $
  */
 
 #include "zobrist.hpp"
 
 namespace checkers
 {
+	zobrist::zobrist(const board& board)
+	{
+		bitboard pieces;
+		bitboard p;
+
+		for (pieces = board.get_black_pieces();
+			p = pieces.lsb(), pieces &= ~p;
+			static_cast<bool>(pieces))
+		{
+			this->_key ^= _black_pieces[p.ntz()];
+		}
+
+		for (pieces = board.get_white_pieces();
+			p = pieces.lsb(), pieces &= ~p;
+			static_cast<bool>(pieces))
+		{
+			this->_key ^= _white_pieces[p.ntz()];
+		}
+
+		for (pieces = board.get_kings();
+			p = pieces.lsb(), pieces &= ~p;
+			static_cast<bool>(pieces))
+		{
+			this->_key ^= _kings[p.ntz()];
+		}
+	}
+
+	uint64_t zobrist::rand64(void)
+	{
+		return rand() ^ ((uint64_t)rand() << 15) ^
+			((uint64_t)rand() << 30) ^
+			((uint64_t)rand() << 45) ^
+			((uint64_t)rand() << 60);
+	}
+
+	uint64_t zobrist::_black_pieces[32] =
+	{
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+	};
+	uint64_t zobrist::_white_pieces[32] =
+	{
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+	};
+	uint64_t zobrist::_kings[32] =
+	{
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+		rand64(), rand64(), rand64(), rand64(),
+	};
+	uint64_t zobrist::_player = rand64();
 }
 
 // End of file

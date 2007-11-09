@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.17 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.18 $
  */
 
 #ifndef __BOARD_HPP__
@@ -68,6 +68,8 @@ namespace checkers
 		inline bitboard get_black_pieces(void) const;
 		/// Get all light pieces on the game board.
 		inline bitboard get_white_pieces(void) const;
+		/// Get all kings on the game board.
+		inline bitboard get_kings(void) const;
 
 		/// Get all occupied squares on the game board.
 		inline bitboard get_occupied(void) const;

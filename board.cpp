@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.20 $
+ *  $Date: 2007-11-09 09:55:02 $
+ *  $Revision: 1.21 $
  */
 
 #include <cstdlib>
@@ -339,16 +339,14 @@ namespace checkers
 	{
 		std::vector<move> moves;
 		moves.reserve(48);
-		bitboard black_movers = this->get_black_movers();
 		bitboard orig;
 		bitboard dest;
 		const bitboard not_occupied = this->get_not_occupied();
 
-		while (black_movers)
+		for (bitboard black_movers = this->get_black_movers();
+			orig = black_movers.lsb(), black_movers &= ~orig;
+			static_cast<bool>(black_movers))
 		{
-			orig = black_movers.lsb();
-			black_movers &= ~orig;
-
 			dest = (orig >> 4) & not_occupied; 
 			if (dest)
 			{
@@ -396,16 +394,14 @@ namespace checkers
 	{
 		std::vector<move> moves;
 		moves.reserve(48);
-		bitboard white_movers = this->get_white_movers();
 		bitboard orig;
 		bitboard dest;
 		const bitboard not_occupied = this->get_not_occupied();
 
-		while (white_movers)
+		for (bitboard white_movers = this->get_white_movers();
+			orig = white_movers.lsb(), white_movers &= ~orig;
+			static_cast<bool>(white_movers))
 		{
-			orig = white_movers.lsb();
-			white_movers &= ~orig;
-
 			dest = (orig << 4) & not_occupied; 
 			if (dest)
 			{
@@ -453,17 +449,15 @@ namespace checkers
 	{
 		std::vector<move> moves;
 		moves.reserve(48);
-		bitboard black_jumpers = this->get_black_jumpers();
 		bitboard orig;
 		bitboard dest;
 		bitboard capture;
 		const bitboard not_occupied = this->get_not_occupied();
 
-		while (black_jumpers)
+		for (bitboard black_jumpers = this->get_black_jumpers();
+			orig = black_jumpers.lsb(), black_jumpers &= ~orig;
+			static_cast<bool>(black_jumpers))
 		{
-			orig = black_jumpers.lsb();
-			black_jumpers &= ~orig;
-
 			capture = (orig >> 4) & this->_white_pieces;
 			if (capture)
 			{
@@ -536,17 +530,15 @@ namespace checkers
 	{
 		std::vector<move> moves;
 		moves.reserve(48);
-		bitboard white_jumpers = this->get_white_jumpers();
 		bitboard orig;
 		bitboard dest;
 		bitboard capture;
 		const bitboard not_occupied = this->get_not_occupied();
 
-		while (white_jumpers)
+		for (bitboard white_jumpers = this->get_white_jumpers();
+			orig = white_jumpers.lsb(), white_jumpers &= ~orig;
+			static_cast<bool>(white_jumpers))
 		{
-			orig = white_jumpers.lsb();
-			white_jumpers &= ~orig;
-
 			capture = (orig << 4) & this->_black_pieces;
 			if (capture)
 			{
