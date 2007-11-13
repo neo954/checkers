@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 16:18:13 $
- *  $Revision: 1.20 $
+ *  $Date: 2007-11-13 15:48:27 $
+ *  $Revision: 1.21 $
  */
 
 #include <iomanip>
@@ -140,8 +140,7 @@ namespace checkers
 					best_moves);
 			}
 
-			if (best_moves.size() <
-				static_cast<unsigned int>(depth))
+			if (best_moves.size() < depth)
 			{
 				break;
 			}

@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.18 $
+ *  $Date: 2007-11-13 15:48:27 $
+ *  $Revision: 1.19 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -149,8 +149,6 @@ namespace checkers
 
 		/// Implicit convert to bool.
 		inline operator bool(void) const;
-		/// Implicit convert to 32-bit unsigned integer.
-		inline operator uint32_t(void) const;
 
 		friend bitboard operator |(const bitboard& lhs,
 			const bitboard& rhs);

@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.19 $
+ *  $Date: 2007-11-13 15:48:27 $
+ *  $Revision: 1.20 $
  */
 
 #ifndef __BOARD_HPP__
@@ -31,8 +31,6 @@
 #include <vector>
 #include "move.hpp"
 #include "player.hpp"
-class board;
-class zobrist;
 #include "zobrist.hpp"
 
 namespace checkers
@@ -131,8 +129,7 @@ namespace checkers
 		
 	private:
 		/// Rebuild Zobrist key.
-		void rebuild_zobrist(void);
-		bool verify_zobrist(void);
+		zobrist build_zobrist(void);
 
 		/// All the black pieces on the game board.
 		bitboard _black_pieces;

@@ -21,8 +21,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-13 15:48:27 $
+ *  $Revision: 1.17 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -132,11 +132,6 @@ namespace checkers
 	}
 
 	inline bitboard::operator bool(void) const
-	{
-		return this->_bitboard;
-	}
-
-	inline bitboard::operator uint32_t(void) const
 	{
 		return this->_bitboard;
 	}
