@@ -21,41 +21,14 @@
 /** @file zobrist.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.2 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.3 $
  */
 
 #include "zobrist.hpp"
 
 namespace checkers
 {
-	zobrist::zobrist(const board& board)
-	{
-		bitboard pieces;
-		bitboard p;
-
-		for (pieces = board.get_black_pieces();
-			p = pieces.lsb(), pieces &= ~p;
-			static_cast<bool>(pieces))
-		{
-			this->_key ^= _black_pieces[p.ntz()];
-		}
-
-		for (pieces = board.get_white_pieces();
-			p = pieces.lsb(), pieces &= ~p;
-			static_cast<bool>(pieces))
-		{
-			this->_key ^= _white_pieces[p.ntz()];
-		}
-
-		for (pieces = board.get_kings();
-			p = pieces.lsb(), pieces &= ~p;
-			static_cast<bool>(pieces))
-		{
-			this->_key ^= _kings[p.ntz()];
-		}
-	}
-
 	uint64_t zobrist::rand64(void)
 	{
 		return rand() ^ ((uint64_t)rand() << 15) ^
@@ -97,7 +70,7 @@ namespace checkers
 		rand64(), rand64(), rand64(), rand64(),
 		rand64(), rand64(), rand64(), rand64(),
 	};
-	uint64_t zobrist::_player = rand64();
+	uint64_t zobrist::_change_side = rand64();
 }
 
 // End of file

@@ -21,16 +21,16 @@
 /** @file zobrist.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.3 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.4 $
  */
 
 #ifndef __ZOBRIST_HPP__
 #define __ZOBRIST_HPP__
 
+#include <cassert>
 #include <stdint.h>
-#include "board.hpp"
-#include "move.hpp"
+#include "bitboard.hpp"
 
 namespace checkers
 {
@@ -40,13 +40,16 @@ namespace checkers
 	class zobrist
 	{
 	public:
-		explicit inline zobrist(uint64_t key);
-		explicit zobrist(const board& board);
+		explicit inline zobrist(uint64_t key = 0);
 
 		inline uint64_t key(void) const;
-		void make_black_move(const move& move);
-		void make_white_move(const move& move);
-		void make_move(const move& move);
+		void change_black_piece(const bitboard& piece);
+		void change_white_piece(const bitboard& piece);
+		void change_king(const bitboard& piece);
+		void change_side(void);
+
+		friend bool operator ==(const zobrist& lhs, const zobrist& rhs);
+		friend bool operator !=(const zobrist& lhs, const zobrist& rhs);
 
 	private:
 		static uint64_t rand64(void);
@@ -54,10 +57,13 @@ namespace checkers
 		static uint64_t _black_pieces[32];
 		static uint64_t _white_pieces[32];
 		static uint64_t _kings[32];
-		static uint64_t _player;
+		static uint64_t _change_side;
 
 		uint64_t _key;
 	};
+
+	inline bool operator ==(const zobrist& lhs, const zobrist& rhs);
+	inline bool operator !=(const zobrist& lhs, const zobrist& rhs);
 }
 
 #include "zobrist_i.hpp"

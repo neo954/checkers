@@ -21,8 +21,8 @@
 /** @file zobrist_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.2 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.3 $
  */
 
 #ifndef __ZOBRIST_I_HPP__
@@ -40,6 +40,39 @@ namespace checkers
 	inline uint64_t zobrist::key(void) const
 	{
 		return this->_key;
+	}
+
+	inline void zobrist::change_black_piece(const bitboard& piece)
+	{
+		assert(1 == piece.bitcount());
+		this->_key ^= this->_black_pieces[piece.ntz()];
+	}
+
+	inline void zobrist::change_white_piece(const bitboard& piece)
+	{
+		assert(1 == piece.bitcount());
+		this->_key ^= this->_white_pieces[piece.ntz()];
+	}
+
+	inline void zobrist::change_king(const bitboard& piece)
+	{
+		assert(1 == piece.bitcount());
+		this->_key ^= this->_kings[piece.ntz()];
+	}
+
+	inline void zobrist::change_side(void)
+	{
+		this->_key ^= this->_change_side;
+	}
+
+	inline bool operator ==(const zobrist& lhs, const zobrist& rhs)
+	{
+		return lhs._key == rhs._key;
+	}
+
+	inline bool operator !=(const zobrist& lhs, const zobrist& rhs)
+	{
+		return !(lhs == rhs);
 	}
 }
 

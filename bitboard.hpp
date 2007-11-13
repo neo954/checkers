@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.17 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.18 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -69,7 +69,7 @@ namespace checkers
 	{
 	public:
 		/// Construct from a 32-bit unsigned integer
-		inline bitboard(uint32_t x = 0);
+		explicit inline bitboard(uint32_t x = 0);
 		/** @brief Construct a bitboard with only one bit set.
 		 *   According to the file and rank on the game board.
 		 */

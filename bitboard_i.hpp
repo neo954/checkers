@@ -21,8 +21,8 @@
 /** @file bitboard_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.15 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.16 $
  */
 
 #ifndef __BITBOARD_I_HPP__
@@ -83,17 +83,17 @@ namespace checkers
 
 	inline bitboard bitboard::lsb(void) const
 	{
-		return this->_bitboard & (-this->_bitboard);
+		return bitboard(this->_bitboard & (-this->_bitboard));
 	}
 
 	inline bitboard bitboard::operator <<(int rhs) const
 	{
-		return this->_bitboard << rhs;
+		return bitboard(this->_bitboard << rhs);
 	}
 
 	inline bitboard bitboard::operator >>(int rhs) const
 	{
-		return this->_bitboard >> rhs;
+		return bitboard(this->_bitboard >> rhs);
 	}
 
 	inline bitboard& bitboard::operator <<=(int rhs)
@@ -110,7 +110,7 @@ namespace checkers
 
 	inline bitboard bitboard::operator ~(void) const
 	{
-		return ~this->_bitboard;
+		return bitboard(~this->_bitboard);
 	}
 
 	inline bitboard& bitboard::operator |=(const bitboard& rhs)
@@ -143,47 +143,47 @@ namespace checkers
 
 	inline bitboard operator |(const bitboard& lhs, const bitboard& rhs)
 	{
-		return lhs._bitboard | rhs._bitboard;
+		return bitboard(lhs._bitboard | rhs._bitboard);
 	}
 
 	inline bitboard operator |(uint32_t lhs, const bitboard& rhs)
 	{
-		return lhs | rhs._bitboard;
+		return bitboard(lhs | rhs._bitboard);
 	}
 
 	inline bitboard operator |(const bitboard& lhs, uint32_t rhs)
 	{
-		return lhs._bitboard | rhs;
+		return bitboard(lhs._bitboard | rhs);
 	}
 
 	inline bitboard operator &(const bitboard& lhs, const bitboard& rhs)
 	{
-		return lhs._bitboard & rhs._bitboard;
+		return bitboard(lhs._bitboard & rhs._bitboard);
 	}
 
 	inline bitboard operator &(uint32_t lhs, const bitboard& rhs)
 	{
-		return lhs & rhs._bitboard;
+		return bitboard(lhs & rhs._bitboard);
 	}
 
 	inline bitboard operator &(const bitboard& lhs, uint32_t rhs)
 	{
-		return lhs._bitboard & rhs;
+		return bitboard(lhs._bitboard & rhs);
 	}
 
 	inline bitboard operator ^(const bitboard& lhs, const bitboard& rhs)
 	{
-		return lhs._bitboard ^ rhs._bitboard;
+		return bitboard(lhs._bitboard ^ rhs._bitboard);
 	}
 
 	inline bitboard operator ^(uint32_t lhs, const bitboard& rhs)
 	{
-		return lhs ^ rhs._bitboard;
+		return bitboard(lhs ^ rhs._bitboard);
 	}
 
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs)
 	{
-		return lhs._bitboard ^ rhs;
+		return bitboard(lhs._bitboard ^ rhs);
 	}
 
 	inline bool operator ==(const bitboard& lhs, const bitboard& rhs)

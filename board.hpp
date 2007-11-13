@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.18 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.19 $
  */
 
 #ifndef __BOARD_HPP__
@@ -31,6 +31,9 @@
 #include <vector>
 #include "move.hpp"
 #include "player.hpp"
+class board;
+class zobrist;
+#include "zobrist.hpp"
 
 namespace checkers
 {
@@ -127,6 +130,10 @@ namespace checkers
 		inline bool is_losing(void) const;
 		
 	private:
+		/// Rebuild Zobrist key.
+		void rebuild_zobrist(void);
+		bool verify_zobrist(void);
+
 		/// All the black pieces on the game board.
 		bitboard _black_pieces;
 		/// All the white pieces on the game board.
@@ -135,6 +142,8 @@ namespace checkers
 		bitboard _kings;
 		/// The player on move
 		player _player;
+		/// The Zobrist key
+		zobrist _zobrist;
 
 		friend std::ostream& operator <<(std::ostream& os,
 			const board& rhs);

@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-09 09:55:02 $
- *  $Revision: 1.15 $
+ *  $Date: 2007-11-13 10:21:29 $
+ *  $Revision: 1.16 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -32,7 +32,7 @@ namespace checkers
 {
 	inline board::board(void) :
 		_black_pieces(bitboard::EMPTY), _white_pieces(bitboard::EMPTY),
-		_kings(bitboard::EMPTY), _player(BLACK)
+		_kings(bitboard::EMPTY), _player(BLACK), _zobrist(0x0UL)
 	{
 	}
 
