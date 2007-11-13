@@ -21,8 +21,8 @@
 /** @file zobrist.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.4 $
+ *  $Date: 2007-11-13 17:38:39 $
+ *  $Revision: 1.5 $
  */
 
 #ifndef __ZOBRIST_HPP__
@@ -40,7 +40,7 @@ namespace checkers
 	class zobrist
 	{
 	public:
-		explicit inline zobrist(uint64_t key = 0);
+		explicit inline zobrist(uint64_t key = 0x0UL);
 
 		inline uint64_t key(void) const;
 		void change_black_piece(const bitboard& piece);
@@ -52,7 +52,8 @@ namespace checkers
 		friend bool operator !=(const zobrist& lhs, const zobrist& rhs);
 
 	private:
-		static uint64_t rand64(void);
+		static inline uint32_t rand32(void);
+		static inline uint64_t rand64(void);
 
 		static uint64_t _black_pieces[32];
 		static uint64_t _white_pieces[32];

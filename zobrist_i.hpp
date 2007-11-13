@@ -21,8 +21,8 @@
 /** @file zobrist_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.3 $
+ *  $Date: 2007-11-13 17:38:39 $
+ *  $Revision: 1.4 $
  */
 
 #ifndef __ZOBRIST_I_HPP__
@@ -63,6 +63,20 @@ namespace checkers
 	inline void zobrist::change_side(void)
 	{
 		this->_key ^= this->_change_side;
+	}
+
+	inline uint32_t zobrist::rand32(void)
+	{
+		static uint32_t seed = 0U;
+		seed = (uint32_t(9301U) * seed + uint32_t(49297U)) %
+			uint32_t(233280U);
+
+		return seed;
+	}
+
+	inline uint64_t zobrist::rand64(void)
+	{
+		return uint64_t(rand32()) | (uint64_t(rand32()) << 32);
 	}
 
 	inline bool operator ==(const zobrist& lhs, const zobrist& rhs)

@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 15:48:27 $
- *  $Revision: 1.23 $
+ *  $Date: 2007-11-13 17:38:38 $
+ *  $Revision: 1.24 $
  */
 
 #include <cstdlib>
@@ -194,58 +194,87 @@ namespace checkers
 
 	void board::undo_black_move(const move& move)
 	{
+		if (this->is_white_move())
+		{
+			this->_player = BLACK;
+			this->_zobrist.change_side();
+		}
+
 		if (move.get_capture())
 		{
 			if (move.will_capture_a_king())
 			{
 				this->_kings |= move.get_capture();
+				this->_zobrist.change_king(move.get_capture());
 			}
+
 			this->_white_pieces |= move.get_capture();
+			this->_zobrist.change_white_piece(move.get_capture());
 		}
 
 		if (move.will_crown())
 		{
 			this->_kings &= ~move.get_dest();
+			this->_zobrist.change_king(move.get_dest());
 		}
 
 		if (this->_kings & move.get_dest())
 		{
 			this->_kings &= ~move.get_dest();
-			this->_kings |= move.get_orig();
-		}
-		this->_black_pieces &= ~move.get_dest();
-		this->_black_pieces |= move.get_orig();
+			this->_zobrist.change_king(move.get_dest());
 
-		this->_player = BLACK;
+			this->_kings |= move.get_orig();
+			this->_zobrist.change_king(move.get_orig());
+		}
+
+		this->_black_pieces &= ~move.get_dest();
+		this->_zobrist.change_black_piece(move.get_dest());
+
+		this->_black_pieces |= move.get_orig();
+		this->_zobrist.change_black_piece(move.get_orig());
 
 		assert(this->build_zobrist() == this->_zobrist);
 	}
 
 	void board::undo_white_move(const move& move)
 	{
+		if (this->is_black_move())
+		{
+			this->_player = WHITE;
+			this->_zobrist.change_side();
+		}
+
 		if (move.get_capture())
 		{
 			if (move.will_capture_a_king())
 			{
 				this->_kings |= move.get_capture();
+				this->_zobrist.change_king(move.get_capture());
 			}
 			this->_black_pieces |= move.get_capture();
+			this->_zobrist.change_black_piece(move.get_capture());
 		}
 
 		if (move.will_crown())
 		{
 			this->_kings &= ~move.get_dest();
+			this->_zobrist.change_king(move.get_dest());
 		}
 
 		if (this->_kings & move.get_dest())
 		{
 			this->_kings &= ~move.get_dest();
-			this->_kings |= move.get_orig();
-		}
-		this->_white_pieces &= ~move.get_dest();
-		this->_white_pieces |= move.get_orig();
+			this->_zobrist.change_king(move.get_dest());
 
-		this->_player = WHITE;
+			this->_kings |= move.get_orig();
+			this->_zobrist.change_king(move.get_orig());
+		}
+
+		this->_white_pieces &= ~move.get_dest();
+		this->_zobrist.change_white_piece(move.get_dest());
+
+		this->_white_pieces |= move.get_orig();
+		this->_zobrist.change_white_piece(move.get_orig());
 
 		assert(this->build_zobrist() == this->_zobrist);
 	}

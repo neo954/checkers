@@ -21,22 +21,14 @@
 /** @file zobrist.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.3 $
+ *  $Date: 2007-11-13 17:38:39 $
+ *  $Revision: 1.4 $
  */
 
 #include "zobrist.hpp"
 
 namespace checkers
 {
-	uint64_t zobrist::rand64(void)
-	{
-		return rand() ^ ((uint64_t)rand() << 15) ^
-			((uint64_t)rand() << 30) ^
-			((uint64_t)rand() << 45) ^
-			((uint64_t)rand() << 60);
-	}
-
 	uint64_t zobrist::_black_pieces[32] =
 	{
 		rand64(), rand64(), rand64(), rand64(),
