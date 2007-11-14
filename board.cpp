@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 17:38:38 $
- *  $Revision: 1.24 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.25 $
  */
 
 #include <cstdlib>
@@ -65,11 +65,11 @@ namespace checkers
 		p += 2;
 		if (p < input.size() && 'b' == input[p])
 		{
-			this->_player = BLACK;
+			this->_player = board::BLACK;
 		}
 		else
 		{
-			this->_player = WHITE;
+			this->_player = board::WHITE;
 		}
 
 		this->_zobrist = this->build_zobrist();
@@ -80,7 +80,7 @@ namespace checkers
 		this->_black_pieces = bitboard(bitboard::BLACK_PIECES_INIT);
 		this->_white_pieces = bitboard(bitboard::WHITE_PIECES_INIT);
 		this->_kings  = bitboard(bitboard::EMPTY);
-		this->_player = BLACK;
+		this->_player = board::BLACK;
 		this->_zobrist = this->build_zobrist();
 	}
 
@@ -92,7 +92,8 @@ namespace checkers
 			std::find(legal_moves.begin(), legal_moves.end(), move);
 	}
 
-	/// @return Whether the same player move one more
+	/** @return Whether the same player move one more
+	 */ 
 	bool board::make_black_move(const move& move)
 	{
 		this->_black_pieces &= ~move.get_orig();
@@ -135,14 +136,15 @@ namespace checkers
 			}
 		}
 
-		this->_player = WHITE;
+		this->_player = board::WHITE;
 		this->_zobrist.change_side();
 
 		assert(this->build_zobrist() == this->_zobrist);
 		return false;
 	}
 
-	/// @return Whether the same player move one more
+	/** @return Whether the same player move one more
+	 */ 
 	bool board::make_white_move(const move& move)
 	{
 		this->_white_pieces &= ~move.get_orig();
@@ -185,7 +187,7 @@ namespace checkers
 			}
 		}
 
-		this->_player = BLACK;
+		this->_player = board::BLACK;
 		this->_zobrist.change_side();
 
 		assert(this->build_zobrist() == this->_zobrist);
@@ -196,7 +198,7 @@ namespace checkers
 	{
 		if (this->is_white_move())
 		{
-			this->_player = BLACK;
+			this->_player = board::BLACK;
 			this->_zobrist.change_side();
 		}
 
@@ -240,7 +242,7 @@ namespace checkers
 	{
 		if (this->is_black_move())
 		{
-			this->_player = WHITE;
+			this->_player = board::WHITE;
 			this->_zobrist.change_side();
 		}
 

@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-06 10:01:42 $
- *  $Revision: 1.27 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.28 $
  */
 
 #include "engine.hpp"
@@ -35,6 +35,8 @@ namespace checkers
 		_force_mode(false), _depth_limit(UNLIMITED), _time_limit(10),
 		_io(STDIN_FILENO, STDOUT_FILENO)
 	{
+		this->_action.push_back(std::make_pair("?",
+			&engine::do_help));
 		this->_action.push_back(std::make_pair("analyze",
 			&engine::do_analyze));
 		this->_action.push_back(std::make_pair("black",
@@ -94,9 +96,22 @@ namespace checkers
 		{
 			this->prompt();
 
-			// Background think
-			intelligence::think(this->_io, this->_best_moves,
-				this->_board, 99999, 99999);
+			if (this->_force_mode)
+			{
+				do
+				{
+					this->_io << io::flush;
+					usleep(1000);
+				} while (!this->_io.lines_to_read() &&
+					this->_io.state());
+			}
+			else
+			{
+				// Background think
+				intelligence::think(this->_io,
+					this->_best_moves, this->_board,
+					99999, 99999, intelligence::SILENT);
+			}
 
 			if (!this->_io.state())
 			{
@@ -161,7 +176,10 @@ namespace checkers
 				if (!contin && !this->result())
 				{
 					this->_io << io::flush;
-					this->go();
+					if (!this->_force_mode)
+					{
+						this->go();
+					}
 				}
 			}
 			catch (const std::logic_error& e)
@@ -322,7 +340,7 @@ done:
 		{
 			intelligence::think(this->_io, this->_best_moves,
 				this->_board, this->_depth_limit,
-				this->_time_limit);
+				this->_time_limit, intelligence::VERBOSE);
 			if (this->_best_moves.empty())
 			{
 				break;
@@ -374,7 +392,8 @@ done:
 
 		this->_io << "  Analyzing ...\n";
 		intelligence::think(this->_io, this->_best_moves, this->_board,
-			this->_depth_limit, this->_time_limit);
+			this->_depth_limit, this->_time_limit,
+			intelligence::VERBOSE);
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -533,7 +552,7 @@ done:
 		}
 		else
 		{
-			this->_io << "Error (no moves to undo): undo\n";
+			this->_io << "Error (no move to undo): undo\n";
 		}
 	}
 

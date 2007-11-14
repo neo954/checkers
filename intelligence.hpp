@@ -21,8 +21,8 @@
 /** @file intelligence.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 16:18:13 $
- *  $Revision: 1.17 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.18 $
  */
 
 #ifndef __INTELLIGENCE_HPP_
@@ -37,9 +37,15 @@ namespace checkers
 	class intelligence
 	{
 	public:
+		enum verbose
+		{
+			SILENT  = 0,
+			VERBOSE = 1
+		};
+
 		static void think(io& io, std::vector<move>& best_moves,
 			const board& board, unsigned int depth_limit,
-			time_t second);
+			time_t second, verbose show_detail);
 
 	private:
 		inline explicit intelligence(const board& board);
@@ -51,7 +57,7 @@ namespace checkers
 		/// Print think output
 		static void show_think(io& io, unsigned int depth, int val,
 			struct timeval time, long unsigned int nodes,
-			const std::vector<move>& best_moves);
+			const std::vector<move>& best_moves, bool show_title);
 
 		inline int evaluate(void);
 		inline int evaluate_pieces(void);

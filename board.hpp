@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 15:48:27 $
- *  $Revision: 1.20 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.21 $
  */
 
 #ifndef __BOARD_HPP__
@@ -30,7 +30,6 @@
 
 #include <vector>
 #include "move.hpp"
-#include "player.hpp"
 #include "zobrist.hpp"
 
 namespace checkers
@@ -39,6 +38,12 @@ namespace checkers
 	class board
 	{
 	public:
+		enum player
+		{
+			BLACK = 1,
+			WHITE = -BLACK
+		};
+
 		inline board(void);
 		explicit board(const std::string& input);
 
@@ -151,4 +156,3 @@ namespace checkers
 
 #include "board_i.hpp"
 #endif // __BOARD_HPP__
-// End of file

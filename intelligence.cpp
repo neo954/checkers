@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 15:48:27 $
- *  $Revision: 1.21 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.22 $
  */
 
 #include <iomanip>
@@ -110,8 +110,10 @@ namespace checkers
 	}
 
 	void intelligence::think(io& io, std::vector<move>& best_moves,
-		const board& board, unsigned int depth_limit, time_t time_limit)
+		const board& board, unsigned int depth_limit, time_t time_limit,
+		verbose show_detail)
 	{
+		int i;
 		unsigned int depth;
 		int val;
 		struct timeval start;
@@ -119,9 +121,9 @@ namespace checkers
 
 		intelligence::set_timeout(time_limit);
 
-		for (depth = std::max(best_moves.size(),
+		for (i = 0, depth = std::max(best_moves.size(),
 			static_cast<std::vector<move>::size_type>(1U)), val = 0;
-			depth <= depth_limit && val != TIMEOUT; ++depth)
+			depth <= depth_limit && val != TIMEOUT; ++i, ++depth)
 		{
 			intelligence::_nodes = 0;
 			intelligence::_best_moves = best_moves;
@@ -133,11 +135,11 @@ namespace checkers
 				depth);
 			::gettimeofday(&end, NULL);
 
-			if (false)
+			if (intelligence::VERBOSE == show_detail)
 			{
 				intelligence::show_think(io, depth, val,
 					end - start, intelligence::_nodes,
-					best_moves);
+					best_moves, !(i % 8));
 			}
 
 			if (best_moves.size() < depth)
@@ -151,14 +153,15 @@ namespace checkers
 
 	void intelligence::show_think(io& io, unsigned int depth, int val,
 		struct timeval time, long unsigned int nodes,
-		const std::vector<move>& best_moves)
+		const std::vector<move>& best_moves, bool show_title)
 	{
 		std::ostringstream stream;
 
-		if (1 == depth % 10)
+		if (show_title)
 		{
 			stream << "  depth   value      time       nodes\n";
-			stream << "  ----------------------------------------------------------------------------\n";
+			stream << "  ----------------------------------------"
+				"------------------------------------\n";
 		}
 		stream << "  " << std::setw(5) << depth;
 		stream << "  ";
@@ -182,7 +185,8 @@ namespace checkers
 		{
 			if (i > 0 && 0 == i % 8)
 			{
-				stream << "\n                                      ";
+				stream << "\n                                "
+					"      ";
 			}
 			stream << ' ' << best_moves[i];
 		}

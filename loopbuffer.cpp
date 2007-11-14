@@ -21,8 +21,8 @@
 /** @file loopbuffer.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.12 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.13 $
  */
 
 #include <cerrno>
@@ -68,11 +68,12 @@ namespace checkers
 				}
 				std::ostringstream error;
 				error << "Read error while read from fd - " << fd;
+				/// @throw std::runtime_error when read() fail.
 				throw std::runtime_error(error.str());
 			}
 			else if (0 == n)
 			{
-				// eof
+				/// @return false when read() EOF.
 				return false;
 			}
 			else
@@ -80,6 +81,7 @@ namespace checkers
 				this->push_back(c);
 			}
 		}
+		/// @return true on success.
 		return true;
 	}
 
@@ -99,11 +101,14 @@ namespace checkers
 				}
 				std::ostringstream error;
 				error << "Write error while write to fd - " << fd;
+				/// @throw std::runtime_error when write() fail.
 				throw std::runtime_error(error.str());
 			}
 			else if (0 == n)
 			{
-				// eof
+				/** @return false when write() return 0.
+				 *   This is abnormal, and should not reach here.
+				 */
 				return false;
 			}
 			else
@@ -111,6 +116,7 @@ namespace checkers
 				this->pop_front();
 			}
 		}
+		/// @return true on success.
 		return true;
 	}
 

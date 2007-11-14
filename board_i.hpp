@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 10:21:29 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-14 09:48:57 $
+ *  $Revision: 1.17 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -32,14 +32,14 @@ namespace checkers
 {
 	inline board::board(void) :
 		_black_pieces(bitboard::EMPTY), _white_pieces(bitboard::EMPTY),
-		_kings(bitboard::EMPTY), _player(BLACK), _zobrist(0x0UL)
+		_kings(bitboard::EMPTY), _player(board::BLACK), _zobrist(0x0UL)
 	{
 	}
 
-	/** @return true if multiple opposing pieces may be captured in a
+	/** @return True if multiple opposing pieces may be captured in a
 	 *   single turn, and this move is not the last move in a single turn.
 	 *   The same player is on move once more.
-	 *  @return false if the other player is on move.
+	 *  @return False if the other player is on move.
 	 */
 	inline bool board::make_move(const move& move)
 	{
@@ -111,12 +111,12 @@ namespace checkers
 
 	inline bool board::is_black_move(void) const
 	{
-		return BLACK == this->_player;
+		return board::BLACK == this->_player;
 	}
 
 	inline bool board::is_white_move(void) const
 	{
-		return WHITE == this->_player;
+		return board::WHITE == this->_player;
 	}
 
 	inline std::vector<move> board::generate_moves(void) const
@@ -132,12 +132,12 @@ namespace checkers
 
 	inline void board::set_black(void)
 	{
-		this->_player = BLACK;
+		this->_player = board::BLACK;
 	}
 
 	inline void board::set_white(void)
 	{
-		this->_player = WHITE;
+		this->_player = board::WHITE;
 	}
 
 	/** @return true when the player on move is winning.
