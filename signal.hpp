@@ -21,14 +21,14 @@
 /** @file signal.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.4 $
+ *  $Date: 2007-11-14 17:21:59 $
+ *  $Revision: 1.5 $
  */
 
 #ifndef __SIGNAL_H__
 #define __SIGNAL_H__
 
-#include <signal.h>
+#include <csignal>
 
 namespace checkers
 {

@@ -21,12 +21,11 @@
 /** @file signal.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.4 $
+ *  $Date: 2007-11-14 17:21:59 $
+ *  $Revision: 1.5 $
  */
 
 #include <cerrno>
-#include <csignal>
 #include <stdexcept>
 #include "signal.hpp"
 

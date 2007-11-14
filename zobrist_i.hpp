@@ -21,14 +21,12 @@
 /** @file zobrist_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 17:38:39 $
- *  $Revision: 1.4 $
+ *  $Date: 2007-11-14 17:21:59 $
+ *  $Revision: 1.5 $
  */
 
 #ifndef __ZOBRIST_I_HPP__
 #define __ZOBRIST_I_HPP__
-
-#include <stdlib.h>
 
 namespace checkers
 {
