@@ -21,8 +21,8 @@
 /** @file io.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-14 17:14:54 $
+ *  $Revision: 1.14 $
  */
 
 #ifndef __IO_HPP__
@@ -71,8 +71,6 @@ namespace checkers
 
 		void setfl(int fd, int flags);
 	};
-
-	extern io& cio;
 }
 
 #include "io_i.hpp"
