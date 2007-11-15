@@ -21,8 +21,8 @@
 /** @file intelligence_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-15 10:41:54 $
+ *  $Revision: 1.15 $
  */
 
 #ifndef __INTELLIGENCE_I_HPP__
@@ -55,7 +55,7 @@ namespace checkers
 
 	inline int intelligence::evaluate_pieces(void)
 	{
-		return this->_board.is_black_move() ?
+		return this->_board.is_black_on_move() ?
 			(this->_board.get_black_pieces().bitcount() -
 			 this->_board.get_white_pieces().bitcount()) :
 			(this->_board.get_white_pieces().bitcount() -
@@ -64,7 +64,7 @@ namespace checkers
 
 	inline int intelligence::evaluate_kings(void)
 	{
-		return this->_board.is_black_move() ?
+		return this->_board.is_black_on_move() ?
 			 (this->_board.get_black_kings().bitcount() -
 			  this->_board.get_white_kings().bitcount()) :
 			 (this->_board.get_white_kings().bitcount() -
@@ -73,7 +73,7 @@ namespace checkers
 
 	inline int intelligence::evaluate_movers(void)
 	{
-		return this->_board.is_black_move() ?
+		return this->_board.is_black_on_move() ?
 			(this->_board.get_black_movers().bitcount() -
 			 this->_board.get_white_movers().bitcount()) :
 			(this->_board.get_white_movers().bitcount() -
@@ -82,7 +82,7 @@ namespace checkers
 
 	inline int intelligence::evaluate_kings_row(void)
 	{
-		return this->_board.is_black_move() ?
+		return this->_board.is_black_on_move() ?
 			((this->_board.get_black_pieces() &
 				bitboard::WHITE_KINGS_ROW).bitcount() -
 			 (this->_board.get_white_pieces() &
@@ -95,7 +95,7 @@ namespace checkers
 
 	inline int intelligence::evaluate_edges(void)
 	{
-		return this->_board.is_black_move() ?
+		return this->_board.is_black_on_move() ?
 			((this->_board.get_black_pieces() &
 				bitboard::EDGES).bitcount() -
 			 (this->_board.get_white_pieces() &

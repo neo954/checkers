@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.26 $
+ *  $Date: 2007-11-15 10:41:54 $
+ *  $Revision: 1.27 $
  */
 
 #include <cstdlib>
@@ -204,7 +204,7 @@ namespace checkers
 
 	void board::undo_black_move(const move& move)
 	{
-		if (this->is_white_move())
+		if (this->is_white_on_move())
 		{
 			this->_player = board::BLACK;
 			this->_zobrist.change_side();
@@ -248,7 +248,7 @@ namespace checkers
 
 	void board::undo_white_move(const move& move)
 	{
-		if (this->is_black_move())
+		if (this->is_black_on_move())
 		{
 			this->_player = board::WHITE;
 			this->_zobrist.change_side();
@@ -719,7 +719,7 @@ namespace checkers
 		
 		bool will_capture_a_king = capture & this->_kings;
 		bool will_crown = !(orig & this->_kings) &&
-			(this->is_black_move() ?
+			(this->is_black_on_move() ?
 				dest & bitboard::BLACK_KINGS_ROW :
 				dest & bitboard::WHITE_KINGS_ROW);
 
@@ -776,7 +776,7 @@ namespace checkers
 			}
 		}
 		os << ' ';
-		os << (rhs.is_black_move() ? 'b' : 'w');
+		os << (rhs.is_black_on_move() ? 'b' : 'w');
 
 		return os;
 	}
@@ -817,7 +817,7 @@ namespace checkers
 			zobrist.change_king(piece);
 		}
 
-		if (this->is_white_move())
+		if (this->is_white_on_move())
 		{
 			zobrist.change_side();
 		}

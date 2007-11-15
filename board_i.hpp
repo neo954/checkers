@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.18 $
+ *  $Date: 2007-11-15 10:41:54 $
+ *  $Revision: 1.19 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -45,7 +45,7 @@ namespace checkers
 	{
 		assert(this->is_valid_move(move));
 
-		return this->is_black_move() ?
+		return this->is_black_on_move() ?
 			this->make_black_move(move) :
 			this->make_white_move(move);
 	}
@@ -109,19 +109,19 @@ namespace checkers
 		return this->_white_pieces & this->_kings;
 	}
 
-	inline bool board::is_black_move(void) const
+	inline bool board::is_black_on_move(void) const
 	{
 		return board::BLACK == this->_player;
 	}
 
-	inline bool board::is_white_move(void) const
+	inline bool board::is_white_on_move(void) const
 	{
 		return board::WHITE == this->_player;
 	}
 
 	inline std::vector<move> board::generate_moves(void) const
 	{
-		return (this->is_black_move()) ?
+		return (this->is_black_on_move()) ?
 			(this->get_black_jumpers() ?
 				this->generate_black_jumps() :
 				this->generate_black_moves()) :
@@ -146,7 +146,7 @@ namespace checkers
 	 */
 	inline bool board::is_winning(void) const
 	{
-		return this->is_black_move() ?
+		return this->is_black_on_move() ?
 			!this->get_white_pieces() :
 			!this->get_black_pieces();
 	}
@@ -157,7 +157,7 @@ namespace checkers
 	 */
 	inline bool board::is_losing(void) const
 	{
-		return this->is_black_move() ?
+		return this->is_black_on_move() ?
 			!(this->get_black_jumpers() ||
 			  this->get_black_movers()) :
 			!(this->get_white_jumpers() ||

@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.22 $
+ *  $Date: 2007-11-15 10:41:54 $
+ *  $Revision: 1.23 $
  */
 
 #ifndef __BOARD_HPP__
@@ -96,9 +96,9 @@ namespace checkers
 		inline bitboard get_white_kings(void) const;
 
 		/// Check if the player on move is black
-		inline bool is_black_move(void) const;
+		inline bool is_black_on_move(void) const;
 		/// Check if the player on move is white
-		inline bool is_white_move(void) const;
+		inline bool is_white_on_move(void) const;
 
 		/// Get all dark pieces, which can move.
 		bitboard get_black_movers(void) const;

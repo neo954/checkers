@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.29 $
+ *  $Date: 2007-11-15 10:41:54 $
+ *  $Revision: 1.30 $
  */
 
 #include "engine.hpp"
@@ -366,7 +366,7 @@ done:
 	void engine::prompt(void)
 	{
 		this->_io << "  *** "
-			<< (this->_board.is_black_move() ? "Black" : "White")
+			<< (this->_board.is_black_on_move() ? "Black" : "White")
 			<< " move ***\n";
 	}
 
@@ -375,7 +375,7 @@ done:
 		if (this->_board.is_winning())
 		{
 			this->_io << "RESULT "
-				<< (this->_board.is_black_move() ?
+				<< (this->_board.is_black_on_move() ?
 				"1-0 {Black win}\n" :
 				"0-1 {White win}\n");
 			return true;
@@ -383,7 +383,7 @@ done:
 		else if (this->_board.is_losing())
 		{
 			this->_io << "RESULT "
-				<< (this->_board.is_black_move() ?
+				<< (this->_board.is_black_on_move() ?
 				"0-1 {White win}\n" :
 				"1-0 {Black win}\n");
 			return true;
