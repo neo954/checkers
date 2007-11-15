@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:41:54 $
- *  $Revision: 1.30 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.31 $
  */
 
 #include "engine.hpp"
@@ -80,17 +80,13 @@ namespace checkers
 
 	void engine::run(void)
 	{
-		std::string line;
+		std::string command;
 		std::vector<std::string> args;
-		std::string::size_type idx_begin;
-		std::string::size_type idx_end;
-		std::string piece;
-		std::string::const_iterator begin;
 		std::vector<std::pair<std::string, do_action> >::const_iterator
 			pos;
 
 		this->_board.opening();
-		this->print();
+		this->print_board();
 
 		for (;;)
 		{
@@ -98,63 +94,29 @@ namespace checkers
 
 			if (this->_force_mode)
 			{
-				for (;;)
-				{
-					this->_io << io::flush;
-					if (!this->_io.lines_to_read() &&
-						this->_io.state())
-					{
-						usleep(500);
-					}
-					else
-					{
-						break;
-					}
-				}
+				this->idle();
 			}
 			else
 			{
 				// Background think
 				intelligence::think(this->_io,
 					this->_best_moves, this->_board,
-					99999, 99999, intelligence::SILENT);
+					engine::UNLIMITED, engine::UNLIMITED,
+					intelligence::SILENT);
 			}
 
-			if (!this->_io.state())
+			if (this->_io.eof())
 			{
-				exit(0);
+				return;
 			}
 
-			this->_io >> line;
+			this->_io >> command;
 
-			idx_begin = 0;
-			idx_end = 0;
-			begin = line.begin();
-			args.clear();
-			while ((idx_end = line.find(' ', idx_begin))
-				!= std::string::npos)
-			{
-				piece = std::string(begin + idx_begin,
-					begin + idx_end);
-				idx_begin = idx_end + 1;
-				if (!piece.empty())
-				{
-					args.push_back(piece);
-				}
-			}
-			piece = std::string(begin + idx_begin,
-				static_cast<std::string::const_iterator>(
-				line.end()));
-			if (!piece.empty())
-			{
-				args.push_back(piece);
-			}
-
+			args = engine::parse(command);
 			if (args.empty())
 			{
 				continue;
 			}
-			// Vector args is filled
 
 			for (pos = this->_action.begin();
 				pos != this->_action.end(); ++pos)
@@ -170,46 +132,44 @@ namespace checkers
 			{
 				this->_io << "Error (unknown command): " << args[0]
 					<< '\n';
-				goto done;
+				continue;
 			}
 
-			// Process user move
-			try
+			if (this->human_makes_move(args[0]))
 			{
-				move move = this->_board.generate_move(args[0]);
-				assert(this->_board.is_valid_move(move));
-				bool contin = this->make_move(move);
-				this->print();
-				if (!contin && !this->result())
-				{
-					this->_io << io::flush;
-					if (!this->_force_mode)
-					{
-						this->go();
-					}
-				}
+				continue;
 			}
-			catch (const std::logic_error& e)
-			{
-				this->_io << e.what() << '\n';
-			}
+
+			this->computer_makes_move();
 done:
-			// Null statement
-			;
+			; // Null statement
 		}
 	}
 
 	// ================================================================
 
-	void engine::print(void)
+	void engine::idle(void)
+	{
+		for (;;)
+		{
+			this->_io << io::flush;
+			if (this->_io.lines_to_read() || this->_io.eof())
+			{
+				break;
+			}
+			usleep(500);
+		}
+	}
+
+	void engine::print_board(void)
 	{
 		int i;
 		int j;
 
 		if (this->_rotate)
 		{
-			this->_io << "       H   G   F   E   D   C   B   A\n";
-			this->_io << "     +---+---+---+---+---+---+---+---+\n";
+			this->_io << "       H   G   F   E   D   C   B   A\n"
+				<< "     +---+---+---+---+---+---+---+---+\n";
 			for (i = 1; i <= 8; ++i)
 			{
 				this->_io << "  " << i;
@@ -219,24 +179,23 @@ done:
 				}
 				for (j = i * 4 - 1; j >= i * 4 - 4; --j)
 				{
-					this->_io << "  |"
-						<< this->to_string(
-							bitboard(0x1 << j))
-						<< "| ";
+					this->_io << "  |";
+					this->print_square(j);
+					this->_io << "| ";
 				}
 				if (!(i % 2))
 				{
 					this->_io << "  | ";
 				}
-				this->_io << ' ' << i << '\n';
-				this->_io << "     +---+---+---+---+---+---+---+---+\n";
+				this->_io << ' ' << i << '\n' << "     "
+					"+---+---+---+---+---+---+---+---+\n";
 			}
 			this->_io << "       H   G   F   E   D   C   B   A\n";
 		}
 		else
 		{
-			this->_io << "       A   B   C   D   E   F   G   H\n";
-			this->_io << "     +---+---+---+---+---+---+---+---+\n";
+			this->_io << "       A   B   C   D   E   F   G   H\n"
+				<< "     +---+---+---+---+---+---+---+---+\n";
 			for (i = 8; i >= 1; --i)
 			{
 				this->_io << "  " << i;
@@ -246,50 +205,54 @@ done:
 				}
 				for (j = i * 4 - 4; j <= i * 4 - 1; ++j)
 				{
-					this->_io << "  |"
-						<< this->to_string(
-							bitboard(0x1 << j))
-						<< "| ";
+					this->_io << "  |";
+					this->print_square(j);
+					this->_io << "| ";
 				}
 				if (i % 2)
 				{
 					this->_io << "  | ";
 				}
-				this->_io << ' ' << i << '\n';
-				this->_io << "     +---+---+---+---+---+---+---+---+\n";
+				this->_io << ' ' << i << '\n' << "     "
+					"+---+---+---+---+---+---+---+---+\n";
 			}
 			this->_io << "       A   B   C   D   E   F   G   H\n";
 		}
 	}
 
-	std::string engine::to_string(const bitboard& square)
+	void engine::print_square(int n)
 	{
-		assert(1 == square.bitcount());
+		assert(0 <= n && n < 32);
+
+		bitboard square(0x1U << n);
 
 		if (this->_board.get_black_men() & square)
 		{
-			return "(b)";
+			this->_io << "(b)";
 		}		
-		if (this->_board.get_white_men() & square)
+		else if (this->_board.get_white_men() & square)
 		{
-			return "(w)";
+			this->_io << "(w)";
 		}		
-		if (this->_board.get_black_kings() & square)
+		else if (this->_board.get_black_kings() & square)
 		{
-			return "(B)";
+			this->_io << "(B)";
 		}		
-		if (this->_board.get_white_kings() & square)
+		else if (this->_board.get_white_kings() & square)
 		{
-			return "(W)";
+			this->_io << "(W)";
 		}
-		return " \\ ";
+		else
+		{
+			this->_io << " \\ ";
+		}
 	}
 
 	std::string engine::to_string(int v)
 	{
 		if (UNLIMITED == v)
 		{
-			return "unlimited";
+			return std::string("unlimited");
 		}
 		std::ostringstream stream;
 		stream << v;
@@ -308,6 +271,45 @@ done:
 			return UNLIMITED;
 		}
 		return v;
+	}
+
+	std::vector<std::string> engine::parse(const std::string& command)
+	{
+		std::vector<std::string> args;
+		std::string::size_type idx_begin = 0;
+		std::string::size_type idx_end   = 0;
+		std::string piece;
+		std::string::const_iterator begin = command.begin();
+
+		while ((idx_end = command.find(' ', idx_begin))
+			!= std::string::npos)
+		{
+			piece = std::string(begin + idx_begin,
+				begin + idx_end);
+			idx_begin = idx_end + 1;
+			if (!piece.empty())
+			{
+				args.push_back(piece);
+			}
+		}
+
+		if ((idx_end = command.find('\n', idx_begin))
+			!= std::string::npos)
+		{
+			piece = std::string(begin + idx_begin,
+				begin + idx_end);
+		}
+		else
+		{
+			piece = std::string(begin + idx_begin, command.end());
+		}
+
+		if (!piece.empty())
+		{
+			args.push_back(piece);
+		}
+
+		return args;
 	}
 
 	bool engine::make_move(const move& move)
@@ -332,7 +334,7 @@ done:
 		return ret;
 	}
 
-	void engine::go(void)
+	void engine::computer_makes_move(void)
 	{
 		if (this->_force_mode)
 		{
@@ -357,10 +359,32 @@ done:
 				this->_io << "move " << this->_best_moves[0]
 					<< '\n';
 				contin = this->make_move(this->_best_moves[0]);
-				this->print();
+				this->print_board();
 			} while (contin && !this->_best_moves.empty());
 		} while (contin);
 		this->result();
+	}
+
+	/// @return whether human player move one more
+	bool engine::human_makes_move(const std::string& str)
+	{
+		bool contin = true;
+
+		try
+		{
+			move move = this->_board.generate_move(str);
+			assert(this->_board.is_valid_move(move));
+			contin = this->make_move(move);
+
+			this->print_board();
+			this->result();
+		}
+		catch (const std::logic_error& e)
+		{
+			this->_io << e.what() << '\n';
+		}
+
+		return contin;
 	}
 
 	void engine::prompt(void)
@@ -408,7 +432,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->print();
+		this->print_board();
 	}
 
 	void engine::do_rotate(const std::vector<std::string>& args)
@@ -417,7 +441,7 @@ done:
 		(void)args;
 
 		this->_rotate = !this->_rotate;
-		this->print();
+		this->print_board();
 	}
 
 	void engine::do_black(const std::vector<std::string>& args)
@@ -457,7 +481,7 @@ done:
 		(void)args;
 
 		this->_force_mode = false;
-		this->go();
+		this->computer_makes_move();
 	}
 
 	void engine::do_help(const std::vector<std::string>& args)
@@ -493,7 +517,7 @@ done:
 		this->_board.opening();
 		this->_history.clear();
 		this->_best_moves.clear();
-		this->print();
+		this->print_board();
 	}
 
 	void engine::do_quit(const std::vector<std::string>& args)
@@ -542,7 +566,7 @@ done:
 		this->_board = board(args.size() > 2 ?
 			(args[1] + ' ' + args[2]) : args[1]);
 		this->_history.clear();
-		this->print();
+		this->print_board();
 	}
 
 	void engine::do_undo(const std::vector<std::string>& args)
@@ -555,7 +579,7 @@ done:
 			this->_board.undo_move(this->_history.back());
 			this->_history.pop_back();
 			this->_best_moves.clear();
-			this->print();
+			this->print_board();
 		}
 		else
 		{

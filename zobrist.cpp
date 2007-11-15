@@ -21,15 +21,15 @@
 /** @file zobrist.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 17:38:39 $
- *  $Revision: 1.4 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.5 $
  */
 
 #include "zobrist.hpp"
 
 namespace checkers
 {
-	uint64_t zobrist::_black_pieces[32] =
+	uint64_t zobrist::_black_pieces[] =
 	{
 		rand64(), rand64(), rand64(), rand64(),
 		rand64(), rand64(), rand64(), rand64(),
@@ -40,7 +40,7 @@ namespace checkers
 		rand64(), rand64(), rand64(), rand64(),
 		rand64(), rand64(), rand64(), rand64(),
 	};
-	uint64_t zobrist::_white_pieces[32] =
+	uint64_t zobrist::_white_pieces[] =
 	{
 		rand64(), rand64(), rand64(), rand64(),
 		rand64(), rand64(), rand64(), rand64(),
@@ -51,7 +51,7 @@ namespace checkers
 		rand64(), rand64(), rand64(), rand64(),
 		rand64(), rand64(), rand64(), rand64(),
 	};
-	uint64_t zobrist::_kings[32] =
+	uint64_t zobrist::_kings[] =
 	{
 		rand64(), rand64(), rand64(), rand64(),
 		rand64(), rand64(), rand64(), rand64(),

@@ -21,8 +21,8 @@
 /** @file bitboard.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.17 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.18 $
  */
 
 #include <stdint.h>
@@ -65,7 +65,7 @@ namespace checkers
 				file + rank);
 		}
 
-		this->_bitboard = 0x1 << ((rank - '1') * 4 + (file - 'a') / 2);
+		this->_bitboard = 0x1U << ((rank - '1') * 4 + (file - 'a') / 2);
 	}
 
 	std::ostream& operator <<(std::ostream& os, const bitboard& rhs)

@@ -21,8 +21,8 @@
 /** @file loopbuffer_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.8 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.9 $
  */
 
 #ifndef __LOOPBUFFER_I_HPP__
@@ -31,7 +31,8 @@
 namespace checkers
 {
 	inline loopbuffer::loopbuffer(int max_size) :
-		_max_size(max_size), _front(0), _rear(0), _lines(0)
+		_max_size(max_size), _front(max_size - 2),
+		_rear(max_size - 2), _lines(0), _eof(false)
 	{
 		this->_buffer = new char[this->_max_size];
 	}
@@ -44,12 +45,6 @@ namespace checkers
 	inline int loopbuffer::max_size(void) const
 	{
 		return this->_max_size;
-	}
-
-	inline int loopbuffer::size(void) const
-	{
-		return (this->_rear - this->_front + this->_max_size)
-			% this->_max_size;
 	}
 
 	inline bool loopbuffer::is_full(void) const
@@ -65,6 +60,11 @@ namespace checkers
 	inline int loopbuffer::lines(void) const
 	{
 		return this->_lines;
+	}
+
+	inline bool loopbuffer::eof(void) const
+	{
+		return this->_eof;
 	}
 }
 

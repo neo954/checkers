@@ -21,8 +21,8 @@
 /** @file transposition.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:32 $
- *  $Revision: 1.2 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.3 $
  */
 
 #include "transposition.hpp"
@@ -30,4 +30,5 @@
 namespace checkers
 {
 }
+
 // End of file

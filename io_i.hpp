@@ -21,8 +21,8 @@
 /** @file io_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.11 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.12 $
  */
 
 #ifndef __IO_I_HPP__
@@ -76,9 +76,9 @@ namespace checkers
 		return *this;
 	}
 
-	inline bool io::state(void) const
+	inline bool io::eof(void) const
 	{
-		return this->_state;
+		return this->_read_buf.eof();
 	}
 
 	inline io& io::endl(io& io)

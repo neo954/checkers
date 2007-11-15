@@ -21,8 +21,8 @@
 /** @file loopbuffer.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.10 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.11 $
  */
 
 #ifndef __LOOPBUFFER_HPP__
@@ -37,15 +37,17 @@ namespace checkers
 		inline ~loopbuffer(void);
 
 		inline int max_size(void) const;
-		inline int size(void) const;
 		inline bool is_full(void) const;
 		inline bool is_empty(void) const;
 		inline int lines(void) const;
+		inline bool eof(void) const;
 
 		char front(void) const;
 		void pop_front(void);
-		bool read(int fd);
-		bool write(int fd);
+		/// Read from a file descriptor.
+		void read(int fd);
+		/// Write to a file descriptor.
+		void write(int fd);
 
 		std::string getline(void);
 		void push_back(char c);
@@ -53,7 +55,9 @@ namespace checkers
 		void push_back(const char* s);
 
 	private:
+		/// Define but not implement, to prevent object copy.
 		loopbuffer(const loopbuffer& rhs);
+		/// Define but not implement, to prevent object copy.
 		loopbuffer& operator=(const loopbuffer& rhs);
 
 		void enlarge(void);
@@ -63,6 +67,8 @@ namespace checkers
 		int _front;
 		int _rear;
 		int _lines;
+		/// Reach the end-of-file or not.
+		bool _eof;
 	};
 }
 

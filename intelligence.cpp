@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.23 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.24 $
  */
 
 #include <iomanip>
@@ -38,7 +38,7 @@ namespace checkers
 		{
 			io << io::flush;
 			if (this->is_timeout() || io.lines_to_read() ||
-				!io.state())
+				io.eof())
 			{
 	 			/// @retval TIMEOUT when timeout
 				return TIMEOUT;

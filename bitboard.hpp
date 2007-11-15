@@ -21,8 +21,8 @@
 /** @file bitboard.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 17:38:38 $
- *  $Revision: 1.20 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.21 $
  */
 
 #ifndef __BITBOARD_HPP__
@@ -69,7 +69,7 @@ namespace checkers
 	{
 	public:
 		/// Construct from a 32-bit unsigned integer
-		explicit inline bitboard(uint32_t x = EMPTY);
+		explicit inline bitboard(uint32_t x = bitboard::EMPTY);
 		/** @brief Construct a bitboard with only one bit set.
 		 *   According to the file and rank on the game board.
 		 */
@@ -82,51 +82,51 @@ namespace checkers
 		/// Get the Least Significant Bit
 		inline bitboard lsb(void) const;
 		/// Empty bitboard
-		static const uint32_t EMPTY = 0x0;
+		static const uint32_t EMPTY = 0x0U;
 		/// Black pieces initial position
 		static const uint32_t BLACK_PIECES_INIT =
-			0x1 << 20 | 0x1 << 21 | 0x1 << 22 | 0x1 << 23 |
-			0x1 << 24 | 0x1 << 25 | 0x1 << 26 | 0x1 << 27 |
-			0x1 << 28 | 0x1 << 29 | 0x1 << 30 | 0x1 << 31;
+			0x1U << 20 | 0x1U << 21 | 0x1U << 22 | 0x1U << 23 |
+			0x1U << 24 | 0x1U << 25 | 0x1U << 26 | 0x1U << 27 |
+			0x1U << 28 | 0x1U << 29 | 0x1U << 30 | 0x1U << 31;
 		/// White pieces initial position
 		static const uint32_t WHITE_PIECES_INIT =
-			0x1 <<  0 | 0x1 <<  1 | 0x1 <<  2 | 0x1 <<  3 |
-			0x1 <<  4 | 0x1 <<  5 | 0x1 <<  6 | 0x1 <<  7 |
-			0x1 <<  8 | 0x1 <<  9 | 0x1 << 10 | 0x1 << 11;
+			0x1U <<  0 | 0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3 |
+			0x1U <<  4 | 0x1U <<  5 | 0x1U <<  6 | 0x1U <<  7 |
+			0x1U <<  8 | 0x1U <<  9 | 0x1U << 10 | 0x1U << 11;
 		/// The bit mask to left shift 3
 		static const uint32_t MASK_L3 =
-			0x1 <<  1 | 0x1 <<  2 | 0x1 <<  3 | 0x1 <<  9 |
-			0x1 << 10 | 0x1 << 11 | 0x1 << 17 | 0x1 << 18 |
-			0x1 << 19 | 0x1 << 25 | 0x1 << 26 | 0x1 << 27;
+			0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3 | 0x1U <<  9 |
+			0x1U << 10 | 0x1U << 11 | 0x1U << 17 | 0x1U << 18 |
+			0x1U << 19 | 0x1U << 25 | 0x1U << 26 | 0x1U << 27;
 		/// The bit mask to left shift 5
 		static const uint32_t MASK_L5 =
-			0x1 <<  4 | 0x1 <<  5 | 0x1 <<  6 | 0x1 << 12 |
-			0x1 << 13 | 0x1 << 14 | 0x1 << 20 | 0x1 << 21 |
-			0x1 << 22;
+			0x1U <<  4 | 0x1U <<  5 | 0x1U <<  6 | 0x1U << 12 |
+			0x1U << 13 | 0x1U << 14 | 0x1U << 20 | 0x1U << 21 |
+			0x1U << 22;
 		/// The bit mask to right shift 3
 		static const uint32_t MASK_R3 =
-			0x1 <<  4 | 0x1 <<  5 | 0x1 <<  6 | 0x1 << 12 |
-			0x1 << 13 | 0x1 << 14 | 0x1 << 20 | 0x1 << 21 |
-			0x1 << 22 | 0x1 << 28 | 0x1 << 29 | 0x1 << 30;
+			0x1U <<  4 | 0x1U <<  5 | 0x1U <<  6 | 0x1U << 12 |
+			0x1U << 13 | 0x1U << 14 | 0x1U << 20 | 0x1U << 21 |
+			0x1U << 22 | 0x1U << 28 | 0x1U << 29 | 0x1U << 30;
 		/// The bit mask to right shift 5
 		static const uint32_t MASK_R5 =
-			0x1 <<  9 | 0x1 << 10 | 0x1 << 11 | 0x1 << 17 |
-			0x1 << 18 | 0x1 << 19 | 0x1 << 25 | 0x1 << 26 |
-			0x1 << 27;
+			0x1U <<  9 | 0x1U << 10 | 0x1U << 11 | 0x1U << 17 |
+			0x1U << 18 | 0x1U << 19 | 0x1U << 25 | 0x1U << 26 |
+			0x1U << 27;
 		/// The bit mask for the game board edges
 		static const uint32_t EDGES =
-			0x1 <<  7 | 0x1 <<  8 | 0x1 << 15 | 0x1 << 16 |
-			0x1 << 23 | 0x1 << 24;
+			0x1U <<  7 | 0x1U <<  8 | 0x1U << 15 | 0x1U << 16 |
+			0x1U << 23 | 0x1U << 24;
 		/** @brief Kings row for black.  Black man will become king
 		 *   when reach this row.
 		 */
 		static const uint32_t BLACK_KINGS_ROW =
-			0x1 <<  0 | 0x1 <<  1 | 0x1 <<  2 | 0x1 <<  3;
+			0x1U <<  0 | 0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3;
 		/** @brief Kings row for white.  White man will become king
 		 *   when reach this row.
 		 */
 		static const uint32_t WHITE_KINGS_ROW =
-			0x1 << 28 | 0x1 << 29 | 0x1 << 30 | 0x1 << 31;
+			0x1U << 28 | 0x1U << 29 | 0x1U << 30 | 0x1U << 31;
 
 		/// Logical left shift by @e rhs bit(s).
 		inline bitboard operator <<(int rhs) const;

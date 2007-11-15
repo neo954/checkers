@@ -21,8 +21,8 @@
 /** @file io.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.14 $
  */
 
 #include <sys/select.h>
@@ -32,8 +32,7 @@
 namespace checkers
 {
 	io::io(int in_fd, int out_fd) :
-		_read_buf(), _write_buf(), _in_fd(in_fd), _out_fd(out_fd),
-		_state(true)
+		_read_buf(), _write_buf(), _in_fd(in_fd), _out_fd(out_fd)
 	{
 		// Set stdin and stdout nonblock I/O
 		this->setfl(this->_in_fd,  O_NONBLOCK);
@@ -42,8 +41,7 @@ namespace checkers
 
 	io::io(std::pair<int, int> fds) :
 		_read_buf(), _write_buf(),
-		_in_fd(fds.first), _out_fd(fds.second),
-		_state(true)
+		_in_fd(fds.first), _out_fd(fds.second)
 	{
 		// Set stdin and stdout nonblock I/O
 		this->setfl(this->_in_fd,  O_NONBLOCK);
@@ -62,35 +60,26 @@ namespace checkers
 	{
 		fd_set read_set;
 		fd_set write_set;
-		int n;
 
 		FD_ZERO(&read_set);
 		FD_ZERO(&write_set);
 		FD_SET(io._in_fd,  &read_set);
 		FD_SET(io._out_fd, &write_set);
 
-		n = select(std::max(io._in_fd, io._out_fd) + 1,
-			&read_set, &write_set, NULL, NULL);
-		if (n < 0)
+		if (select(std::max(io._in_fd, io._out_fd) + 1,
+			&read_set, &write_set, NULL, NULL) < 0)
 		{
-			io._state = false;
 			/// @throw std::runtime_error when select() failed.
 			throw std::runtime_error("select() failed");
 		}
 
 		if (FD_ISSET(io._in_fd, &read_set))
 		{
-			if (!io._read_buf.read(io._in_fd))
-			{
-				io._state = false;
-			}
+			io._read_buf.read(io._in_fd);
 		}
 		if (FD_ISSET(io._out_fd, &write_set))
 		{
-			if (!io._write_buf.write(io._out_fd))
-			{
-				io._state = false;
-			}
+			io._write_buf.write(io._out_fd);
 		}
 
 		return io;
@@ -108,7 +97,6 @@ namespace checkers
 
 		if ((val = fcntl(fd, F_GETFL, 0)) < 0)
 		{
-			this->_state = false;
 			/// @throw std::runtime_error when fcntl() failed.
 			throw std::runtime_error("fcntl() failed");
 		}
@@ -118,7 +106,6 @@ namespace checkers
 
 		if (fcntl(fd, F_SETFL, val) < 0)
 		{
-			this->_state = false;
 			/// @throw std::runtime_error when fcntl() failed.
 			throw std::runtime_error("fcntl() failed");
 		}

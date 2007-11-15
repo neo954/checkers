@@ -21,8 +21,8 @@
 /** @file pipe.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.4 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.5 $
  */
 
 #include "pipe.hpp"
@@ -92,4 +92,5 @@ namespace checkers
 		return std::pair<int, int>(fd[1][0], fd[0][1]);
 	}
 }
+
 // End of file

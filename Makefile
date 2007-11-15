@@ -10,7 +10,8 @@ TARGETS = ponder runer
 build: $(TARGETS)
 
 ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o \
-	signal.o transposition.o zobrist.o
+	signal.o zobrist.o
+#transposition.o
 
 runer: io.o loopbuffer.o pipe.o signal.o
 
@@ -21,7 +22,7 @@ doc: Doxyfile *.cpp *.hpp
 	doxygen
 
 clean:
-	$(RM) $(TARGETS) *.gcov *.o deps core gmon.out
+	$(RM) $(TARGETS) *.gcda *.gcno *.gcov *.o deps core gmon.out
 	$(RM) -r doc
 
 deps: *.cpp *.hpp

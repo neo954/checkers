@@ -21,8 +21,8 @@
 /** @file engine.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.18 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.19 $
  */
 
 #ifndef __ENGINE_HPP__
@@ -46,14 +46,21 @@ namespace checkers
 		/// Define but not implement, to prevent object copy.
 		engine& operator=(const engine& rhs) const;
 
-		void print(void);
-		std::string to_string(const bitboard& square);
-		std::string to_string(int v);
-		int to_int(const std::string& str);
+		void idle(void);
+
+		void print_board(void);
+		void print_square(int n);
+
+		static std::string to_string(int v);
+		static int to_int(const std::string& str);
+
+		static std::vector<std::string> parse(
+			const std::string& command);
 
 		bool make_move(const move& move);
 
-		void go(void);
+		void computer_makes_move(void);
+		bool human_makes_move(const std::string& str);
 
 		void prompt(void);
 		bool result(void);

@@ -21,8 +21,8 @@
 /** @file zobrist.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-13 17:38:39 $
- *  $Revision: 1.5 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.6 $
  */
 
 #ifndef __ZOBRIST_HPP__
@@ -55,9 +55,9 @@ namespace checkers
 		static inline uint32_t rand32(void);
 		static inline uint64_t rand64(void);
 
-		static uint64_t _black_pieces[32];
-		static uint64_t _white_pieces[32];
-		static uint64_t _kings[32];
+		static uint64_t _black_pieces[];
+		static uint64_t _white_pieces[];
+		static uint64_t _kings[];
 		static uint64_t _change_side;
 
 		uint64_t _key;

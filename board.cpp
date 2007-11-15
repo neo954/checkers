@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:41:54 $
- *  $Revision: 1.27 $
+ *  $Date: 2007-11-15 17:24:39 $
+ *  $Revision: 1.28 $
  */
 
 #include <cstdlib>
@@ -38,7 +38,7 @@ namespace checkers
 
 		for (i = 0, p = 0; i < 32 && p < input.size(); ++p)
 		{
-			square = bitboard(0x1 << i);
+			square = bitboard(0x1U << i);
 			switch (input[p])
 			{
 			case 'B':
@@ -747,7 +747,7 @@ namespace checkers
 			{
 				os << '/';
 			}
-			square = bitboard(0x1 << i);
+			square = bitboard(0x1U << i);
 			if (rhs._black_pieces & square)
 			{
 				if (rhs._kings & square)

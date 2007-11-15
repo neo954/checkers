@@ -21,8 +21,8 @@
 /** @file loopbuffer.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-15 10:36:31 $
- *  $Revision: 1.14 $
+ *  $Date: 2007-11-15 17:24:40 $
+ *  $Revision: 1.15 $
  */
 
 #include <cerrno>
@@ -52,7 +52,7 @@ namespace checkers
 		this->_front = (this->_front + 1) % this->_max_size;
 	}
 
-	bool loopbuffer::read(int fd)
+	void loopbuffer::read(int fd)
 	{
 		char c;
 		ssize_t n;
@@ -67,25 +67,26 @@ namespace checkers
 					break;
 				}
 				std::ostringstream error;
-				error << "read() failed while read from fd - " << fd;
-				/// @throw std::runtime_error when read() failed.
+				error << "read() failed while read from fd - "
+					<< fd;
+				/** @throw std::runtime_error when read()
+				 *   failed.
+				 */
 				throw std::runtime_error(error.str());
 			}
 			else if (0 == n)
 			{
-				/// @retval false when read() reach EOF.
-				return false;
+				this->_eof = true;
+				break;
 			}
 			else
 			{
 				this->push_back(c);
 			}
 		}
-		/// @retval true on success.
-		return true;
 	}
 
-	bool loopbuffer::write(int fd)
+	void loopbuffer::write(int fd)
 	{
 		char c;
 		ssize_t n;
@@ -100,49 +101,55 @@ namespace checkers
 					break;
 				}
 				std::ostringstream error;
-				error << "write() failed while write to fd - " << fd;
-				/// @throw std::runtime_error when write() failed.
+				error << "write() failed while write to fd - "
+					<< fd;
+				/** @throw std::runtime_error when write()
+				 *   failed.
+				 */
 				throw std::runtime_error(error.str());
 			}
 			else if (0 == n)
 			{
-				/** @retval false when write() returns 0.
-				 *   This is abnormal, and should not happen.
+				std::ostringstream error;
+				error << "write() returns 0 while write to fd"
+					" - " << fd;
+				/** @throw std::runtime_error when write()
+				 *   returns 0.  This should not happen.
 				 */
-				return false;
+				throw std::runtime_error(error.str());
 			}
 			else
 			{
 				this->pop_front();
 			}
 		}
-		/// @retval true on success.
-		return true;
 	}
 
+	/** @return a entire line from the loop buffer, include the newline
+	 *   character.  A empty string will be returned when no new line
+	 *   available.
+	 */
 	std::string loopbuffer::getline(void)
 	{
 		char c;
-		std::string str;
+		std::string line;
 
 		if (this->_lines)
 		{
-			for (;;)
+			do
 			{
 				c = this->front();
-				if ('\n' == c)
-				{
-					this->pop_front();
-					break;
-				}
-				/// @warning This is not exception-safe, may
-				/// cause data lose when operator +=() failed.
-				str += c;
+				/** @warning This is not exception-safe, may
+				 *   cause data lose when
+				 *   std::string::operator +=(char) failed and
+				 *   throw exception.
+				 */
+				line += c;
 				this->pop_front();
-			}
+			} while ('\n' != c);
 		}
 
-		return str;
+		return line;
 	}
 
 	void loopbuffer::push_back(char c)
@@ -185,6 +192,7 @@ namespace checkers
 
 		const int multiple = 2;
 		char* buffer = new char[this->_max_size * multiple];
+
 		if (this->_front < this->_rear)
 		{
 			memcpy(buffer, this->_buffer + this->_front,
@@ -197,6 +205,7 @@ namespace checkers
 			memcpy(buffer + this->_max_size - this->_front,
 				this->_buffer, this->_rear);
 		}
+
 		delete[] this->_buffer;
 		this->_buffer = buffer;
 		this->_front = 0;
