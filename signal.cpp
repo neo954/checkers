@@ -21,8 +21,8 @@
 /** @file signal.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 17:21:59 $
- *  $Revision: 1.5 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.6 $
  */
 
 #include <cerrno>
@@ -43,9 +43,13 @@ namespace checkers
 		action.sa_flags = SA_RESTART;
 
 		if (::sigaction(signum, &action, &old_action) < 0) {
-			throw std::runtime_error(std::string("Signal error: ")
-				+ std::strerror(errno));
+			/// @throw std::runtime_error when sigaction() failed.
+			throw std::runtime_error(
+				std::string("sigaction() failed: ") +
+				std::strerror(errno));
 		}
+
+		/// @return the previous value of the signal handler.
 		return (old_action.sa_handler);
 	}
 }

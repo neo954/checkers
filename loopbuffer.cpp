@@ -21,8 +21,8 @@
 /** @file loopbuffer.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 09:48:57 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.14 $
  */
 
 #include <cerrno>
@@ -67,13 +67,13 @@ namespace checkers
 					break;
 				}
 				std::ostringstream error;
-				error << "Read error while read from fd - " << fd;
-				/// @throw std::runtime_error when read() fail.
+				error << "read() failed while read from fd - " << fd;
+				/// @throw std::runtime_error when read() failed.
 				throw std::runtime_error(error.str());
 			}
 			else if (0 == n)
 			{
-				/// @return false when read() EOF.
+				/// @retval false when read() reach EOF.
 				return false;
 			}
 			else
@@ -81,7 +81,7 @@ namespace checkers
 				this->push_back(c);
 			}
 		}
-		/// @return true on success.
+		/// @retval true on success.
 		return true;
 	}
 
@@ -100,14 +100,14 @@ namespace checkers
 					break;
 				}
 				std::ostringstream error;
-				error << "Write error while write to fd - " << fd;
-				/// @throw std::runtime_error when write() fail.
+				error << "write() failed while write to fd - " << fd;
+				/// @throw std::runtime_error when write() failed.
 				throw std::runtime_error(error.str());
 			}
 			else if (0 == n)
 			{
-				/** @return false when write() return 0.
-				 *   This is abnormal, and should not reach here.
+				/** @retval false when write() returns 0.
+				 *   This is abnormal, and should not happen.
 				 */
 				return false;
 			}
@@ -116,7 +116,7 @@ namespace checkers
 				this->pop_front();
 			}
 		}
-		/// @return true on success.
+		/// @retval true on success.
 		return true;
 	}
 
@@ -136,7 +136,7 @@ namespace checkers
 					break;
 				}
 				/// @warning This is not exception-safe, may
-				/// cause data lose when operator +=() fail
+				/// cause data lose when operator +=() failed.
 				str += c;
 				this->pop_front();
 			}

@@ -21,8 +21,8 @@
 /** @file intelligence.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 09:48:57 $
- *  $Revision: 1.22 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.23 $
  */
 
 #include <iomanip>
@@ -30,9 +30,6 @@
 
 namespace checkers
 {
-	/**
-	 *  @return TIMEOUT when timeout
-	 */
 	int intelligence::alpha_beta_search(io& io,
 		std::vector<move>& best_moves, unsigned int depth, int alpha,
 		int beta, unsigned int ply)
@@ -43,7 +40,7 @@ namespace checkers
 			if (this->is_timeout() || io.lines_to_read() ||
 				!io.state())
 			{
-				// TIMEOUT == -TIMEOUT
+	 			/// @retval TIMEOUT when timeout
 				return TIMEOUT;
 			}
 		}
@@ -130,10 +127,10 @@ namespace checkers
 			intelligence::_reorder = true;
 
 			intelligence intelligence(board);
-			::gettimeofday(&start, NULL);
+			start = timeval::now();
 			val = intelligence.alpha_beta_search(io, best_moves,
 				depth);
-			::gettimeofday(&end, NULL);
+			end = timeval::now();
 
 			if (intelligence::VERBOSE == show_detail)
 			{

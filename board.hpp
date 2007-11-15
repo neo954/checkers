@@ -21,8 +21,8 @@
 /** @file board.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 09:48:57 $
- *  $Revision: 1.21 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.22 $
  */
 
 #ifndef __BOARD_HPP__
@@ -40,11 +40,15 @@ namespace checkers
 	public:
 		enum player
 		{
+			/// Player has dark pieces.
 			BLACK = 1,
+			/// Player has light pieces.
 			WHITE = -BLACK
 		};
 
+		/// Default constructor.
 		inline board(void);
+		/// Construct from an user input string.
 		explicit board(const std::string& input);
 
 		/** @brief Reset all pieces to initial position and set the
@@ -124,9 +128,9 @@ namespace checkers
 		move generate_move(const std::string& str) const;
 
 		/// Set the player has dark pieces on move.
-		inline void set_black(void);
+		inline void set_black_on_move(void);
 		/// Set the player has light pieces on move.
-		inline void set_white(void);
+		inline void set_white_on_move(void);
 		/// Check whether the player on move is winning.
 		inline bool is_winning(void) const;
 		/// Check whether the player on move is losing.
@@ -151,8 +155,10 @@ namespace checkers
 			const board& rhs);
 	};
 
+	/// Stream out the current game board.
 	std::ostream& operator <<(std::ostream& os, const board& rhs);
 }
 
 #include "board_i.hpp"
 #endif // __BOARD_HPP__
+// End of file

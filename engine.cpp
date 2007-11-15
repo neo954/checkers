@@ -21,8 +21,8 @@
 /** @file engine.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 09:48:57 $
- *  $Revision: 1.28 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.29 $
  */
 
 #include "engine.hpp"
@@ -98,12 +98,19 @@ namespace checkers
 
 			if (this->_force_mode)
 			{
-				do
+				for (;;)
 				{
 					this->_io << io::flush;
-					usleep(1000);
-				} while (!this->_io.lines_to_read() &&
-					this->_io.state());
+					if (!this->_io.lines_to_read() &&
+						this->_io.state())
+					{
+						usleep(500);
+					}
+					else
+					{
+						break;
+					}
+				}
 			}
 			else
 			{
@@ -418,7 +425,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_board.set_black();
+		this->_board.set_black_on_move();
 		this->_best_moves.clear();
 	}
 
@@ -427,7 +434,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_board.set_white();
+		this->_board.set_white_on_move();
 		this->_best_moves.clear();
 	}
 

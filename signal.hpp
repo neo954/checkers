@@ -21,8 +21,8 @@
 /** @file signal.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 17:21:59 $
- *  $Revision: 1.5 $
+ *  $Date: 2007-11-15 10:36:32 $
+ *  $Revision: 1.6 $
  */
 
 #ifndef __SIGNAL_H__
@@ -33,6 +33,7 @@
 namespace checkers
 {
 	typedef void (*sighandler_t)(int);
+	/// Installs a new signal handler for the signal with number @e signum.
 	sighandler_t signal(int signum, sighandler_t handler);
 }
 

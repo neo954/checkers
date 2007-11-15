@@ -21,8 +21,8 @@
 /** @file bitboard.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 09:44:43 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.17 $
  */
 
 #include <stdint.h>
@@ -39,23 +39,30 @@ namespace checkers
 	{
 		if (file < 'a' || file > 'h')
 		{
-			/// @throw std::logic_error when @e file is illegal.
-			throw std::logic_error("Error (illegal file):"
-				" indecate a dark square");
+			/** @throw std::logic_error when @e file is out of
+			 *   range.
+			 */
+			throw std::logic_error(std::string("Error"
+				" (illegal square, file out of range): ") +
+				file + rank);
 		}
 		if (rank < '1' || rank > '8')
 		{
-			/// @throw std::logic_error when @e rank is illegal.
-			throw std::logic_error("Error (illegal rank):"
-				" indecate a dark square");
+			/** @throw std::logic_error when @e rank is out of
+			 *   range.
+			 */
+			throw std::logic_error(std::string("Error"
+				" (illegal square, rank out of range): ") +
+				file + rank);
 		}
 		if (file % 2 != rank % 2)
 		{
 			/** @throw std::logic_error when @e file and @e rank
 			 *   does not indecate a dark sqare on the game board.
 			 */
-			throw std::logic_error("Error (dark square only):"
-				" indecate a dark square");
+			throw std::logic_error(std::string("Error"
+				" (illegal square, dark square only): ") +
+				file + rank);
 		}
 
 		this->_bitboard = 0x1 << ((rank - '1') * 4 + (file - 'a') / 2);

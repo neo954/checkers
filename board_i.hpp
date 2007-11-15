@@ -21,8 +21,8 @@
 /** @file board_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 09:48:57 $
- *  $Revision: 1.17 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.18 $
  */
 
 #ifndef __BOARD_I_HPP__
@@ -36,10 +36,10 @@ namespace checkers
 	{
 	}
 
-	/** @return True if multiple opposing pieces may be captured in a
+	/** @retval true if multiple opposing pieces may be captured in a
 	 *   single turn, and this move is not the last move in a single turn.
 	 *   The same player is on move once more.
-	 *  @return False if the other player is on move.
+	 *  @retval false if the other player is on move.
 	 */
 	inline bool board::make_move(const move& move)
 	{
@@ -130,18 +130,19 @@ namespace checkers
 				this->generate_white_moves());
 	}
 
-	inline void board::set_black(void)
+	inline void board::set_black_on_move(void)
 	{
 		this->_player = board::BLACK;
 	}
 
-	inline void board::set_white(void)
+	inline void board::set_white_on_move(void)
 	{
 		this->_player = board::WHITE;
 	}
 
-	/** @return true when the player on move is winning.
-	 *  @return false in other situation.
+	/** @return game over or not.
+	 *  @retval true when the player on move is winning.
+	 *  @retval false in other situation.
 	 */
 	inline bool board::is_winning(void) const
 	{
@@ -150,8 +151,9 @@ namespace checkers
 			!this->get_black_pieces();
 	}
 
-	/** @return true when the player on move is losing.
-	 *  @return false in other situation.
+	/** @return game over or not.
+	 *  @retval true when the player on move is losing.
+	 *  @retval false in other situation.
 	 */
 	inline bool board::is_losing(void) const
 	{

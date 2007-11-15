@@ -21,8 +21,8 @@
 /** @file intelligence_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-07 16:18:13 $
- *  $Revision: 1.13 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.14 $
  */
 
 #ifndef __INTELLIGENCE_I_HPP__
@@ -40,8 +40,8 @@ namespace checkers
 	// ================================================================
 
 	/**
-	 *  @return >0 when the current player is ahead in game, and
-	 *  @return <0 when the current player is behind in game
+	 *  @retval >0 when the current player is ahead in game
+	 *  @retval <0 when the current player is behind in game
 	 */
 	inline int intelligence::evaluate(void)
 	{
@@ -132,15 +132,12 @@ namespace checkers
 
 	inline void intelligence::set_timeout(time_t second)
 	{
-		::gettimeofday(&intelligence::_deadline, NULL);
-		intelligence::_deadline += second;
+		intelligence::_deadline = timeval::now() + second;
 	}
 
 	inline bool intelligence::is_timeout(void)
 	{
-		struct timeval now;
-		::gettimeofday(&now, NULL);
-		return now > intelligence::_deadline;
+		return timeval::now() > intelligence::_deadline;
 	}
 }
 

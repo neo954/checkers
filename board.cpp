@@ -21,8 +21,8 @@
 /** @file board.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-14 09:48:57 $
- *  $Revision: 1.25 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.26 $
  */
 
 #include <cstdlib>
@@ -92,7 +92,7 @@ namespace checkers
 			std::find(legal_moves.begin(), legal_moves.end(), move);
 	}
 
-	/** @return Whether the same player move one more
+	/** @return whether the same player move one more
 	 */ 
 	bool board::make_black_move(const move& move)
 	{
@@ -132,18 +132,22 @@ namespace checkers
 				(move.get_dest() & this->get_black_jumpers()))
 			{
 				assert(this->build_zobrist() == this->_zobrist);
+				/** @retval true when jump one more (multiple
+				 *   opposing pieces).
+				 */
 				return true;
 			}
 		}
 
-		this->_player = board::WHITE;
+		this->set_white_on_move();
 		this->_zobrist.change_side();
 
 		assert(this->build_zobrist() == this->_zobrist);
+		/// @retval false when change side
 		return false;
 	}
 
-	/** @return Whether the same player move one more
+	/** @return whether the same player move one more
 	 */ 
 	bool board::make_white_move(const move& move)
 	{
@@ -183,14 +187,18 @@ namespace checkers
 				(move.get_dest() & this->get_white_jumpers()))
 			{
 				assert(this->build_zobrist() == this->_zobrist);
+				/** @retval true when jump one more (multiple
+				 *   opposing pieces).
+				 */
 				return true;
 			}
 		}
 
-		this->_player = board::BLACK;
+		this->set_black_on_move();
 		this->_zobrist.change_side();
 
 		assert(this->build_zobrist() == this->_zobrist);
+		/// @retval false when change side
 		return false;
 	}
 
@@ -693,8 +701,11 @@ namespace checkers
 	{
 		if (4 != str.length())
 		{
+			/** @throw std::logic_error when @e str has wrong
+			 *   length.
+			 */
 			throw std::logic_error("Error (illegal move,"
-				" wrong command length): " + str);
+				" wrong length): " + str);
 		}
 
 		bitboard orig(str[0], str[1]);
@@ -715,7 +726,11 @@ namespace checkers
 		move move(orig, dest, capture, will_capture_a_king, will_crown);
 		if (!this->is_valid_move(move))
 		{	
-			throw std::logic_error("Error (illegal move): " + str);
+			/** @throw std::logic_error when move @e str is
+			 *   illegal.
+			 */
+			throw std::logic_error("Error (illegal move,"
+				" violation rules): " + str);
 		}
 
 		return move;

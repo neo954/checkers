@@ -21,8 +21,8 @@
 /** @file move_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.16 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.17 $
  */
 
 #ifndef __MOVE_I_HPP__
@@ -42,7 +42,6 @@ namespace checkers
 		assert(1 == this->_orig.bitcount());
 		assert(1 == this->_dest.bitcount());
 		assert(this->_capture.bitcount() <= 1);
-		/// @todo Add more assert to verify.
 	}
 
 	inline bitboard move::get_orig(void) const

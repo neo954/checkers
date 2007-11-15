@@ -21,14 +21,70 @@
 /** @file ponder.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.9 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.10 $
  */
 
 #include <iostream>
 #include "engine.hpp"
 #include "signal.hpp"
 
+/** @mainpage Ponder, a English/American Checkers Game
+ *
+ *  @author Gong Jie <neo@mamiyami.com>
+ *  @date   2006-2007
+ *
+ *  @section sec_intro Introduction
+ *
+ *   English/American checkers is played by two people, on opposite sides of a
+ *   playing board, alternating moves.  One player has dark pieces, and the
+ *   other has light pieces.  The player with the dark pieces makes the first
+ *   move unless stated otherwise.  Pieces move diagonally and pieces of the
+ *   opponent are captured by jumping over them.  The playable surface consists
+ *   only of the dark squares.  A piece may only move into an unoccupied square.
+ *   Capturing is mandatory.  A piece that is captured is removed from the
+ *   board.  The player who has no pieces left or cannot move anymore has lost
+ *   the game unless otherwise stated.
+ *
+ *   Uncrowned pieces ("men") move one step diagonally forwards and capture
+ *   other pieces by making two steps in the same direction, jumping over the
+ *   opponent's piece on the intermediate square.  Multiple opposing pieces may
+ *   be captured in a single turn provided this is done by successive jumps made
+ *   by a single piece; these jumps do not need to be in the same direction but
+ *   may zigzag.  Men can only capture forwards.
+ *
+ *   When men reach the crownhead or kings row (the farthest row forward), they
+ *   become kings, marked by placing an additional piece on top of the first,
+ *   and acquire additional powers including the ability to move backwards (and
+ *   capture backwards, in variants in which they cannot already do so).
+ *
+ *   http://en.wikipedia.org/wiki/Checkers
+ *
+ *  @subsection subsec_board Starting Position on a 8 x 8 Checkers Board
+ *
+ *  @verbatim
+        A   B   C   D   E   F   G   H
+      +---+---+---+---+---+---+---+---+
+   8  |   |(b)|   |(b)|   |(b)|   |(b)|  8  Black
+      +---+---+---+---+---+---+---+---+
+   7  |(b)|   |(b)|   |(b)|   |(b)|   |  7
+      +---+---+---+---+---+---+---+---+
+   6  |   |(b)|   |(b)|   |(b)|   |(b)|  6
+      +---+---+---+---+---+---+---+---+
+   5  | \ |   | \ |   | \ |   | \ |   |  5
+      +---+---+---+---+---+---+---+---+
+   4  |   | \ |   | \ |   | \ |   | \ |  4
+      +---+---+---+---+---+---+---+---+
+   3  |(w)|   |(w)|   |(w)|   |(w)|   |  3
+      +---+---+---+---+---+---+---+---+
+   2  |   |(w)|   |(w)|   |(w)|   |(w)|  2
+      +---+---+---+---+---+---+---+---+
+   1  |(w)|   |(w)|   |(w)|   |(w)|   |  1  White
+      +---+---+---+---+---+---+---+---+
+        A   B   C   D   E   F   G   H    @endverbatim
+
+ *
+ */
 int main(void)
 {
 	try

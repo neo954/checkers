@@ -21,8 +21,8 @@
 /** @file pipe.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.3 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.4 $
  */
 
 #include "pipe.hpp"
@@ -39,15 +39,19 @@ namespace checkers
 		{
 			if (pipe(fd[i]) < 0)
 			{
+				/** @throw std::runtime_error when pipe()
+				 *   failed.
+				 */
 				throw std::runtime_error(
-					std::string("Pipe error: ")
+					std::string("pipe() failed: ")
 					+ std::strerror(errno));
 			}
 		}
 		if ((pid = fork()) < 0)
 		{
+			/// @throw std::runtime_error when fork() failed.
 			throw std::runtime_error(
-				std::string("Fork error: ")
+				std::string("fork() failed: ")
 				+ std::strerror(errno));
 		}
 		else if (0 == pid)
@@ -61,7 +65,7 @@ namespace checkers
 					!= STDIN_FILENO)
 				{
 					throw std::runtime_error(
-						std::string("dup2 error: ")
+						std::string("dup2() failed: ")
 						+ std::strerror(errno));
 				}
 			}
@@ -71,14 +75,14 @@ namespace checkers
 					!= STDOUT_FILENO)
 				{
 					throw std::runtime_error(
-						std::string("dup2 error: ")
+						std::string("dup2() failed: ")
 						+ std::strerror(errno));
 				}
 			}
 			if (execl(path.c_str(), path.c_str(), NULL) < 0)
 			{
 				throw std::runtime_error(
-					std::string("dup2 error: ")
+					std::string("execl() failed: ")
 					+ std::strerror(errno));
 			}
 		}
@@ -88,3 +92,4 @@ namespace checkers
 		return std::pair<int, int>(fd[1][0], fd[0][1]);
 	}
 }
+// End of file

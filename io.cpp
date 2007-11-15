@@ -21,8 +21,8 @@
 /** @file io.cpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.12 $
+ *  $Date: 2007-11-15 10:36:31 $
+ *  $Revision: 1.13 $
  */
 
 #include <sys/select.h>
@@ -74,7 +74,8 @@ namespace checkers
 		if (n < 0)
 		{
 			io._state = false;
-			throw std::runtime_error("System call select() failed");
+			/// @throw std::runtime_error when select() failed.
+			throw std::runtime_error("select() failed");
 		}
 
 		if (FD_ISSET(io._in_fd, &read_set))
@@ -108,7 +109,8 @@ namespace checkers
 		if ((val = fcntl(fd, F_GETFL, 0)) < 0)
 		{
 			this->_state = false;
-			throw std::runtime_error("System call fcntl(..., F_GETFL, ...) failed");
+			/// @throw std::runtime_error when fcntl() failed.
+			throw std::runtime_error("fcntl() failed");
 		}
 
 		// Turn on flags
@@ -117,7 +119,8 @@ namespace checkers
 		if (fcntl(fd, F_SETFL, val) < 0)
 		{
 			this->_state = false;
-			throw std::runtime_error("System call fcntl(..., F_SETFL, ...) failed");
+			/// @throw std::runtime_error when fcntl() failed.
+			throw std::runtime_error("fcntl() failed");
 		}
 	}
 }

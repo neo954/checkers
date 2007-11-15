@@ -21,15 +21,35 @@
 /** @file timeval_i.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:54 $
- *  $Revision: 1.6 $
+ *  $Date: 2007-11-15 10:36:32 $
+ *  $Revision: 1.7 $
  */
 
 #ifndef __TIMEVAL_I_HPP__
 #define __TIMEVAL_I_HPP__
 
+#include <cerrno>
+
 namespace checkers
 {
+	inline struct timeval timeval::now(void)
+	{
+		struct timeval now;
+		if (::gettimeofday(&now, NULL) < 0)
+		{
+			/** @throw std::runtime_error when gettimeofday()
+			 *   failed.
+			 */
+			throw std::runtime_error(
+				std::string("gettimeofday() failed: ") +
+				std::strerror(errno));
+		}
+
+		/// @return the time of day.
+		return now;
+	}
+
+
 	inline struct timeval operator -(const struct timeval& rhs)
 	{
 		struct timeval tv;

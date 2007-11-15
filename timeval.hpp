@@ -21,8 +21,8 @@
 /** @file timeval.hpp
  *  @brief
  *  $Author: neo $
- *  $Date: 2007-11-05 17:39:54 $
- *  $Revision: 1.6 $
+ *  $Date: 2007-11-15 10:36:32 $
+ *  $Revision: 1.7 $
  */
 
 #ifndef __TIMEVAL_HPP__
@@ -33,6 +33,12 @@
 
 namespace checkers
 {
+	namespace timeval
+	{
+		/// Get the time of day.
+		inline struct timeval now(void);
+	}
+
 	inline struct timeval operator -(const struct timeval& rhs);
 
 	inline struct timeval& operator +=(struct timeval& lhs,
