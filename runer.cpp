@@ -1,4 +1,6 @@
-/* This file is a part of ponder, a English/American checkers game.
+/* $Id: runer.cpp,v 1.5 2007-11-15 17:41:46 neo Exp $
+
+   This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -20,9 +22,6 @@
  */
 /** @file runner.cpp
  *  @brief
- *  $Author: neo $
- *  $Date: 2007-11-15 17:24:40 $
- *  $Revision: 1.4 $
  */
 
 #include <iostream>

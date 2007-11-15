@@ -1,4 +1,6 @@
-/* This file is a part of ponder, a English/American checkers game.
+/* $Id: zobrist_i.hpp,v 1.6 2007-11-15 17:41:46 neo Exp $
+
+   This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -20,9 +22,6 @@
  */
 /** @file zobrist_i.hpp
  *  @brief
- *  $Author: neo $
- *  $Date: 2007-11-14 17:21:59 $
- *  $Revision: 1.5 $
  */
 
 #ifndef __ZOBRIST_I_HPP__

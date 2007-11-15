@@ -1,4 +1,6 @@
-/* This file is a part of textual checkers, a English/American checkers
+/* $Id: pipe.cpp,v 1.6 2007-11-15 17:41:45 neo Exp $
+
+   This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -20,9 +22,6 @@
  */
 /** @file pipe.cpp
  *  @brief
- *  $Author: neo $
- *  $Date: 2007-11-15 17:24:40 $
- *  $Revision: 1.5 $
  */
 
 #include "pipe.hpp"

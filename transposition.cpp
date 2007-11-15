@@ -1,4 +1,6 @@
-/* This file is a part of ponder, a English/American checkers game.
+/* $Id: transposition.cpp,v 1.4 2007-11-15 17:41:46 neo Exp $
+
+   This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -20,9 +22,6 @@
  */
 /** @file transposition.cpp
  *  @brief
- *  $Author: neo $
- *  $Date: 2007-11-15 17:24:40 $
- *  $Revision: 1.3 $
  */
 
 #include "transposition.hpp"

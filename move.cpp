@@ -1,4 +1,6 @@
-/* This file is a part of ponder, a English/American checkers game.
+/* $Id: move.cpp,v 1.16 2007-11-15 17:41:45 neo Exp $
+
+   This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -20,9 +22,6 @@
  */
 /** @file move.cpp
  *  @brief
- *  $Author: neo $
- *  $Date: 2007-11-05 17:39:53 $
- *  $Revision: 1.15 $
  */
 
 #include <cassert>

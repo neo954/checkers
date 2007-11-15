@@ -1,4 +1,6 @@
-/* This file is a part of ponder, a English/American checkers game.
+/* $Id: board.cpp,v 1.29 2007-11-15 17:41:45 neo Exp $
+
+   This file is a part of ponder, a English/American checkers game.
 
    Copyright (c) 2006, 2007 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
@@ -20,9 +22,6 @@
  */
 /** @file board.cpp
  *  @brief
- *  $Author: neo $
- *  $Date: 2007-11-15 17:24:39 $
- *  $Revision: 1.28 $
  */
 
 #include <cstdlib>
