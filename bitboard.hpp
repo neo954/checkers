@@ -1,4 +1,4 @@
-/* $Id: bitboard.hpp,v 1.22 2007-11-15 17:41:45 neo Exp $
+/* $Id: bitboard.hpp,v 1.23 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -163,8 +163,6 @@ namespace checkers
 		friend bitboard operator ^(const bitboard& lhs, uint32_t rhs);
 		friend bool operator ==(const bitboard& lhs,
 			 const bitboard& rhs);
-		friend bool operator !=(const bitboard& lhs,
-			 const bitboard& rhs);
 
 		friend std::ostream& operator <<(std::ostream& os,
 			const bitboard& rhs);
@@ -192,9 +190,9 @@ namespace checkers
 	inline bitboard operator ^(uint32_t, const bitboard& rhs);
 	/// Bitwise XOR.
 	inline bitboard operator ^(const bitboard& lhs, uint32_t rhs);
-	///
+	/// Relational ``equal to''.
 	inline bool operator ==(const bitboard& lhs, const bitboard& rhs);
-	///
+	/// Relational ``not equal to''.
 	inline bool operator !=(const bitboard& lhs, const bitboard& rhs);
 
 	/// Stream out the square name of @e rhs on the game board.

@@ -1,4 +1,4 @@
-/* $Id: io.cpp,v 1.15 2007-11-15 17:41:45 neo Exp $
+/* $Id: io.cpp,v 1.16 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -86,8 +86,7 @@ namespace checkers
 
 	// ================================================================
 
-	/**
-	 *  @param fd is the open file descriptor
+	/** @param fd is the open file descriptor
 	 *  @param flags are file status flags to turn on
 	 */
 	void io::setfl(int fd, int flags)

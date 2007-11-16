@@ -1,4 +1,4 @@
-/* $Id: move_i.hpp,v 1.18 2007-11-15 17:41:45 neo Exp $
+/* $Id: move_i.hpp,v 1.19 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -32,20 +32,20 @@
 
 namespace checkers
 {
-	inline move::move(bitboard orig, bitboard dest, bitboard capture,
+	inline move::move(bitboard src, bitboard dest, bitboard capture,
 		bool will_capture_a_king, bool will_crown) :
-		_orig(orig), _dest(dest), _capture(capture),
+		_src(src), _dest(dest), _capture(capture),
 		_will_capture_a_king(will_capture_a_king),
 		_will_crown(will_crown)
 	{
-		assert(1 == this->_orig.bitcount());
+		assert(1 == this->_src.bitcount());
 		assert(1 == this->_dest.bitcount());
 		assert(this->_capture.bitcount() <= 1);
 	}
 
-	inline bitboard move::get_orig(void) const
+	inline bitboard move::get_src(void) const
 	{
-		return this->_orig;
+		return this->_src;
 	}
 
 	inline bitboard move::get_dest(void) const
@@ -70,7 +70,7 @@ namespace checkers
 
 	inline bool operator ==(const move& lhs, const move& rhs)
 	{
-		return  lhs._orig == rhs._orig && lhs._dest == rhs._dest &&
+		return  lhs._src == rhs._src && lhs._dest == rhs._dest &&
 			lhs._capture == rhs._capture &&
 			lhs._will_capture_a_king == rhs._will_capture_a_king &&
 			lhs._will_crown == rhs._will_crown;

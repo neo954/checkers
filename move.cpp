@@ -1,4 +1,4 @@
-/* $Id: move.cpp,v 1.16 2007-11-15 17:41:45 neo Exp $
+/* $Id: move.cpp,v 1.17 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -32,10 +32,10 @@ namespace checkers
 {
 	std::ostream& operator <<(std::ostream& os, const move& rhs)
 	{
-		assert(1 == rhs._orig.bitcount());
+		assert(1 == rhs._src.bitcount());
 		assert(1 == rhs._dest.bitcount());
 
-		os << rhs._orig << rhs._dest;
+		os << rhs._src << rhs._dest;
 
 		return os;
 	}

@@ -1,4 +1,4 @@
-/* $Id: move.hpp,v 1.20 2007-11-15 17:41:45 neo Exp $
+/* $Id: move.hpp,v 1.21 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -36,14 +36,19 @@ namespace checkers
 	class move
 	{
 	public:
-		inline move(bitboard orig, bitboard dest, bitboard capture,
+		inline move(bitboard src, bitboard dest, bitboard capture,
 			bool will_capture_a_king, bool will_crown);
 
-		inline bitboard get_orig(void) const;
+		/// Get the source square of the move.
+		inline bitboard get_src(void) const;
+		/// Get the destination square of the move.
 		inline bitboard get_dest(void) const;
+		/// Get the squareof the captured piece.
 		inline bitboard get_capture(void) const;
 
+		/// Whether this move will capture a king.
 		inline bool will_capture_a_king(void) const;
+		/// Whether this move will crown.
 		inline bool will_crown(void) const;
 
 		friend bool operator ==(const move& lhs, const move& rhs);
@@ -52,16 +57,24 @@ namespace checkers
 			const move& rhs);
 
 	private:
-		bitboard _orig;
+		/// The source square of the move.
+		bitboard _src;
+		/// The destination square of the move.
 		bitboard _dest;
+		/// The square of the captured piece.
 		bitboard _capture;
+		/// Whether this move will capture a king.
 		bool _will_capture_a_king;
+		/// Whether this move will crown.
 		bool _will_crown;
 	};
 
+	/// Relational ``equal to''.
 	inline bool operator ==(const move& lhs, const move& rhs);
+	/// Relational ``not equal to''.
 	inline bool operator !=(const move& lhs, const move& rhs);
 
+	/// Stream out the move.
 	std::ostream& operator <<(std::ostream& os, const move& rhs);
 }
 

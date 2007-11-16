@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.32 2007-11-15 17:41:45 neo Exp $
+/* $Id: engine.cpp,v 1.33 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -389,7 +389,7 @@ done:
 	void engine::prompt(void)
 	{
 		this->_io << "  *** "
-			<< (this->_board.is_black_on_move() ? "Black" : "White")
+			<< (this->_board.is_black_to_move() ? "Black" : "White")
 			<< " move ***\n";
 	}
 
@@ -398,7 +398,7 @@ done:
 		if (this->_board.is_winning())
 		{
 			this->_io << "RESULT "
-				<< (this->_board.is_black_on_move() ?
+				<< (this->_board.is_black_to_move() ?
 				"1-0 {Black win}\n" :
 				"0-1 {White win}\n");
 			return true;
@@ -406,7 +406,7 @@ done:
 		else if (this->_board.is_losing())
 		{
 			this->_io << "RESULT "
-				<< (this->_board.is_black_on_move() ?
+				<< (this->_board.is_black_to_move() ?
 				"0-1 {White win}\n" :
 				"1-0 {Black win}\n");
 			return true;
@@ -448,7 +448,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_board.set_black_on_move();
+		this->_board.set_black_to_move();
 		this->_best_moves.clear();
 	}
 
@@ -457,7 +457,7 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_board.set_white_on_move();
+		this->_board.set_white_to_move();
 		this->_best_moves.clear();
 	}
 
@@ -488,24 +488,25 @@ done:
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io << "    analyze         Engine thinks about what move it make next if it were on\n";
-		this->_io << "                    move.\n";
-		this->_io << "    black           Set Black on move.  Set the engine to play White.\n";
-		this->_io << "    force           Set the engine to play neither color (\"force mode\").\n";
-		this->_io << "    go              Leave force mode and set the engine to play the color that\n";
-		this->_io << "                    is on move.  Start thinking and eventually make a move.\n";
-		this->_io << "    help            Show this help information.\n";
-		this->_io << "    new             Reset the board to the standard starting position.\n";
-		this->_io << "    ping N          N is a decimal number.  Reply by sending the string\n";
-		this->_io << "                    \"pong N\"\n";
-		this->_io << "    print           Show the current board.\n";
-		this->_io << "    quit            Quit this program.\n";
-		this->_io << "    rotate          Rotate the board 180 degrees.\n";
-		this->_io << "    setboard FEN    Set up the pieces position on the board.\n";
-		this->_io << "    sd DEPTH        The engine should limit its thinking to DEPTH ply.\n";
-		this->_io << "    st TIME         Set the time control to TIME seconds per move.\n";
-		this->_io << "    white           Set White on move.  Set the engine to play Black.\n";
-		this->_io << "    undo            Back up a move.\n";
+		this->_io <<
+			"    analyze         Engine thinks about what move it make next if it were on\n"
+			"                    move.\n"
+			"    black           Set Black on move, and the engine will play White.\n"
+			"    force           Set the engine to play neither color (\"force mode\").\n"
+			"    go              Leave force mode and set the engine to play the color that\n"
+			"                    is on move.  Start thinking and eventually make a move.\n"
+			"    help            Show this help information.\n"
+			"    new             Reset the board to the standard starting position.\n"
+			"    ping N          N is a decimal number.  Reply by sending the string\n"
+			"                    \"pong N\"\n"
+			"    print           Show the current board.\n"
+			"    quit            Quit this program.\n"
+			"    rotate          Rotate the board 180 degrees.\n"
+			"    setboard FEN    Set up the pieces position on the board.\n"
+			"    sd DEPTH        The engine should limit its thinking to DEPTH ply.\n"
+			"    st TIME         Set the time control to TIME seconds per move.\n"
+			"    white           Set White on move, and the engine will play Black.\n"
+			"    undo            Back up a move.\n";
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)

@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.20 2007-11-15 17:41:45 neo Exp $
+/* $Id: board_i.hpp,v 1.21 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -35,16 +35,18 @@ namespace checkers
 	{
 	}
 
-	/** @retval true if multiple opposing pieces may be captured in a
-	 *   single turn, and this move is not the last move in a single turn.
-	 *   The same player is on move once more.
-	 *  @retval false if the other player is on move.
+	/** @return whether the same player move once more.
 	 */
 	inline bool board::make_move(const move& move)
 	{
 		assert(this->is_valid_move(move));
 
-		return this->is_black_on_move() ?
+		/** @retval true if multiple opposing pieces may be captured in
+		 *   a single turn, and this move is not the last move in this
+		 *   turn.  The same player will make move once more.
+		 *  @retval false if the other player will make the next move.
+		 */
+		return this->is_black_to_move() ?
 			this->make_black_move(move) :
 			this->make_white_move(move);
 	}
@@ -108,19 +110,23 @@ namespace checkers
 		return this->_white_pieces & this->_kings;
 	}
 
-	inline bool board::is_black_on_move(void) const
+	/** @return Whether the player has dark pieces will make the next move.
+	 */
+	inline bool board::is_black_to_move(void) const
 	{
 		return board::BLACK == this->_player;
 	}
 
-	inline bool board::is_white_on_move(void) const
+	/** @return Whether the player has light pieces will make the next move.
+	 */
+	inline bool board::is_white_to_move(void) const
 	{
 		return board::WHITE == this->_player;
 	}
 
 	inline std::vector<move> board::generate_moves(void) const
 	{
-		return (this->is_black_on_move()) ?
+		return (this->is_black_to_move()) ?
 			(this->get_black_jumpers() ?
 				this->generate_black_jumps() :
 				this->generate_black_moves()) :
@@ -129,34 +135,34 @@ namespace checkers
 				this->generate_white_moves());
 	}
 
-	inline void board::set_black_on_move(void)
+	inline void board::set_black_to_move(void)
 	{
 		this->_player = board::BLACK;
 	}
 
-	inline void board::set_white_on_move(void)
+	inline void board::set_white_to_move(void)
 	{
 		this->_player = board::WHITE;
 	}
 
 	/** @return game over or not.
-	 *  @retval true when the player on move is winning.
+	 *  @retval true when the current player is winning.
 	 *  @retval false in other situation.
 	 */
 	inline bool board::is_winning(void) const
 	{
-		return this->is_black_on_move() ?
+		return this->is_black_to_move() ?
 			!this->get_white_pieces() :
 			!this->get_black_pieces();
 	}
 
 	/** @return game over or not.
-	 *  @retval true when the player on move is losing.
+	 *  @retval true when the current player is losing.
 	 *  @retval false in other situation.
 	 */
 	inline bool board::is_losing(void) const
 	{
-		return this->is_black_on_move() ?
+		return this->is_black_to_move() ?
 			!(this->get_black_jumpers() ||
 			  this->get_black_movers()) :
 			!(this->get_white_jumpers() ||

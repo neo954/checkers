@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.24 2007-11-15 17:41:45 neo Exp $
+/* $Id: board.hpp,v 1.25 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -51,7 +51,7 @@ namespace checkers
 		explicit board(const std::string& input);
 
 		/** @brief Reset all pieces to initial position and set the
-		 *   the player has dark pieces on move.
+		 *   player has dark pieces makes the next move.
 		 */
 		void opening(void);
 
@@ -94,10 +94,14 @@ namespace checkers
 		/// Get all light kings on the game board.
 		inline bitboard get_white_kings(void) const;
 
-		/// Check if the player on move is black
-		inline bool is_black_on_move(void) const;
-		/// Check if the player on move is white
-		inline bool is_white_on_move(void) const;
+		/** @brief Check if the player has dark pieces will make the
+		 *   next move.
+		 */
+		inline bool is_black_to_move(void) const;
+		/** @brief Check if the player has light pieces will make the
+		 *   next move.
+		 */
+		inline bool is_white_to_move(void) const;
 
 		/// Get all dark pieces, which can move.
 		bitboard get_black_movers(void) const;
@@ -123,27 +127,29 @@ namespace checkers
 
 		/// Generate all legal moves based on current situation.
 		inline std::vector<move> generate_moves(void) const;
-		/// Generate one legal move based on user input.
+		/// Generate a legal move based on user input @e str.
 		move generate_move(const std::string& str) const;
 
-		/// Set the player has dark pieces on move.
-		inline void set_black_on_move(void);
-		/// Set the player has light pieces on move.
-		inline void set_white_on_move(void);
-		/// Check whether the player on move is winning.
+		/// Set the player has dark pieces makes the next move.
+		inline void set_black_to_move(void);
+		/// Set the player has light pieces makes the next move.
+		inline void set_white_to_move(void);
+		/// Check whether the current player is winning.
 		inline bool is_winning(void) const;
-		/// Check whether the player on move is losing.
+		/// Check whether the current player is losing.
 		inline bool is_losing(void) const;
 		
 	private:
-		/// Rebuild Zobrist key.
+		/// Build Zobrist key.
 		zobrist build_zobrist(void);
 
-		/// All the black pieces on the game board.
+		/// All the dark pieces on the game board.
 		bitboard _black_pieces;
-		/// All the white pieces on the game board.
+		/// All the light pieces on the game board.
 		bitboard _white_pieces;
-		/// All the kings pieces for both black and white.
+		/** @brief All the kings on the game board for both dark side
+		 *   and light side.
+		 */
 		bitboard _kings;
 		/// The player on move
 		player _player;

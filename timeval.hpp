@@ -1,4 +1,4 @@
-/* $Id: timeval.hpp,v 1.8 2007-11-15 17:41:46 neo Exp $
+/* $Id: timeval.hpp,v 1.9 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -38,26 +38,32 @@ namespace checkers
 		inline struct timeval now(void);
 	}
 
+	/// Unary minus.
 	inline struct timeval operator -(const struct timeval& rhs);
-
+	/// Assignment by sum.
 	inline struct timeval& operator +=(struct timeval& lhs,
 		const struct timeval& rhs);
+	/// Assignment by sum.
 	inline struct timeval& operator +=(struct timeval& lhs, time_t rhs);
-
+	/// Assignment by difference.
 	inline struct timeval& operator -=(struct timeval& lhs,
 		const struct timeval& rhs);
+	/// Assignment by difference.
 	inline struct timeval& operator -=(struct timeval& lhs, time_t rhs);
-
+	/// Addition.
 	inline struct timeval operator +(const struct timeval& lhs,
 		const struct timeval& rhs);
+	/// Addition.
 	inline struct timeval operator +(const struct timeval& lhs, time_t rhs);
-
+	/// Subtraction.
 	inline struct timeval operator -(const struct timeval& lhs,
 		const struct timeval& rhs);
+	/// Subtraction.
 	inline struct timeval operator -(const struct timeval& lhs, time_t rhs);
-
+	/// Relational ``greater than''.
 	inline bool operator >(const struct timeval& lhs,
 		const struct timeval& rhs);
+	/// Relational ``less than''.
 	inline bool operator <(const struct timeval& lhs,
 		const struct timeval& rhs);
 }

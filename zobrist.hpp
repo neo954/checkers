@@ -1,4 +1,4 @@
-/* $Id: zobrist.hpp,v 1.7 2007-11-15 17:41:46 neo Exp $
+/* $Id: zobrist.hpp,v 1.8 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -39,8 +39,10 @@ namespace checkers
 	class zobrist
 	{
 	public:
+		/// Construct from a 64-bit unsigned intenger.
 		explicit inline zobrist(uint64_t key = 0x0UL);
 
+		/// Get the Zobrist key.
 		inline uint64_t key(void) const;
 		void change_black_piece(const bitboard& piece);
 		void change_white_piece(const bitboard& piece);
@@ -48,7 +50,6 @@ namespace checkers
 		void change_side(void);
 
 		friend bool operator ==(const zobrist& lhs, const zobrist& rhs);
-		friend bool operator !=(const zobrist& lhs, const zobrist& rhs);
 
 	private:
 		static inline uint32_t rand32(void);
@@ -62,7 +63,9 @@ namespace checkers
 		uint64_t _key;
 	};
 
+	/// Relational ``equal to''.
 	inline bool operator ==(const zobrist& lhs, const zobrist& rhs);
+	/// Relational ``not equal to''.
 	inline bool operator !=(const zobrist& lhs, const zobrist& rhs);
 }
 

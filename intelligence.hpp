@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.19 2007-11-15 17:41:45 neo Exp $
+/* $Id: intelligence.hpp,v 1.20 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -49,6 +49,11 @@ namespace checkers
 	private:
 		inline explicit intelligence(const board& board);
 
+		/** @brief Alpha-beta pruning is a search algorithm that
+		 *   reduces the number of nodes that need to be evaluated
+		 *   in the search tree by the minimax algorithm.
+		 *  @note This is recursive function.
+		 */
 		int alpha_beta_search(io& io, std::vector<move>& best_moves,
 			unsigned int depth, int alpha = -INFINITY,
 			int beta = INFINITY, unsigned int ply = 0);

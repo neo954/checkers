@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.29 2007-11-15 17:41:45 neo Exp $
+/* $Id: board.cpp,v 1.30 2007-11-16 10:19:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -91,20 +91,20 @@ namespace checkers
 			std::find(legal_moves.begin(), legal_moves.end(), move);
 	}
 
-	/** @return whether the same player move one more
-	 */ 
+	/** @return whether the player has dark pieces move once more.
+	 */
 	bool board::make_black_move(const move& move)
 	{
-		this->_black_pieces &= ~move.get_orig();
-		this->_zobrist.change_black_piece(move.get_orig());
+		this->_black_pieces &= ~move.get_src();
+		this->_zobrist.change_black_piece(move.get_src());
 
 		this->_black_pieces |= move.get_dest();
 		this->_zobrist.change_black_piece(move.get_dest());
 
-		if (this->_kings & move.get_orig())
+		if (this->_kings & move.get_src())
 		{
-			this->_kings &= ~move.get_orig();
-			this->_zobrist.change_king(move.get_orig());
+			this->_kings &= ~move.get_src();
+			this->_zobrist.change_king(move.get_src());
 
 			this->_kings |= move.get_dest();
 			this->_zobrist.change_king(move.get_dest());
@@ -131,35 +131,36 @@ namespace checkers
 				(move.get_dest() & this->get_black_jumpers()))
 			{
 				assert(this->build_zobrist() == this->_zobrist);
-				/** @retval true when jump one more (multiple
-				 *   opposing pieces).
+				/** @retval true when the player has dark
+				 *   pieces jumps once more (Capture multiple
+				 *   opposing pieces in a single turn).
 				 */
 				return true;
 			}
 		}
 
-		this->set_white_on_move();
+		this->set_white_to_move();
 		this->_zobrist.change_side();
 
 		assert(this->build_zobrist() == this->_zobrist);
-		/// @retval false when change side
+		/// @retval false when change side.
 		return false;
 	}
 
-	/** @return whether the same player move one more
-	 */ 
+	/** @return whether the player has light pieces move once more.
+	 */
 	bool board::make_white_move(const move& move)
 	{
-		this->_white_pieces &= ~move.get_orig();
-		this->_zobrist.change_white_piece(move.get_orig());
+		this->_white_pieces &= ~move.get_src();
+		this->_zobrist.change_white_piece(move.get_src());
 
 		this->_white_pieces |= move.get_dest();
 		this->_zobrist.change_white_piece(move.get_dest());
 
-		if (this->_kings & move.get_orig())
+		if (this->_kings & move.get_src())
 		{
-			this->_kings &= ~move.get_orig();
-			this->_zobrist.change_king(move.get_orig());
+			this->_kings &= ~move.get_src();
+			this->_zobrist.change_king(move.get_src());
 
 			this->_kings |= move.get_dest();
 			this->_zobrist.change_king(move.get_dest());
@@ -186,24 +187,25 @@ namespace checkers
 				(move.get_dest() & this->get_white_jumpers()))
 			{
 				assert(this->build_zobrist() == this->_zobrist);
-				/** @retval true when jump one more (multiple
-				 *   opposing pieces).
+				/** @retval true when the player has light
+				 *   pieces jumps once more (Capture multiple
+				 *   opposing pieces in a single turn).
 				 */
 				return true;
 			}
 		}
 
-		this->set_black_on_move();
+		this->set_black_to_move();
 		this->_zobrist.change_side();
 
 		assert(this->build_zobrist() == this->_zobrist);
-		/// @retval false when change side
+		/// @retval false when change side.
 		return false;
 	}
 
 	void board::undo_black_move(const move& move)
 	{
-		if (this->is_white_on_move())
+		if (this->is_white_to_move())
 		{
 			this->_player = board::BLACK;
 			this->_zobrist.change_side();
@@ -232,22 +234,22 @@ namespace checkers
 			this->_kings &= ~move.get_dest();
 			this->_zobrist.change_king(move.get_dest());
 
-			this->_kings |= move.get_orig();
-			this->_zobrist.change_king(move.get_orig());
+			this->_kings |= move.get_src();
+			this->_zobrist.change_king(move.get_src());
 		}
 
 		this->_black_pieces &= ~move.get_dest();
 		this->_zobrist.change_black_piece(move.get_dest());
 
-		this->_black_pieces |= move.get_orig();
-		this->_zobrist.change_black_piece(move.get_orig());
+		this->_black_pieces |= move.get_src();
+		this->_zobrist.change_black_piece(move.get_src());
 
 		assert(this->build_zobrist() == this->_zobrist);
 	}
 
 	void board::undo_white_move(const move& move)
 	{
-		if (this->is_black_on_move())
+		if (this->is_black_to_move())
 		{
 			this->_player = board::WHITE;
 			this->_zobrist.change_side();
@@ -275,15 +277,15 @@ namespace checkers
 			this->_kings &= ~move.get_dest();
 			this->_zobrist.change_king(move.get_dest());
 
-			this->_kings |= move.get_orig();
-			this->_zobrist.change_king(move.get_orig());
+			this->_kings |= move.get_src();
+			this->_zobrist.change_king(move.get_src());
 		}
 
 		this->_white_pieces &= ~move.get_dest();
 		this->_zobrist.change_white_piece(move.get_dest());
 
-		this->_white_pieces |= move.get_orig();
-		this->_zobrist.change_white_piece(move.get_orig());
+		this->_white_pieces |= move.get_src();
+		this->_zobrist.change_white_piece(move.get_src());
 
 		assert(this->build_zobrist() == this->_zobrist);
 	}
@@ -417,51 +419,51 @@ namespace checkers
 		std::vector<move> moves;
 		moves.reserve(48);
 		bitboard black_movers = this->get_black_movers();
-		bitboard orig;
+		bitboard src;
 		bitboard dest;
 		const bitboard not_occupied = this->get_not_occupied();
 
 		while (black_movers)
 		{
-			orig = black_movers.lsb();
-			black_movers &= ~orig;
+			src = black_movers.lsb();
+			black_movers &= ~src;
 
-			dest = (orig >> 4) & not_occupied; 
+			dest = (src >> 4) & not_occupied; 
 			if (dest)
 			{
-				moves.push_back(move(orig, dest,
+				moves.push_back(move(src, dest,
 					bitboard(bitboard::EMPTY), false,
-					!(orig & this->_kings) &&
+					!(src & this->_kings) &&
 					(dest & bitboard::BLACK_KINGS_ROW)));
 			}
 
-			dest = (((orig & bitboard::MASK_R3) >> 3) |
-				((orig & bitboard::MASK_R5) >> 5)) &
+			dest = (((src & bitboard::MASK_R3) >> 3) |
+				((src & bitboard::MASK_R5) >> 5)) &
 				not_occupied;
 			if (dest)
 			{
-				moves.push_back(move(orig, dest,
+				moves.push_back(move(src, dest,
 					bitboard(bitboard::EMPTY), false,
-					!(orig & this->_kings) &&
+					!(src & this->_kings) &&
 					(dest & bitboard::BLACK_KINGS_ROW)));
 			}
 
-			if (orig & this->_kings)
+			if (src & this->_kings)
 			{
-				dest = (orig << 4) & not_occupied;
+				dest = (src << 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						bitboard(bitboard::EMPTY),
 						false, false));
 				}
 
-				dest = (((orig & bitboard::MASK_L3) << 3) |
-					((orig & bitboard::MASK_L5) << 5)) &
+				dest = (((src & bitboard::MASK_L3) << 3) |
+					((src & bitboard::MASK_L5) << 5)) &
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						bitboard(bitboard::EMPTY),
 						false, false));
 				}
@@ -476,51 +478,51 @@ namespace checkers
 		std::vector<move> moves;
 		moves.reserve(48);
 		bitboard white_movers = this->get_white_movers();
-		bitboard orig;
+		bitboard src;
 		bitboard dest;
 		const bitboard not_occupied = this->get_not_occupied();
 
 		while (white_movers)
 		{
-			orig = white_movers.lsb();
-			white_movers &= ~orig;
+			src = white_movers.lsb();
+			white_movers &= ~src;
 
-			dest = (orig << 4) & not_occupied; 
+			dest = (src << 4) & not_occupied; 
 			if (dest)
 			{
-				moves.push_back(move(orig, dest,
+				moves.push_back(move(src, dest,
 					bitboard(bitboard::EMPTY), false,
-					!(orig & this->_kings) &&
+					!(src & this->_kings) &&
 					(dest & bitboard::WHITE_KINGS_ROW)));
 			}
 
-			dest = (((orig & bitboard::MASK_L3) << 3) |
-				((orig & bitboard::MASK_L5) << 5)) &
+			dest = (((src & bitboard::MASK_L3) << 3) |
+				((src & bitboard::MASK_L5) << 5)) &
 				not_occupied;
 			if (dest)
 			{
-				moves.push_back(move(orig, dest,
+				moves.push_back(move(src, dest,
 					bitboard(bitboard::EMPTY), false,
-					!(orig & this->_kings) &&
+					!(src & this->_kings) &&
 					(dest & bitboard::WHITE_KINGS_ROW)));
 			}
 
-			if (orig & this->_kings)
+			if (src & this->_kings)
 			{
-				dest = (orig >> 4) & not_occupied;
+				dest = (src >> 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						bitboard(bitboard::EMPTY),
 						false, false));
 				}
 
-				dest = (((orig & bitboard::MASK_R3) >> 3) |
-					((orig & bitboard::MASK_R5) >> 5)) &
+				dest = (((src & bitboard::MASK_R3) >> 3) |
+					((src & bitboard::MASK_R5) >> 5)) &
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						bitboard(bitboard::EMPTY),
 						false, false));
 				}
@@ -535,17 +537,17 @@ namespace checkers
 		std::vector<move> moves;
 		moves.reserve(48);
 		bitboard black_jumpers = this->get_black_jumpers();
-		bitboard orig;
+		bitboard src;
 		bitboard dest;
 		bitboard capture;
 		const bitboard not_occupied = this->get_not_occupied();
 
 		while (black_jumpers)
 		{
-			orig = black_jumpers.lsb();
-			black_jumpers &= ~orig;
+			src = black_jumpers.lsb();
+			black_jumpers &= ~src;
 
-			capture = (orig >> 4) & this->_white_pieces;
+			capture = (src >> 4) & this->_white_pieces;
 			if (capture)
 			{
 				dest = (((capture & bitboard::MASK_R3) >> 3) |
@@ -553,31 +555,31 @@ namespace checkers
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						capture, capture & this->_kings,
-						!(orig & this->_kings) && (dest
+						!(src & this->_kings) && (dest
 						& bitboard::BLACK_KINGS_ROW)));
 				}
 			}
 
-			capture = (((orig & bitboard::MASK_R3) >> 3) |
-				((orig & bitboard::MASK_R5) >> 5)) &
+			capture = (((src & bitboard::MASK_R3) >> 3) |
+				((src & bitboard::MASK_R5) >> 5)) &
 				this->_white_pieces;
 			if (capture)
 			{
 				dest = (capture >> 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						capture, capture & this->_kings,
-						!(orig & this->_kings) && (dest
+						!(src & this->_kings) && (dest
 						& bitboard::BLACK_KINGS_ROW)));
 				}
 			}
 
-			if (orig & this->_kings)
+			if (src & this->_kings)
 			{
-				capture = (orig << 4) & this->_white_pieces;
+				capture = (src << 4) & this->_white_pieces;
 				if (capture)
 				{
 					dest = (((capture & bitboard::MASK_L3)
@@ -587,14 +589,14 @@ namespace checkers
 					if (dest)
 					{
 						moves.push_back(move(
-							orig, dest, capture,
+							src, dest, capture,
 							capture & this->_kings,
 							false));
 					}
 				}
 
-				capture = (((orig & bitboard::MASK_L3) << 3) |
-					((orig & bitboard::MASK_L5) << 5)) &
+				capture = (((src & bitboard::MASK_L3) << 3) |
+					((src & bitboard::MASK_L5) << 5)) &
 					this->_white_pieces;
 				if (capture)
 				{
@@ -602,7 +604,7 @@ namespace checkers
 					if (dest)
 					{
 						moves.push_back(move(
-							orig, dest, capture,
+							src, dest, capture,
 							capture & this->_kings,
 							false));
 					}
@@ -618,17 +620,17 @@ namespace checkers
 		std::vector<move> moves;
 		moves.reserve(48);
 		bitboard white_jumpers = this->get_white_jumpers();
-		bitboard orig;
+		bitboard src;
 		bitboard dest;
 		bitboard capture;
 		const bitboard not_occupied = this->get_not_occupied();
 
 		while (white_jumpers)
 		{
-			orig = white_jumpers.lsb();
-			white_jumpers &= ~orig;
+			src = white_jumpers.lsb();
+			white_jumpers &= ~src;
 
-			capture = (orig << 4) & this->_black_pieces;
+			capture = (src << 4) & this->_black_pieces;
 			if (capture)
 			{
 				dest = (((capture & bitboard::MASK_L3) << 3) |
@@ -636,31 +638,31 @@ namespace checkers
 					not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						capture, capture & this->_kings,
-						!(orig & this->_kings) && (dest
+						!(src & this->_kings) && (dest
 						& bitboard::WHITE_KINGS_ROW)));
 				}
 			}
 
-			capture = (((orig & bitboard::MASK_L3) << 3) |
-				((orig & bitboard::MASK_L5) << 5)) &
+			capture = (((src & bitboard::MASK_L3) << 3) |
+				((src & bitboard::MASK_L5) << 5)) &
 				this->_black_pieces;
 			if (capture)
 			{
 				dest = (capture << 4) & not_occupied;
 				if (dest)
 				{
-					moves.push_back(move(orig, dest,
+					moves.push_back(move(src, dest,
 						capture, capture & this->_kings,
-						!(orig & this->_kings) && (dest
+						!(src & this->_kings) && (dest
 						& bitboard::WHITE_KINGS_ROW)));
 				}
 			}
 
-			if (orig & this->_kings)
+			if (src & this->_kings)
 			{
-				capture = (orig >> 4) & this->_black_pieces;
+				capture = (src >> 4) & this->_black_pieces;
 				if (capture)
 				{
 					dest = (((capture & bitboard::MASK_R3)
@@ -670,14 +672,14 @@ namespace checkers
 					if (dest)
 					{
 						moves.push_back(move( 
-							orig, dest, capture,
+							src, dest, capture,
 							capture & this->_kings,
 							false));
 					}
 				}
 
-				capture = (((orig & bitboard::MASK_R3) >> 3) |
-					((orig & bitboard::MASK_R5) >> 5)) &
+				capture = (((src & bitboard::MASK_R3) >> 3) |
+					((src & bitboard::MASK_R5) >> 5)) &
 					this->_black_pieces;
 				if (capture)
 				{
@@ -685,7 +687,7 @@ namespace checkers
 					if (dest)
 					{
 						moves.push_back(move(
-							orig, dest, capture,
+							src, dest, capture,
 							capture & this->_kings,
 							false));
 					}
@@ -707,7 +709,7 @@ namespace checkers
 				" wrong length): " + str);
 		}
 
-		bitboard orig(str[0], str[1]);
+		bitboard src(str[0], str[1]);
 		bitboard dest(str[2], str[3]);
 		bitboard capture = bitboard(bitboard::EMPTY);
 		if (2 == abs(str[2] - str[0]))
@@ -717,16 +719,16 @@ namespace checkers
 		}
 		
 		bool will_capture_a_king = capture & this->_kings;
-		bool will_crown = !(orig & this->_kings) &&
-			(this->is_black_on_move() ?
+		bool will_crown = !(src & this->_kings) &&
+			(this->is_black_to_move() ?
 				dest & bitboard::BLACK_KINGS_ROW :
 				dest & bitboard::WHITE_KINGS_ROW);
 
-		move move(orig, dest, capture, will_capture_a_king, will_crown);
+		move move(src, dest, capture, will_capture_a_king, will_crown);
 		if (!this->is_valid_move(move))
 		{	
-			/** @throw std::logic_error when move @e str is
-			 *   illegal.
+			/** @throw std::logic_error when @e str is an
+			 *   illegal move.
 			 */
 			throw std::logic_error("Error (illegal move,"
 				" violation rules): " + str);
@@ -775,7 +777,7 @@ namespace checkers
 			}
 		}
 		os << ' ';
-		os << (rhs.is_black_on_move() ? 'b' : 'w');
+		os << (rhs.is_black_to_move() ? 'b' : 'w');
 
 		return os;
 	}
@@ -816,7 +818,7 @@ namespace checkers
 			zobrist.change_king(piece);
 		}
 
-		if (this->is_white_on_move())
+		if (this->is_white_to_move())
 		{
 			zobrist.change_side();
 		}
