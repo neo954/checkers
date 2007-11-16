@@ -1,4 +1,4 @@
-/* $Id: zobrist.hpp,v 1.8 2007-11-16 10:19:37 neo Exp $
+/* $Id: zobrist.hpp,v 1.9 2007-11-16 20:28:59 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,8 +27,11 @@
 #ifndef __ZOBRIST_HPP__
 #define __ZOBRIST_HPP__
 
+extern "C"
+{
+	#include <stdint.h>
+}
 #include <cassert>
-#include <stdint.h>
 #include "bitboard.hpp"
 
 namespace checkers

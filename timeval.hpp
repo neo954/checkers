@@ -1,4 +1,4 @@
-/* $Id: timeval.hpp,v 1.9 2007-11-16 10:19:37 neo Exp $
+/* $Id: timeval.hpp,v 1.10 2007-11-16 20:28:59 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,7 +27,10 @@
 #ifndef __TIMEVAL_HPP__
 #define __TIMEVAL_HPP__
 
-#include <sys/time.h>
+extern "C"
+{
+	#include <sys/time.h>
+}
 #include <ctime>
 
 namespace checkers

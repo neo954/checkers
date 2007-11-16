@@ -1,4 +1,4 @@
-/* $Id: signal.hpp,v 1.7 2007-11-15 17:41:46 neo Exp $
+/* $Id: signal.hpp,v 1.8 2007-11-16 20:28:59 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -34,6 +34,12 @@ namespace checkers
 	typedef void (*sighandler_t)(int);
 	/// Installs a new signal handler for the signal with number @e signum.
 	sighandler_t signal(int signum, sighandler_t handler);
+
+	typedef void (*sigaction_t)(int, siginfo_t*, void*);
+	/// Installs a new signal handler for the signal with number @e signum.
+	sigaction_t signal(int signum, sigaction_t handler);
+
+	void crash_handler(int signum, siginfo_t* siginfo, void* context);
 }
 
 #endif // __SIGNAL_HPP__

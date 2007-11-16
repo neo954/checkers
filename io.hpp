@@ -1,4 +1,4 @@
-/* $Id: io.hpp,v 1.16 2007-11-15 17:41:45 neo Exp $
+/* $Id: io.hpp,v 1.17 2007-11-16 20:28:59 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,7 +27,10 @@
 #ifndef __IO_HPP__
 #define __IO_HPP__
 
-#include <fcntl.h>
+extern "C"
+{
+	#include <fcntl.h>
+}
 #include <string>
 #include "loopbuffer.hpp"
 

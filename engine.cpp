@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.33 2007-11-16 10:19:37 neo Exp $
+/* $Id: engine.cpp,v 1.34 2007-11-16 20:28:59 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -140,7 +140,7 @@ namespace checkers
 			}
 
 			this->computer_makes_move();
-done:
+		done:
 			; // Null statement
 		}
 	}

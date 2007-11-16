@@ -1,4 +1,4 @@
-/* $Id: pipe.hpp,v 1.4 2007-11-15 17:41:45 neo Exp $
+/* $Id: pipe.hpp,v 1.5 2007-11-16 20:28:59 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,7 +27,10 @@
 #ifndef __PIPE_HPP__
 #define __PIPE_HPP__
 
-#include <unistd.h>
+extern "C"
+{
+	#include <unistd.h>
+}
 #include <cerrno>
 #include <stdexcept>
 
