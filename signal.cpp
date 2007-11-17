@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.8 2007-11-16 20:28:59 neo Exp $
+/* $Id: signal.cpp,v 1.9 2007-11-17 17:30:08 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,9 +27,11 @@
 extern "C"
 {
 	#include <execinfo.h>
-	#include <ucontext.h>
+	#include <fcntl.h>
 	#include <sys/time.h>
 	#include <sys/resource.h>
+	#include <ucontext.h>
+	#include <unistd.h>
 }
 #include <cerrno>
 #include <cstdlib>
@@ -44,10 +46,12 @@ namespace checkers
 		struct sigaction old_action;
 
 		action.sa_handler = handler;
-		// Block sigs of type being handled
 		sigemptyset(&action.sa_mask);
-		// Restart syscalls if possible
-		action.sa_flags = SA_RESTART;
+		action.sa_flags = 0;
+		if (SIGALRM != signum)
+		{
+			action.sa_flags |= SA_RESTART;
+		}
 
 		if (::sigaction(signum, &action, &old_action) < 0) {
 			/// @throw std::runtime_error when sigaction() failed.
@@ -66,10 +70,12 @@ namespace checkers
 		struct sigaction old_action;
 
 		action.sa_sigaction = handler;
-		// Block sigs of type being handled
 		sigemptyset(&action.sa_mask);
-		// Restart syscalls if possible
-		action.sa_flags = SA_RESTART | SA_SIGINFO;
+		action.sa_flags = SA_SIGINFO;
+		if (SIGALRM != signum)
+		{
+			action.sa_flags |= SA_RESTART;
+		}
 
 		if (::sigaction(signum, &action, &old_action) < 0) {
 			/// @throw std::runtime_error when sigaction() failed.
@@ -82,55 +88,82 @@ namespace checkers
 		return (old_action.sa_sigaction);
 	}
 
+	/// Print dump information to stdout.
+	inline static void crash_dump(const char* buf)
+	{
+		for (; *buf != '\0'; ++buf)
+		{
+			/** Since printf() is not reenterable.  Use system call
+			 *  write() to print messages in signal handler.
+			 */ 
+			(void)::write(STDERR_FILENO, buf, 1);
+		}
+	}
+
 	void crash_handler(int signum, siginfo_t* siginfo, void* context)
 	{
-		printf("\n"
+		/// Set stdin, stdout and stderr to block I/O.
+		(void)fcntl(STDIN_FILENO,  F_SETFL, 0);
+		(void)fcntl(STDOUT_FILENO, F_SETFL, 0);
+		(void)fcntl(STDERR_FILENO, F_SETFL, 0);
+
+		/// Flush all open output streams.
+		(void)fflush(NULL);
+
+		/// Synchronize stdin, stdout and stderr's in-core state.
+		(void)fsync(STDIN_FILENO);
+		(void)fsync(STDOUT_FILENO);
+		(void)fsync(STDERR_FILENO);
+
+		crash_dump("\n"
 			"  =================================================="
 				"====================\n"
 			"  * Received Signal ");
 		switch (signum)
 		{
 		case SIGABRT:
-			printf("SIGABRT\n");
+			crash_dump("SIGABRT\n");
 			goto common_si_code;
 		case SIGBUS:
-			printf("SIGBUS\n");
+			crash_dump("SIGBUS\n");
 			switch (siginfo->si_code)
 			{
 			case BUS_ADRALN:
-				printf("  * invalid address alignment\n");
+				crash_dump("  * invalid address alignment\n");
 				break;
 			case BUS_ADRERR:
-				printf("  * non-existent physical address\n");
+				crash_dump("  * non-existent physical"
+					" address\n");
 				break;
 			case BUS_OBJERR:
-				printf("  * object specific hardware error\n");
+				crash_dump("  * object specific hardware"
+					" error\n");
 				break;
 			default:
 				goto common_si_code;
 			}
 			break;
 		case SIGCHLD:
-			printf("SIGCHLD\n");
+			crash_dump("SIGCHLD\n");
 			switch (siginfo->si_code)
 			{
 			case CLD_EXITED   :
-				printf("  * child has exited\n");
+				crash_dump("  * child has exited\n");
 				break;
 			case CLD_KILLED   :
-				printf("  * child was killed\n");
+				crash_dump("  * child was killed\n");
 				break;
 			case CLD_DUMPED   :
-				printf("  * child terminated abnormally\n");
+				crash_dump("  * child terminated abnormally\n");
 				break;
 			case CLD_TRAPPED  :
-				printf("  * traced child has trapped\n");
+				crash_dump("  * traced child has trapped\n");
 				break;
 			case CLD_STOPPED  :
-				printf("  * child has stopped\n");
+				crash_dump("  * child has stopped\n");
 				break;
 			case CLD_CONTINUED:
-				printf("  * stopped child has continued"
+				crash_dump("  * stopped child has continued"
 					" (since Linux 2.6.9)\n");
 				break;
 			default:
@@ -138,105 +171,109 @@ namespace checkers
 			}
 			break;
 		case SIGFPE:
-			printf("SIGFPE\n");
+			crash_dump("SIGFPE\n");
 			switch (siginfo->si_code)
 			{
 			case FPE_INTDIV:
-				printf("  * integer divide by zero\n");
+				crash_dump("  * integer divide by zero\n");
 				break;
 			case FPE_INTOVF:
-				printf("  * integer overflow\n");
+				crash_dump("  * integer overflow\n");
 				break;
 			case FPE_FLTDIV:
-				printf("  * floating point divide by zero\n");
+				crash_dump("  * floating point divide by"
+					" zero\n");
 				break;
 			case FPE_FLTOVF:
-				printf("  * floating point overflow\n");
+				crash_dump("  * floating point overflow\n");
 				break;
 			case FPE_FLTUND:
-				printf("  * floating point underflow\n");
+				crash_dump("  * floating point underflow\n");
 				break;
 			case FPE_FLTRES:
-				printf("  * floating point inexact result\n");
+				crash_dump("  * floating point inexact"
+					" result\n");
 				break;
 			case FPE_FLTINV:
-				printf("  * floating point invalid"
+				crash_dump("  * floating point invalid"
 					" operation\n");
 				break;
 			case FPE_FLTSUB:
-				printf("  * subscript out of range\n");
+				crash_dump("  * subscript out of range\n");
 				break;
 			default:
 				goto common_si_code;
 			}
 			break;
 		case SIGILL:
-			printf("SIGILL\n");
+			crash_dump("SIGILL\n");
 			switch (siginfo->si_code)
 			{
 			case ILL_ILLOPC:
-				printf("  * illegal opcode\n");
+				crash_dump("  * illegal opcode\n");
 				break;
 			case ILL_ILLOPN:
-				printf("  * illegal operand\n");
+				crash_dump("  * illegal operand\n");
 				break;
 			case ILL_ILLADR:
-				printf("  * illegal addressing mode\n");
+				crash_dump("  * illegal addressing mode\n");
 				break;
 			case ILL_ILLTRP:
-				printf("  * illegal trap\n");
+				crash_dump("  * illegal trap\n");
 				break;
 			case ILL_PRVOPC:
-				printf("  * privileged opcode\n");
+				crash_dump("  * privileged opcode\n");
 				break;
 			case ILL_PRVREG:
-				printf("  * privileged register\n");
+				crash_dump("  * privileged register\n");
 				break;
 			case ILL_COPROC:
-				printf("  * coprocessor error\n");
+				crash_dump("  * coprocessor error\n");
 				break;
 			case ILL_BADSTK:
-				printf("  * internal stack error\n");
+				crash_dump("  * internal stack error\n");
 				break;
 			default:
 				goto common_si_code;
 			}
 			break;
 		case SIGPOLL:
-			printf("SIGPOLL\n");
+			crash_dump("SIGPOLL\n");
 			switch (siginfo->si_code)
 			{
 			case POLL_IN :
-				printf("  * data input available\n");
+				crash_dump("  * data input available\n");
 				break;
 			case POLL_OUT:
-				printf("  * output buffers available\n");
+				crash_dump("  * output buffers available\n");
 				break;
 			case POLL_MSG:
-				printf("  * input message available\n");
+				crash_dump("  * input message available\n");
 				break;
 			case POLL_ERR:
-				printf("  * i/o error\n");
+				crash_dump("  * i/o error\n");
 				break;
 			case POLL_PRI:
-				printf("  * high priority input available\n");
+				crash_dump("  * high priority input"
+					" available\n");
 				break;
 			case POLL_HUP:
-				printf("  * device disconnected\n");
+				crash_dump("  * device disconnected\n");
 				break;
 			default:
 				goto common_si_code;
 			}
 			break;
 		case SIGSEGV:
-			printf("SIGSEGV\n");
+			crash_dump("SIGSEGV\n");
 			switch (siginfo->si_code)
 			{
 			case SEGV_MAPERR:
-				printf("  * address not mapped to object\n");
+				crash_dump("  * address not mapped to"
+					" object\n");
 				break;
 			case SEGV_ACCERR:
-				printf("  * invalid permissions for mapped"
+				crash_dump("  * invalid permissions for mapped"
 					" object\n");
 				break;
 			default:
@@ -244,72 +281,76 @@ namespace checkers
 			}
 			break;
 		case SIGTRAP:
-			printf("SIGTRAP\n");
+			crash_dump("SIGTRAP\n");
 			switch (siginfo->si_code)
 			{
 			case TRAP_BRKPT:
-				printf("  * process breakpoint\n");
+				crash_dump("  * process breakpoint\n");
 				break;
 			case TRAP_TRACE:
-				printf("  * process trace trap\n");
+				crash_dump("  * process trace trap\n");
 				break;
 			default:
 				goto common_si_code;
 			}
 			break;
 		default:
-			printf("%d\n", signum);
+			crash_dump("UNKNOWN\n"
+				"  * This should not happen.\n");
 		common_si_code:
 			switch (siginfo->si_code)
 			{
 			case SI_USER   :
-				printf("  * kill(), sigsend(), or raise()\n");
+				crash_dump("  * kill(), sigsend(), or"
+					" raise()\n");
 				break;
 			case SI_KERNEL :
-				printf("  * The kernel\n");
+				crash_dump("  * The kernel\n");
 				break;
 			case SI_QUEUE  :
-				printf("  * sigqueue()\n");
+				crash_dump("  * sigqueue()\n");
 				break;
 			case SI_TIMER  :
-				printf("  * POSIX timer expired\n");
+				crash_dump("  * POSIX timer expired\n");
 				break;
 			case SI_MESGQ  :
-				printf("  * POSIX message queue state changed"
-					" (since Linux 2.6.6)\n");
+				crash_dump("  * POSIX message queue state"
+					" changed (since Linux 2.6.6)\n");
 				break;
 			case SI_ASYNCIO:
-				printf("  * AIO completed\n");
+				crash_dump("  * AIO completed\n");
 				break;
 			case SI_SIGIO  :
-				printf("  * queued SIGIO\n");
+				crash_dump("  * queued SIGIO\n");
 				break;
 			case SI_TKILL  :
-				printf("  * tkill() or tgkill() (since Linux"
-					" 2.4.19)\n");
+				crash_dump("  * tkill() or tgkill() (since"
+					" Linux 2.4.19)\n");
 				break;
 			default:
-				printf("  * Unknown or not-specified cause\n");
+				crash_dump("  * Unknown or not-specified"
+					" cause\n");
 				break;
 			}
 			break;
 		}
 
-		printf("  * Creating caller backtrace...\n");
+		crash_dump("  * Creating caller backtrace...\n");
 		void* callers[255];
 		size_t stacks = backtrace(callers,
 				sizeof(callers) / sizeof(callers[0]));
 		char** call_names = backtrace_symbols(callers, stacks);
 		for (size_t i = 0; i < stacks; ++i)
 		{
-			printf("  * %*p : %s\n", sizeof(void*),
-				callers[i], call_names[i]);
+			crash_dump("  * ");
+			crash_dump(call_names[i]);
+			crash_dump("\n");
 		}
 
-		printf("  ==================================================="
-				"===================\n");
+		crash_dump("  ==============================================="
+				"=======================\n");
 
-		/// cd to /tmp and perform a crash dump.
+		/// @note Core file will dump to /tmp directory.
 		(void)chdir("/tmp");
 
 		const struct rlimit limit =
@@ -319,9 +360,17 @@ namespace checkers
 		};
 
 		(void)setrlimit(RLIMIT_CORE, &limit);
-		signal(SIGABRT, SIG_DFL);
+
+		struct sigaction action;
+		action.sa_handler = SIG_DFL;
+		sigemptyset(&action.sa_mask);
+		action.sa_flags = 0;
+		(void)sigaction(SIGABRT, &action, NULL);
+
+		/// @warning This function will not return but abort().
 		abort();
-		// NOT REACHED
+		// This should never be executed.
+		exit(1);
 	}
 }
 

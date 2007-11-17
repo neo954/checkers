@@ -1,4 +1,4 @@
-/* $Id: ponder.cpp,v 1.12 2007-11-16 20:28:59 neo Exp $
+/* $Id: ponder.cpp,v 1.13 2007-11-17 17:30:08 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -95,6 +95,7 @@ int main(void)
 		checkers::signal(SIGFPE,  &checkers::crash_handler);
 		checkers::signal(SIGILL,  &checkers::crash_handler);
 		checkers::signal(SIGSEGV, &checkers::crash_handler);
+		checkers::signal(SIGTRAP, &checkers::crash_handler);
 
 		checkers::engine::init().run();
 	}

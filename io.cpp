@@ -1,4 +1,4 @@
-/* $Id: io.cpp,v 1.16 2007-11-16 10:19:37 neo Exp $
+/* $Id: io.cpp,v 1.17 2007-11-17 17:30:08 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,7 +24,10 @@
  *  @brief
  */
 
-#include <sys/select.h>
+extern "C"
+{
+	#include <sys/select.h>
+}
 #include <stdexcept>
 #include "io.hpp"
 

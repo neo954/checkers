@@ -1,4 +1,4 @@
-/* $Id: loopbuffer.cpp,v 1.16 2007-11-15 17:41:45 neo Exp $
+/* $Id: loopbuffer.cpp,v 1.17 2007-11-17 17:30:08 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,8 +24,11 @@
  *  @brief
  */
 
+extern "C"
+{
+	#include <unistd.h>
+}
 #include <cerrno>
-#include <unistd.h>
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
