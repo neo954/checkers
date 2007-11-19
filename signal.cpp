@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.9 2007-11-17 17:30:08 neo Exp $
+/* $Id: signal.cpp,v 1.10 2007-11-19 09:50:44 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -88,6 +88,8 @@ namespace checkers
 		return (old_action.sa_sigaction);
 	}
 
+	// ================================================================
+
 	/// Print dump information to stdout.
 	inline static void crash_dump(const char* buf)
 	{
@@ -98,6 +100,30 @@ namespace checkers
 			 */ 
 			(void)::write(STDERR_FILENO, buf, 1);
 		}
+	}
+
+	inline static void crash_dump(int n)
+	{
+		// 3.0103 = lg2
+		char b[sizeof(n) * 30103 / 100000 + 3];
+		char *s = b + sizeof(b) - 1;
+		bool sign = (n < 0);
+
+		if (sign)
+		{
+			n = -n;
+		}
+		*s = 0;
+		do
+		{
+			*--s = '0' + (n % 10);
+			n /= 10;
+		} while (n);
+		if (sign)
+		{
+			*--s = '-';
+		}
+		crash_dump(s);
 	}
 
 	void crash_handler(int signum, siginfo_t* siginfo, void* context)
@@ -123,6 +149,9 @@ namespace checkers
 		{
 		case SIGABRT:
 			crash_dump("SIGABRT\n");
+			goto common_si_code;
+		case SIGALRM:
+			crash_dump("SIGALRM\n");
 			goto common_si_code;
 		case SIGBUS:
 			crash_dump("SIGBUS\n");
@@ -205,6 +234,9 @@ namespace checkers
 				goto common_si_code;
 			}
 			break;
+		case SIGHUP:
+			crash_dump("SIGHUP\n");
+			goto common_si_code;
 		case SIGILL:
 			crash_dump("SIGILL\n");
 			switch (siginfo->si_code)
@@ -237,6 +269,12 @@ namespace checkers
 				goto common_si_code;
 			}
 			break;
+		case SIGINT:
+			crash_dump("SIGINT\n");
+			goto common_si_code;
+		case SIGPIPE:
+			crash_dump("SIGPIPE\n");
+			goto common_si_code;
 		case SIGPOLL:
 			crash_dump("SIGPOLL\n");
 			switch (siginfo->si_code)
@@ -264,6 +302,9 @@ namespace checkers
 				goto common_si_code;
 			}
 			break;
+		case SIGQUIT:
+			crash_dump("SIGQUIT\n");
+			goto common_si_code;
 		case SIGSEGV:
 			crash_dump("SIGSEGV\n");
 			switch (siginfo->si_code)
@@ -294,8 +335,18 @@ namespace checkers
 				goto common_si_code;
 			}
 			break;
+		case SIGTERM:
+			crash_dump("SIGTERM\n");
+			goto common_si_code;
+		case SIGUSR1:
+			crash_dump("SIGUSR1\n");
+			goto common_si_code;
+		case SIGUSR2:
+			crash_dump("SIGUSR2\n");
+			goto common_si_code;
 		default:
-			crash_dump("UNKNOWN\n"
+			crash_dump(signum);
+			crash_dump("\n"
 				"  * This should not happen.\n");
 		common_si_code:
 			switch (siginfo->si_code)

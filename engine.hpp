@@ -1,4 +1,4 @@
-/* $Id: engine.hpp,v 1.20 2007-11-15 17:41:45 neo Exp $
+/* $Id: engine.hpp,v 1.21 2007-11-19 09:50:44 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,6 +27,7 @@
 #ifndef __ENGINE_HPP__
 #define __ENGINE_HPP__
 
+#include <map>
 #include "board.hpp"
 #include "io.hpp"
 
@@ -93,7 +94,7 @@ namespace checkers
 		static const int UNLIMITED = 99999;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
-		std::vector<std::pair<std::string, do_action> > _action;
+		std::map<std::string, do_action> _action;
 	};
 }
 

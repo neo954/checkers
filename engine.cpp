@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.34 2007-11-16 20:28:59 neo Exp $
+/* $Id: engine.cpp,v 1.35 2007-11-19 09:50:44 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -34,39 +34,39 @@ namespace checkers
 		_force_mode(false), _depth_limit(UNLIMITED), _time_limit(10),
 		_io(STDIN_FILENO, STDOUT_FILENO)
 	{
-		this->_action.push_back(std::make_pair("?",
+		this->_action.insert(std::make_pair("?",
 			&engine::do_help));
-		this->_action.push_back(std::make_pair("analyze",
+		this->_action.insert(std::make_pair("analyze",
 			&engine::do_analyze));
-		this->_action.push_back(std::make_pair("black",
+		this->_action.insert(std::make_pair("black",
 			&engine::do_black));
-		this->_action.push_back(std::make_pair("force",
+		this->_action.insert(std::make_pair("force",
 			&engine::do_force));
-		this->_action.push_back(std::make_pair("go",
+		this->_action.insert(std::make_pair("go",
 			&engine::do_go));
-		this->_action.push_back(std::make_pair("help",
+		this->_action.insert(std::make_pair("help",
 			&engine::do_help));
-		this->_action.push_back(std::make_pair("new",
+		this->_action.insert(std::make_pair("new",
 			&engine::do_new));
-		this->_action.push_back(std::make_pair("ping",
+		this->_action.insert(std::make_pair("ping",
 			&engine::do_ping));
-		this->_action.push_back(std::make_pair("ponder",
+		this->_action.insert(std::make_pair("ponder",
 			&engine::not_implemented));
-		this->_action.push_back(std::make_pair("print",
+		this->_action.insert(std::make_pair("print",
 			&engine::do_print));
-		this->_action.push_back(std::make_pair("quit",
+		this->_action.insert(std::make_pair("quit",
 			&engine::do_quit));
-		this->_action.push_back(std::make_pair("rotate",
+		this->_action.insert(std::make_pair("rotate",
 			&engine::do_rotate));
-		this->_action.push_back(std::make_pair("sd",
+		this->_action.insert(std::make_pair("sd",
 			&engine::do_sd));
-		this->_action.push_back(std::make_pair("st",
+		this->_action.insert(std::make_pair("st",
 			&engine::do_st));
-		this->_action.push_back(std::make_pair("setboard",
+		this->_action.insert(std::make_pair("setboard",
 			&engine::do_setboard));
-		this->_action.push_back(std::make_pair("undo",
+		this->_action.insert(std::make_pair("undo",
 			&engine::do_undo));
-		this->_action.push_back(std::make_pair("white",
+		this->_action.insert(std::make_pair("white",
 			&engine::do_white));
 	}
 
@@ -81,8 +81,7 @@ namespace checkers
 	{
 		std::string command;
 		std::vector<std::string> args;
-		std::vector<std::pair<std::string, do_action> >::const_iterator
-			pos;
+		std::map<std::string, do_action>::const_iterator pos;
 
 		this->_board.opening();
 		this->print_board();
@@ -117,20 +116,10 @@ namespace checkers
 				continue;
 			}
 
-			for (pos = this->_action.begin();
-				pos != this->_action.end(); ++pos)
+			pos = this->_action.find(args[0]);
+			if (pos != this->_action.end())
 			{
-				if (pos->first == args[0])
-				{
-					(this->*pos->second)(args);
-					goto done;
-				}
-			}
-
-			if (1 != args.size())
-			{
-				this->_io << "Error (unknown command): " << args[0]
-					<< '\n';
+				(this->*pos->second)(args);
 				continue;
 			}
 
@@ -140,8 +129,6 @@ namespace checkers
 			}
 
 			this->computer_makes_move();
-		done:
-			; // Null statement
 		}
 	}
 
