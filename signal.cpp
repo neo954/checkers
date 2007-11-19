@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.10 2007-11-19 09:50:44 neo Exp $
+/* $Id: signal.cpp,v 1.11 2007-11-19 23:32:41 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -35,6 +35,7 @@ extern "C"
 }
 #include <cerrno>
 #include <cstdlib>
+#include <limits>
 #include <stdexcept>
 #include "signal.hpp"
 
@@ -104,8 +105,7 @@ namespace checkers
 
 	inline static void crash_dump(int n)
 	{
-		// 3.0103 = lg2
-		char b[sizeof(n) * 30103 / 100000 + 3];
+		char b[std::numeric_limits<int>::digits10 + 3];
 		char *s = b + sizeof(b) - 1;
 		bool sign = (n < 0);
 

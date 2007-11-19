@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.30 2007-11-16 10:19:37 neo Exp $
+/* $Id: board.cpp,v 1.31 2007-11-19 23:32:41 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -417,7 +417,7 @@ namespace checkers
 	std::vector<move> board::generate_black_moves(void) const
 	{
 		std::vector<move> moves;
-		moves.reserve(48);
+		moves.reserve(42);
 		bitboard black_movers = this->get_black_movers();
 		bitboard src;
 		bitboard dest;
@@ -476,7 +476,7 @@ namespace checkers
 	std::vector<move> board::generate_white_moves(void) const
 	{
 		std::vector<move> moves;
-		moves.reserve(48);
+		moves.reserve(42);
 		bitboard white_movers = this->get_white_movers();
 		bitboard src;
 		bitboard dest;
@@ -535,7 +535,7 @@ namespace checkers
 	std::vector<move> board::generate_black_jumps(void) const
 	{
 		std::vector<move> moves;
-		moves.reserve(48);
+		moves.reserve(42);
 		bitboard black_jumpers = this->get_black_jumpers();
 		bitboard src;
 		bitboard dest;
@@ -618,7 +618,7 @@ namespace checkers
 	std::vector<move> board::generate_white_jumps(void) const
 	{
 		std::vector<move> moves;
-		moves.reserve(48);
+		moves.reserve(42);
 		bitboard white_jumpers = this->get_white_jumpers();
 		bitboard src;
 		bitboard dest;
