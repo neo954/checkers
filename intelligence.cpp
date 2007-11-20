@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.25 2007-11-15 17:41:45 neo Exp $
+/* $Id: intelligence.cpp,v 1.26 2007-11-20 10:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -40,18 +40,18 @@ namespace checkers
 				io.eof())
 			{
 	 			/// @retval TIMEOUT when timeout
-				return TIMEOUT;
+				return intelligence::timeout();
 			}
 		}
 		++this->_nodes;
 
 		if (this->_board.is_winning())
 		{
-			return WIN - ply;
+			return intelligence::win() - ply;
 		}
 		else if (this->_board.is_losing())
 		{
-			return -WIN + ply;
+			return -intelligence::win() + ply;
 		}
 		else if (0 >= depth)
 		{
@@ -83,10 +83,9 @@ namespace checkers
 				-intelligence.alpha_beta_search(io, moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
-			if (TIMEOUT == val)
+			if (intelligence::timeout() == val)
 			{
-				// TIMEOUT == -TIMEOUT
-				return TIMEOUT;
+				return val;
 			}
 			if (val >= beta)
 			{
@@ -119,7 +118,8 @@ namespace checkers
 
 		for (i = 0, depth = std::max(best_moves.size(),
 			static_cast<std::vector<move>::size_type>(1U)), val = 0;
-			depth <= depth_limit && val != TIMEOUT; ++i, ++depth)
+			depth <= depth_limit && val != intelligence::timeout();
+			++i, ++depth)
 		{
 			intelligence::_nodes = 0;
 			intelligence::_best_moves = best_moves;
@@ -161,7 +161,7 @@ namespace checkers
 		}
 		stream << "  " << std::setw(5) << depth;
 		stream << "  ";
-		if (TIMEOUT == val)
+		if (intelligence::timeout() == val)
 		{
 			stream << "     -";
 		}

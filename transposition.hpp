@@ -1,4 +1,4 @@
-/* $Id: transposition.hpp,v 1.3 2007-11-15 17:41:46 neo Exp $
+/* $Id: transposition.hpp,v 1.4 2007-11-20 10:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,16 +27,24 @@
 #ifndef __TRANSPOSITION_H__
 #define __TRANSPOSITION_H__
 
-#include <tr1/unordered_map>
+#include "move.hpp"
 
 namespace checkers
 {
-	template <int hashtable_size>
 	class transposition
 	{
 	public:
 	private:
-		std::tr1::unordered_map<uint64_t, uint64_t> _keys;
+
+		unsigned int _depth;
+		enum
+		{
+			ALPHA,
+			BETA,
+			EXTACT
+		} _flags;
+		int _value;
+		move _best_move;
 	};
 }
 

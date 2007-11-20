@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.20 2007-11-16 10:19:37 neo Exp $
+/* $Id: intelligence.hpp,v 1.21 2007-11-20 10:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -55,10 +55,12 @@ namespace checkers
 		 *  @note This is recursive function.
 		 */
 		int alpha_beta_search(io& io, std::vector<move>& best_moves,
-			unsigned int depth, int alpha = -INFINITY,
-			int beta = INFINITY, unsigned int ply = 0);
+			unsigned int depth,
+			int alpha = -intelligence::infinity(),
+			int beta = intelligence::infinity(),
+			unsigned int ply = 0);
 
-		/// Print think output
+		/// Print the detail information of thinking.
 		static void show_think(io& io, unsigned int depth, int val,
 			struct timeval time, long unsigned int nodes,
 			const std::vector<move>& best_moves, bool show_title);
@@ -75,10 +77,9 @@ namespace checkers
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);
 
-		/// TIMEOUT == -TIMEOUT
-		static const int TIMEOUT  = INT_MIN;
-		static const int INFINITY = INT_MAX;
-		static const int WIN      = 65535;
+		static inline int timeout(void);
+		static inline int infinity(void);
+		static inline int win(void);
 
 		board _board;
 

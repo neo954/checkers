@@ -1,4 +1,4 @@
-/* $Id: engine.hpp,v 1.21 2007-11-19 09:50:44 neo Exp $
+/* $Id: engine.hpp,v 1.22 2007-11-20 10:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -91,7 +91,7 @@ namespace checkers
 		int _time_limit;
 		io _io;
 
-		static const int UNLIMITED = 99999;
+		static const int UNLIMITED = 999999;
 
 		typedef void (engine::*do_action)(const std::vector<std::string>&);
 		std::map<std::string, do_action> _action;

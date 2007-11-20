@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.25 2007-11-16 10:19:37 neo Exp $
+/* $Id: board.hpp,v 1.26 2007-11-20 10:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -37,14 +37,6 @@ namespace checkers
 	class board
 	{
 	public:
-		enum player
-		{
-			/// Player has dark pieces.
-			BLACK = 1,
-			/// Player has light pieces.
-			WHITE = -BLACK
-		};
-
 		/// Default constructor.
 		inline board(void);
 		/// Construct from an user input string.
@@ -152,7 +144,13 @@ namespace checkers
 		 */
 		bitboard _kings;
 		/// The player on move
-		player _player;
+		enum
+		{
+			/// Player has dark pieces.
+			BLACK = 1,
+			/// Player has light pieces.
+			WHITE = -BLACK
+		} _player;
 		/// The Zobrist key
 		zobrist _zobrist;
 
