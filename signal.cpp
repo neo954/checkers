@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.11 2007-11-19 23:32:41 neo Exp $
+/* $Id: signal.cpp,v 1.12 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file signal.cpp
- *  @brief
+ *  @brief Signal handling, examine and change signal action.
  */
 
 extern "C"
@@ -128,15 +128,16 @@ namespace checkers
 
 	void crash_handler(int signum, siginfo_t* siginfo, void* context)
 	{
-		/// Set stdin, stdout and stderr to block I/O.
+		/** Set stdin, stdout and stderr to block I/O.  Flush all open
+		 *  output streams.  Synchronize stdin, stdout and stderr's
+		 *  in-core state.
+		 */
 		(void)fcntl(STDIN_FILENO,  F_SETFL, 0);
 		(void)fcntl(STDOUT_FILENO, F_SETFL, 0);
 		(void)fcntl(STDERR_FILENO, F_SETFL, 0);
 
-		/// Flush all open output streams.
 		(void)fflush(NULL);
 
-		/// Synchronize stdin, stdout and stderr's in-core state.
 		(void)fsync(STDIN_FILENO);
 		(void)fsync(STDOUT_FILENO);
 		(void)fsync(STDERR_FILENO);
@@ -386,6 +387,9 @@ namespace checkers
 			break;
 		}
 
+		/** Print out signal received, backtrace information and then
+		 *  make a core dump.
+		 */
 		crash_dump("  * Creating caller backtrace...\n");
 		void* callers[255];
 		size_t stacks = backtrace(callers,

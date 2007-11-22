@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.26 2007-11-20 10:14:53 neo Exp $
+/* $Id: intelligence.cpp,v 1.27 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file intelligence.cpp
- *  @brief
+ *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
 #include <iomanip>
@@ -33,7 +33,7 @@ namespace checkers
 		std::vector<move>& best_moves, unsigned int depth, int alpha,
 		int beta, unsigned int ply)
 	{
-		if (0 == static_cast<uint16_t>(this->_nodes) && this->_nodes)
+		if (this->_nodes && (0 == this->_nodes % 2 ^ 16))
 		{
 			io << io::flush;
 			if (this->is_timeout() || io.lines_to_read() ||
@@ -108,7 +108,7 @@ namespace checkers
 		const board& board, unsigned int depth_limit, time_t time_limit,
 		verbose show_detail)
 	{
-		int i;
+		unsigned int i;
 		unsigned int depth;
 		int val;
 		struct timeval start;

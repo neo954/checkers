@@ -1,4 +1,4 @@
-/* $Id: bitboard.hpp,v 1.24 2007-11-16 20:28:59 neo Exp $
+/* $Id: bitboard.hpp,v 1.25 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file bitboard.hpp
- *  @brief
+ *  @brief Bitboard.
  */
 
 #ifndef __BITBOARD_HPP__

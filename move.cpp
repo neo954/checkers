@@ -1,4 +1,4 @@
-/* $Id: move.cpp,v 1.17 2007-11-16 10:19:37 neo Exp $
+/* $Id: move.cpp,v 1.18 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file move.cpp
- *  @brief
+ *  @brief Move.
  */
 
 #include <cassert>

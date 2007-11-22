@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.31 2007-11-19 23:32:41 neo Exp $
+/* $Id: board.cpp,v 1.32 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file board.cpp
- *  @brief
+ *  @brief Checkers game board.
  */
 
 #include <cstdlib>

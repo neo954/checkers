@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.35 2007-11-19 09:50:44 neo Exp $
+/* $Id: engine.cpp,v 1.36 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file engine.cpp
- *  @brief
+ *  @brief Game engine.
  */
 
 #include "engine.hpp"
@@ -46,6 +46,8 @@ namespace checkers
 			&engine::do_go));
 		this->_action.insert(std::make_pair("help",
 			&engine::do_help));
+		this->_action.insert(std::make_pair("history",
+			&engine::do_history));
 		this->_action.insert(std::make_pair("new",
 			&engine::do_new));
 		this->_action.insert(std::make_pair("ping",
@@ -89,63 +91,32 @@ namespace checkers
 		for (;;)
 		{
 			this->prompt();
-
-			if (this->_force_mode)
-			{
-				this->idle();
-			}
-			else
-			{
-				// Background think
-				intelligence::think(this->_io,
-					this->_best_moves, this->_board,
-					engine::UNLIMITED, engine::UNLIMITED,
-					intelligence::SILENT);
-			}
+			this->ponder();
 
 			if (this->_io.eof())
 			{
-				return;
+				break;
 			}
 
 			this->_io >> command;
 
 			args = engine::parse(command);
-			if (args.empty())
+			if (!args.empty())
 			{
-				continue;
+				pos = this->_action.find(args[0]);
+				if (pos != this->_action.end())
+				{
+					(this->*pos->second)(args);
+				}
+				else if (!this->human_makes_move(args[0]))
+				{
+					this->computer_makes_move();
+				}
 			}
-
-			pos = this->_action.find(args[0]);
-			if (pos != this->_action.end())
-			{
-				(this->*pos->second)(args);
-				continue;
-			}
-
-			if (this->human_makes_move(args[0]))
-			{
-				continue;
-			}
-
-			this->computer_makes_move();
 		}
 	}
 
 	// ================================================================
-
-	void engine::idle(void)
-	{
-		for (;;)
-		{
-			this->_io << io::flush;
-			if (this->_io.lines_to_read() || this->_io.eof())
-			{
-				break;
-			}
-			usleep(500);
-		}
-	}
 
 	void engine::print_board(void)
 	{
@@ -154,8 +125,9 @@ namespace checkers
 
 		if (this->_rotate)
 		{
-			this->_io << "       H   G   F   E   D   C   B   A\n"
-				<< "     +---+---+---+---+---+---+---+---+\n";
+			this->_io <<
+				"       H   G   F   E   D   C   B   A\n"
+				"     +---+---+---+---+---+---+---+---+\n";
 			for (i = 1; i <= 8; ++i)
 			{
 				this->_io << "  " << i;
@@ -173,15 +145,17 @@ namespace checkers
 				{
 					this->_io << "  | ";
 				}
-				this->_io << ' ' << i << '\n' << "     "
-					"+---+---+---+---+---+---+---+---+\n";
+				this->_io << ' ' << i << "\n"
+				"     +---+---+---+---+---+---+---+---+\n";
 			}
-			this->_io << "       H   G   F   E   D   C   B   A\n";
+			this->_io <<
+				"       H   G   F   E   D   C   B   A\n";
 		}
 		else
 		{
-			this->_io << "       A   B   C   D   E   F   G   H\n"
-				<< "     +---+---+---+---+---+---+---+---+\n";
+			this->_io <<
+				"       A   B   C   D   E   F   G   H\n"
+				"     +---+---+---+---+---+---+---+---+\n";
 			for (i = 8; i >= 1; --i)
 			{
 				this->_io << "  " << i;
@@ -199,10 +173,11 @@ namespace checkers
 				{
 					this->_io << "  | ";
 				}
-				this->_io << ' ' << i << '\n' << "     "
-					"+---+---+---+---+---+---+---+---+\n";
+				this->_io << ' ' << i << "\n"
+				"     +---+---+---+---+---+---+---+---+\n";
 			}
-			this->_io << "       A   B   C   D   E   F   G   H\n";
+			this->_io <<
+				"       A   B   C   D   E   F   G   H\n";
 		}
 	}
 
@@ -373,6 +348,34 @@ namespace checkers
 		return contin;
 	}
 
+	void engine::idle(void)
+	{
+		for (;;)
+		{
+			this->_io << io::flush;
+			if (this->_io.lines_to_read() || this->_io.eof())
+			{
+				break;
+			}
+			usleep(500);
+		}
+	}
+
+	void engine::ponder(void)
+	{
+		if (this->_force_mode)
+		{
+			this->idle();
+		}
+		else
+		{
+			// Background think
+			intelligence::think(this->_io, this->_best_moves,
+				this->_board, engine::UNLIMITED,
+				engine::UNLIMITED, intelligence::SILENT);
+		}
+	}
+
 	void engine::prompt(void)
 	{
 		this->_io << "  *** "
@@ -483,6 +486,7 @@ namespace checkers
 			"    go              Leave force mode and set the engine to play the color that\n"
 			"                    is on move.  Start thinking and eventually make a move.\n"
 			"    help            Show this help information.\n"
+			"    history         Show the record of moves.\n"
 			"    new             Reset the board to the standard starting position.\n"
 			"    ping N          N is a decimal number.  Reply by sending the string\n"
 			"                    \"pong N\"\n"
@@ -494,6 +498,25 @@ namespace checkers
 			"    st TIME         Set the time control to TIME seconds per move.\n"
 			"    white           Set White on move, and the engine will play Black.\n"
 			"    undo            Back up a move.\n";
+	}
+
+	void engine::do_history(const std::vector<std::string>& args)
+	{
+		// Void the warning: unused parameter ‘args’
+		(void)args;
+
+		board board;
+		board.opening();
+		for (std::vector<move>::const_iterator pos =
+			this->_history.begin(); pos != this->_history.end();
+			++pos)
+		{
+			this->_io << "  " <<
+				(board.is_black_to_move() ? "Black" : "White")
+				<< " " << (pos->get_capture() ? "jump" : "move")
+				<< " " << *pos << '\n';
+			board.make_move(*pos);
+		}
 	}
 
 	void engine::do_new(const std::vector<std::string>& args)

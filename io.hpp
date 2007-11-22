@@ -1,4 +1,4 @@
-/* $Id: io.hpp,v 1.17 2007-11-16 20:28:59 neo Exp $
+/* $Id: io.hpp,v 1.18 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file io.hpp
- *  @brief
+ *  @brief Synchronous input/output multiplexing.
  */
 
 #ifndef __IO_HPP__

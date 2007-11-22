@@ -1,4 +1,4 @@
-/* $Id: timeval.hpp,v 1.10 2007-11-16 20:28:59 neo Exp $
+/* $Id: timeval.hpp,v 1.11 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file timeval.hpp
- *  @brief
+ *  @brief Time calculate.
  */
 
 #ifndef __TIMEVAL_HPP__
@@ -35,6 +35,7 @@ extern "C"
 
 namespace checkers
 {
+	/// Process struct timeval (as specified  in <sys/time.h>).
 	namespace timeval
 	{
 		/// Get the time of day.

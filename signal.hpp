@@ -1,4 +1,4 @@
-/* $Id: signal.hpp,v 1.9 2007-11-17 17:30:09 neo Exp $
+/* $Id: signal.hpp,v 1.10 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file signal.hpp
- *  @brief
+ *  @brief Signal handling, examine and change signal action.
  */
 
 #ifndef __SIGNAL_H__
@@ -39,7 +39,7 @@ namespace checkers
 	/// Install a new signal handler for the signal with number @e signum.
 	sigaction_t signal(int signum, sigaction_t handler);
 
-	/// Crash handler.  Print backtrace information and abort().
+	/// Print out debug information and make a core dump while crash.
 	void crash_handler(int signum, siginfo_t* siginfo, void* context);
 }
 

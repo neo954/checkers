@@ -1,4 +1,4 @@
-/* $Id: pipe.hpp,v 1.5 2007-11-16 20:28:59 neo Exp $
+/* $Id: pipe.hpp,v 1.6 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file pipe.hpp
- *  @brief
+ *  @brief Create pipe.
  */
 
 #ifndef __PIPE_HPP__

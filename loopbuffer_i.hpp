@@ -1,4 +1,4 @@
-/* $Id: loopbuffer_i.hpp,v 1.10 2007-11-15 17:41:45 neo Exp $
+/* $Id: loopbuffer_i.hpp,v 1.11 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file loopbuffer_i.hpp
- *  @brief
+ *  @brief Loop buffer.
  */
 
 #ifndef __LOOPBUFFER_I_HPP__

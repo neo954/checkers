@@ -1,4 +1,4 @@
-/* $Id: intelligence_x.hpp,v 1.4 2007-11-15 17:41:45 neo Exp $
+/* $Id: intelligence_x.hpp,v 1.5 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file intelligence_x.hpp
- *  @brief
+ *  @brief Artificial intelligence, weight of evaluate strategy.
  */
 
 #ifndef __INTELLIGENCE_X_HPP__
@@ -29,6 +29,7 @@
 
 namespace checkers
 {
+	/// Weight of evaluate strategy.
 	namespace evaluate
 	{
 		const int WEIGHT_PIECES    = 256;

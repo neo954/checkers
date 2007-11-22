@@ -1,4 +1,4 @@
-/* $Id: zobrist_i.hpp,v 1.6 2007-11-15 17:41:46 neo Exp $
+/* $Id: zobrist_i.hpp,v 1.7 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file zobrist_i.hpp
- *  @brief
+ *  @brief The Zobrist key.
  */
 
 #ifndef __ZOBRIST_I_HPP__

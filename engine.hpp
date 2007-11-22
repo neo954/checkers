@@ -1,4 +1,4 @@
-/* $Id: engine.hpp,v 1.22 2007-11-20 10:14:53 neo Exp $
+/* $Id: engine.hpp,v 1.23 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file engine.hpp
- *  @brief
+ *  @brief Game engine.
  */
 
 #ifndef __ENGINE_HPP__
@@ -46,8 +46,6 @@ namespace checkers
 		/// Define but not implement, to prevent object copy.
 		engine& operator=(const engine& rhs) const;
 
-		void idle(void);
-
 		void print_board(void);
 		void print_square(int n);
 
@@ -62,6 +60,9 @@ namespace checkers
 		void computer_makes_move(void);
 		bool human_makes_move(const std::string& str);
 
+		void idle(void);
+		void ponder(void);
+
 		void prompt(void);
 		bool result(void);
 
@@ -70,6 +71,7 @@ namespace checkers
 		void do_force(const std::vector<std::string>& args);
 		void do_go(const std::vector<std::string>& args);
 		void do_help(const std::vector<std::string>& args);
+		void do_history(const std::vector<std::string>& args);
 		void do_new(const std::vector<std::string>& args);
 		void do_ping(const std::vector<std::string>& args);
 		void do_print(const std::vector<std::string>& args);

@@ -1,4 +1,4 @@
-/* $Id: intelligence_i.hpp,v 1.18 2007-11-20 10:14:53 neo Exp $
+/* $Id: intelligence_i.hpp,v 1.19 2007-11-22 16:30:55 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file intelligence_i.hpp
- *  @brief
+ *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
 #ifndef __INTELLIGENCE_I_HPP__

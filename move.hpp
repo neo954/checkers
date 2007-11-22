@@ -1,4 +1,4 @@
-/* $Id: move.hpp,v 1.21 2007-11-16 10:19:37 neo Exp $
+/* $Id: move.hpp,v 1.22 2007-11-22 16:30:56 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -21,7 +21,7 @@
    Boston, MA 02110-1301, USA.
  */
 /** @file move.hpp
- *  @brief
+ *  @brief Move.
  */
 
 #ifndef __MOVE_HPP__
@@ -36,6 +36,7 @@ namespace checkers
 	class move
 	{
 	public:
+		// Constructor
 		inline move(bitboard src, bitboard dest, bitboard capture,
 			bool will_capture_a_king, bool will_crown);
 
@@ -52,7 +53,6 @@ namespace checkers
 		inline bool will_crown(void) const;
 
 		friend bool operator ==(const move& lhs, const move& rhs);
-
 		friend std::ostream& operator <<(std::ostream& os,
 			const move& rhs);
 
