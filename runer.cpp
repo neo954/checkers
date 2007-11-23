@@ -1,4 +1,4 @@
-/* $Id: runer.cpp,v 1.6 2007-11-22 16:30:56 neo Exp $
+/* $Id: runer.cpp,v 1.7 2007-11-23 15:18:09 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -20,7 +20,7 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file runner.cpp
+/** @file runer.cpp
  *  @brief
  */
 

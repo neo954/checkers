@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.36 2007-11-22 16:30:55 neo Exp $
+/* $Id: engine.cpp,v 1.37 2007-11-23 15:18:09 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -363,16 +363,11 @@ namespace checkers
 
 	void engine::ponder(void)
 	{
-		if (this->_force_mode)
+		if (this->_force_mode || !intelligence::think(this->_io,
+			this->_best_moves, this->_board, engine::UNLIMITED,
+			engine::UNLIMITED, intelligence::SILENT))
 		{
 			this->idle();
-		}
-		else
-		{
-			// Background think
-			intelligence::think(this->_io, this->_best_moves,
-				this->_board, engine::UNLIMITED,
-				engine::UNLIMITED, intelligence::SILENT);
 		}
 	}
 
@@ -576,7 +571,9 @@ namespace checkers
 		this->_board = board(args.size() > 2 ?
 			(args[1] + ' ' + args[2]) : args[1]);
 		this->_history.clear();
+		this->_best_moves.clear();
 		this->print_board();
+		this->_io << io::flush;
 	}
 
 	void engine::do_undo(const std::vector<std::string>& args)

@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.22 2007-11-22 16:30:55 neo Exp $
+/* $Id: intelligence.hpp,v 1.23 2007-11-23 15:18:09 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -42,7 +42,7 @@ namespace checkers
 			VERBOSE = 1
 		};
 
-		static void think(io& io, std::vector<move>& best_moves,
+		static bool think(io& io, std::vector<move>& best_moves,
 			const board& board, unsigned int depth_limit,
 			time_t second, verbose show_detail);
 

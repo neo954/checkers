@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.27 2007-11-22 16:30:55 neo Exp $
+/* $Id: intelligence.cpp,v 1.28 2007-11-23 15:18:09 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -33,7 +33,7 @@ namespace checkers
 		std::vector<move>& best_moves, unsigned int depth, int alpha,
 		int beta, unsigned int ply)
 	{
-		if (this->_nodes && (0 == this->_nodes % 2 ^ 16))
+		if (0 == this->_nodes % 2 ^ 16)
 		{
 			io << io::flush;
 			if (this->is_timeout() || io.lines_to_read() ||
@@ -104,13 +104,15 @@ namespace checkers
 		return alpha;
 	}
 
-	void intelligence::think(io& io, std::vector<move>& best_moves,
+	/** @return Timeout or not.
+	 */ 
+	bool intelligence::think(io& io, std::vector<move>& best_moves,
 		const board& board, unsigned int depth_limit, time_t time_limit,
 		verbose show_detail)
 	{
 		unsigned int i;
 		unsigned int depth;
-		int val;
+		int val = 0;
 		struct timeval start;
 		struct timeval end;
 
@@ -143,6 +145,12 @@ namespace checkers
 				break;
 			}
 		}
+
+		/** @retval true while timeout.
+		 *  @retval false while reach specified search depth or game
+		 *   end.
+		 */
+		return val == intelligence::timeout();
 	}
 
 	// ================================================================
