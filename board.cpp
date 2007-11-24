@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.33 2007-11-24 12:21:20 neo Exp $
+/* $Id: board.cpp,v 1.34 2007-11-24 18:08:00 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -54,9 +54,10 @@ namespace checkers
 				this->_white_pieces |= square;
 				// Intentionally no break
 			case '0':
-				// Intentionally no break
-			default:
 				++i;
+				break;
+			case '/':
+			default:
 				break;
 			}
 		}	
@@ -66,14 +67,14 @@ namespace checkers
 		// White crown
 		this->_kings |= this->_white_pieces & bitboard::WHITE_KINGS_ROW;
 
-		p += 2;
-		if (p < input.size() && 'b' == input[p])
+		++p;
+		if (p < input.size() && 'w' == input[p])
 		{
-			this->_player = board::BLACK;
+			this->_player = board::WHITE;
 		}
 		else
 		{
-			this->_player = board::WHITE;
+			this->_player = board::BLACK;
 		}
 
 		this->_zobrist = this->build_zobrist();

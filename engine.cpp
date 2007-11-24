@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.38 2007-11-24 12:21:20 neo Exp $
+/* $Id: engine.cpp,v 1.39 2007-11-24 18:08:00 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -380,20 +380,18 @@ namespace checkers
 
 	bool engine::result(void)
 	{
-		if (this->_board.is_winning())
+		if (this->_board.is_losing())
 		{
-			this->_io << "RESULT "
-				<< (this->_board.is_black_to_move() ?
-				"1-0 {Black win}\n" :
-				"0-1 {White win}\n");
+			this->_io << "***** " <<
+				(this->_board.is_black_to_move() ?
+				"White" : "Black") << " win ***\n";
 			return true;
 		}
-		else if (this->_board.is_losing())
+		if (this->_board.is_winning())
 		{
-			this->_io << "RESULT "
-				<< (this->_board.is_black_to_move() ?
-				"0-1 {White win}\n" :
-				"1-0 {Black win}\n");
+			this->_io << "***** " <<
+				(this->_board.is_black_to_move() ?
+				"Black" : "White") << " win ***\n";
 			return true;
 		}
 
