@@ -3,7 +3,7 @@ CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
 CXXFLAGS += -g -ggdb
 CXXFLAGS += -O0 -fno-inline
 #CXXFLAGS += -DNDEBUG
-#CXXFLAGS += -O9 --param max-inline-insns-single=9999
+#CXXFLAGS += -O3 --param max-inline-insns-single=9999
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 TARGETS = ponder runer

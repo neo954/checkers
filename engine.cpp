@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.37 2007-11-23 15:18:09 neo Exp $
+/* $Id: engine.cpp,v 1.38 2007-11-24 12:21:20 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -279,12 +279,11 @@ namespace checkers
 
 		bool ret = this->_board.make_move(move);
 
-		if (this->_best_moves.size() > 0)
+		if (this->_best_moves.size())
 		{
-			if (move == this->_best_moves[0])
+			if (move == this->_best_moves.back())
 			{
-				this->_best_moves.erase(
-					this->_best_moves.begin());
+				this->_best_moves.pop_back();
 			}
 			else
 			{
@@ -317,9 +316,10 @@ namespace checkers
 			}
 			do
 			{
-				this->_io << "move " << this->_best_moves[0]
-					<< '\n';
-				contin = this->make_move(this->_best_moves[0]);
+				this->_io << "move " <<
+					this->_best_moves.back() << '\n';
+				contin = this->make_move(
+					this->_best_moves.back());
 				this->print_board();
 			} while (contin && !this->_best_moves.empty());
 		} while (contin);
@@ -500,17 +500,11 @@ namespace checkers
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		board board;
-		board.opening();
 		for (std::vector<move>::const_iterator pos =
 			this->_history.begin(); pos != this->_history.end();
 			++pos)
 		{
-			this->_io << "  " <<
-				(board.is_black_to_move() ? "Black" : "White")
-				<< " " << (pos->get_capture() ? "jump" : "move")
-				<< " " << *pos << '\n';
-			board.make_move(*pos);
+			this->_io << "  move " << *pos << '\n';
 		}
 	}
 

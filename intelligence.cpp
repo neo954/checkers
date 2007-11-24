@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.28 2007-11-23 15:18:09 neo Exp $
+/* $Id: intelligence.cpp,v 1.29 2007-11-24 12:21:20 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -53,7 +53,7 @@ namespace checkers
 		{
 			return -intelligence::win() + ply;
 		}
-		else if (0 >= depth)
+		else if (0 == depth)
 		{
 			best_moves.clear();
 			return evaluate();
@@ -70,7 +70,7 @@ namespace checkers
 		for (std::vector<move>::const_iterator pos =
 			legal_moves.begin(); pos != legal_moves.end(); ++pos)
 		{
-			// When capture piece in the last ply, search deeper
+			// While capture piece in the last ply, search deeper
 			if (1 == depth && pos->get_capture())
 			{
 				++depth;
@@ -94,10 +94,8 @@ namespace checkers
 			if (val > alpha)
 			{
 				alpha = val;
-				best_moves.clear();
+				best_moves = moves;
 				best_moves.push_back(*pos);
-				best_moves.insert(best_moves.end(),
-					moves.begin(), moves.end());
 			}
 		}
 
@@ -163,9 +161,10 @@ namespace checkers
 
 		if (show_title)
 		{
-			stream << "  depth   value      time       nodes\n";
-			stream << "  ----------------------------------------"
-				"------------------------------------\n";
+			stream <<
+				"  depth   value      time       nodes\n"
+				"  ------------------------------------------"
+					"----------------------------------\n";
 		}
 		stream << "  " << std::setw(5) << depth;
 		stream << "  ";
@@ -183,16 +182,17 @@ namespace checkers
 		stream << ' ' << std::setw(11) << nodes;
 		stream << ' ';
 
-		std::vector<move>::size_type i;
-		std::vector<move>::size_type max_size = best_moves.size();
-		for (i = 0; i < max_size; ++i)
+		unsigned int i;
+		std::vector<move>::const_reverse_iterator pos;
+		for (pos = best_moves.rbegin(), i = 0;
+			pos != best_moves.rend(); ++pos, ++i)
 		{
-			if (i > 0 && 0 == i % 8)
+			if (i && 0 == i % 8)
 			{
-				stream << "\n                                "
-					"      ";
+				stream << "\n"
+				"                                      ";
 			}
-			stream << ' ' << best_moves[i];
+			stream << ' ' << *pos;
 		}
 		stream << '\n';
 

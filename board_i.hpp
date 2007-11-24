@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.22 2007-11-22 16:30:55 neo Exp $
+/* $Id: board_i.hpp,v 1.23 2007-11-24 12:21:20 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -137,12 +137,20 @@ namespace checkers
 
 	inline void board::set_black_to_move(void)
 	{
-		this->_player = board::BLACK;
+		if (this->is_white_to_move())
+		{
+			this->_player = board::BLACK;
+			this->_zobrist.change_side();
+		}
 	}
 
 	inline void board::set_white_to_move(void)
 	{
-		this->_player = board::WHITE;
+		if (this->is_black_to_move())
+		{
+			this->_player = board::WHITE;
+			this->_zobrist.change_side();
+		}
 	}
 
 	/** @return game over or not.

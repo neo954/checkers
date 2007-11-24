@@ -1,4 +1,4 @@
-/* $Id: intelligence_i.hpp,v 1.19 2007-11-22 16:30:55 neo Exp $
+/* $Id: intelligence_i.hpp,v 1.20 2007-11-24 12:21:20 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -120,7 +120,7 @@ namespace checkers
 		}
 
 		std::vector<move>::iterator pos = std::find(moves.begin(),
-			moves.end(), this->_best_moves[ply]);
+			moves.end(), *(this->_best_moves.rbegin() + ply));
 		if (moves.end() == pos)
 		{
 			this->_reorder = false;
@@ -152,7 +152,7 @@ namespace checkers
 
 	inline int intelligence::win(void)
 	{
-		return 2 ^ 16 - 1;
+		return evaluate::WEIGHT_PIECES * 256;
 	}
 }
 
