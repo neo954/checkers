@@ -1,4 +1,4 @@
-/* $Id: signal.hpp,v 1.11 2007-11-23 15:18:09 neo Exp $
+/* $Id: signal.hpp,v 1.12 2007-11-25 18:59:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,8 +24,8 @@
  *  @brief Signal handling, examine and change signal action.
  */
 
-#ifndef __SIGNAL_H__
-#define __SIGNAL_H__
+#ifndef __SIGNAL_HPP__
+#define __SIGNAL_HPP__
 
 #include <csignal>
 

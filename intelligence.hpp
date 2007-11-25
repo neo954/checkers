@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.23 2007-11-23 15:18:09 neo Exp $
+/* $Id: intelligence.hpp,v 1.24 2007-11-25 18:59:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -30,6 +30,7 @@
 #include "board.hpp"
 #include "io.hpp"
 #include "timeval.hpp"
+#include "zobrist.hpp"
 
 namespace checkers
 {
@@ -45,6 +46,24 @@ namespace checkers
 		static bool think(io& io, std::vector<move>& best_moves,
 			const board& board, unsigned int depth_limit,
 			time_t second, verbose show_detail);
+
+		enum hash_flag
+		{
+			EXACT = 0,
+			ALPHA,
+			BETA
+		};
+
+		struct record
+		{
+			zobrist key;
+			unsigned int depth;
+			hash_flag flag;
+			int val;
+			std::vector<move> best_moves;
+		};
+
+		static const unsigned int hash_size = 1024 * 1024;
 
 	private:
 		inline explicit intelligence(const board& board);
@@ -72,22 +91,30 @@ namespace checkers
 		inline int evaluate_kings_row(void);
 		inline int evaluate_edges(void);
 
-		inline void reorder_moves(std::vector<move>& moves, unsigned int ply);
+		inline void optimize_moves(std::vector<move>& moves, unsigned int ply);
 
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);
 
-		static inline int timeout(void);
+		int probe_hash(unsigned int depth, int alpha, int beta,
+			std::vector<move>& best_moves) const;
+		void record_hash(unsigned int depth, int val, hash_flag flag);
+		void record_hash(unsigned int depth, int val, hash_flag flag,
+			const std::vector<move>& best_moves);
+
+		static inline int unknown(void);
 		static inline int infinity(void);
 		static inline int win(void);
 
 		board _board;
 
 		static std::vector<move> _best_moves;
-		static bool _reorder;
+		static bool _optimize_move;
 
 		static long unsigned int _nodes;
 		static struct timeval _deadline;
+
+		static std::vector<intelligence::record> _hash;
 	};
 }
 

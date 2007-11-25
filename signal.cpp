@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.12 2007-11-22 16:30:56 neo Exp $
+/* $Id: signal.cpp,v 1.13 2007-11-25 18:59:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -404,6 +404,8 @@ namespace checkers
 
 		crash_dump("  ==============================================="
 				"=======================\n");
+
+		(void)context;
 
 		/// @note Core file will dump to /tmp directory.
 		(void)chdir("/tmp");

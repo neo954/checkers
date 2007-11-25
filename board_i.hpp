@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.23 2007-11-24 12:21:20 neo Exp $
+/* $Id: board_i.hpp,v 1.24 2007-11-25 18:59:18 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -123,6 +123,13 @@ namespace checkers
 	{
 		return board::WHITE == this->_player;
 	}
+
+	/** @return The Zobrist key.
+	 */
+	inline zobrist board::get_zobrist(void) const
+	{
+		return this->_zobrist;
+	} 
 
 	inline std::vector<move> board::generate_moves(void) const
 	{

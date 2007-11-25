@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.27 2007-11-22 16:30:55 neo Exp $
+/* $Id: board.hpp,v 1.28 2007-11-25 18:59:18 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -94,6 +94,9 @@ namespace checkers
 		 *   next move.
 		 */
 		inline bool is_white_to_move(void) const;
+
+		/// Get Zobrist key.
+		inline zobrist get_zobrist(void) const;
 
 		/// Get all dark pieces, which can move.
 		bitboard get_black_movers(void) const;

@@ -1,4 +1,4 @@
-/* $Id: intelligence_i.hpp,v 1.20 2007-11-24 12:21:20 neo Exp $
+/* $Id: intelligence_i.hpp,v 1.21 2007-11-25 18:59:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -106,16 +106,16 @@ namespace checkers
 				bitboard::EDGES).bitcount());
 	}
 
-	inline void intelligence::reorder_moves(std::vector<move>& moves,
+	inline void intelligence::optimize_moves(std::vector<move>& moves,
 		unsigned int ply)
 	{
-		if (!this->_reorder)
+		if (!this->_optimize_move)
 		{
 			return;
 		}
 		if (ply >= this->_best_moves.size())
 		{
-			this->_reorder = false;
+			this->_optimize_move = false;
 			return;
 		}
 
@@ -123,7 +123,7 @@ namespace checkers
 			moves.end(), *(this->_best_moves.rbegin() + ply));
 		if (moves.end() == pos)
 		{
-			this->_reorder = false;
+			this->_optimize_move = false;
 			return;
 		}
 
@@ -140,7 +140,7 @@ namespace checkers
 		return timeval::now() > intelligence::_deadline;
 	}
 
-	inline int intelligence::timeout(void)
+	inline int intelligence::unknown(void)
 	{
 		return std::numeric_limits<int>::min();
 	}
