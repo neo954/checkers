@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.32 2007-11-26 08:13:14 neo Exp $
+/* $Id: intelligence.cpp,v 1.33 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -78,7 +78,7 @@ namespace checkers
 		else if (0 == depth)
 		{
 			best_moves.clear();
-			val = this->evaluate();
+			val = evaluate::evaluate(this->_board);
 			this->record_hash(depth, val, record::EXACT);
 			return val;
 		}
@@ -233,6 +233,30 @@ namespace checkers
 	}
 
 	// ================================================================
+
+	void intelligence::optimize_moves(std::vector<move>& moves,
+		unsigned int ply)
+	{
+		if (!this->_optimize_move)
+		{
+			return;
+		}
+		if (ply >= this->_best_moves.size())
+		{
+			this->_optimize_move = false;
+			return;
+		}
+
+		std::vector<move>::iterator pos = std::find(moves.begin(),
+			moves.end(), *(this->_best_moves.rbegin() + ply));
+		if (moves.end() == pos)
+		{
+			this->_optimize_move = false;
+			return;
+		}
+
+		std::swap(moves[0], *pos);
+	}
 
 	/** @param depth
 	 *  @param alpha

@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.40 2007-11-26 08:13:14 neo Exp $
+/* $Id: engine.cpp,v 1.41 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -128,7 +128,7 @@ namespace checkers
 		if (this->_rotate)
 		{
 			this->_io <<
-				"       H   G   F   E   D   C   B   A\n"
+				"       h   g   f   e   d   c   b   a\n"
 				"     +---+---+---+---+---+---+---+---+\n";
 			for (i = 1; i <= 8; ++i)
 			{
@@ -151,12 +151,12 @@ namespace checkers
 				"     +---+---+---+---+---+---+---+---+\n";
 			}
 			this->_io <<
-				"       H   G   F   E   D   C   B   A\n";
+				"       h   g   f   e   d   c   b   a\n";
 		}
 		else
 		{
 			this->_io <<
-				"       A   B   C   D   E   F   G   H\n"
+				"       a   b   c   d   e   f   g   h\n"
 				"     +---+---+---+---+---+---+---+---+\n";
 			for (i = 8; i >= 1; --i)
 			{
@@ -179,7 +179,7 @@ namespace checkers
 				"     +---+---+---+---+---+---+---+---+\n";
 			}
 			this->_io <<
-				"       A   B   C   D   E   F   G   H\n";
+				"       a   b   c   d   e   f   g   h\n";
 		}
 	}
 
@@ -386,14 +386,14 @@ namespace checkers
 		{
 			this->_io << "***** " <<
 				(this->_board.is_black_to_move() ?
-				"White" : "Black") << " win ***\n";
+				"1-0 (White win)" : "0-1 (Black win)") << " ***\n";
 			return true;
 		}
 		if (this->_board.is_winning())
 		{
 			this->_io << "***** " <<
 				(this->_board.is_black_to_move() ?
-				"Black" : "White") << " win ***\n";
+				"0-1 (Black win)" : "1-0 (White win)") << " ***\n";
 			return true;
 		}
 

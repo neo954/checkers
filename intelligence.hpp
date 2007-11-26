@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.26 2007-11-26 08:13:14 neo Exp $
+/* $Id: intelligence.hpp,v 1.27 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -62,15 +62,7 @@ namespace checkers
 			struct timeval time, long unsigned int nodes,
 			const std::vector<move>& best_moves, bool show_title);
 
-		inline int evaluate(void);
-		inline int evaluate_pieces(void);
-		inline int evaluate_kings(void);
-		inline int evaluate_movers(void);
-		inline int evaluate_kings_row(void);
-		inline int evaluate_edges(void);
-
-		inline void optimize_moves(std::vector<move>& moves,
-			unsigned int ply);
+		void optimize_moves(std::vector<move>& moves, unsigned int ply);
 
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);

@@ -1,4 +1,4 @@
-/* $Id: evaluate.hpp,v 1.1 2007-11-26 06:49:05 neo Exp $
+/* $Id: evaluate.hpp,v 1.2 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,20 +27,29 @@
 #ifndef __EVALUATE_HPP__
 #define __EVALUATE_HPP__
 
+#include "board.hpp"
+
 namespace checkers
 {
 	/// Weight of evaluate strategy.
 	namespace evaluate
 	{
-		const int WEIGHT_PIECES    = 256;
-		const int WEIGHT_KINGS     = 256;
-		const int WEIGHT_MOVERS    = 2;
+		const int WEIGHT_MAN       = 256;
+		const int WEIGHT_KING      = WEIGHT_MAN * 2;
+		const int WEIGHT_MOVER     = 2;
 		const int WEIGHT_KINGS_ROW = 16;
-		const int WEIGHT_EDGES     = 8;
+		const int WEIGHT_EDGE      = 8;
 
 		inline int win(void);
 		inline int infinity(void);
 		inline int unknown(void);
+
+		int evaluate(const board& board);
+		int men(const board& board);
+		int kings(const board& board);
+		int movers(const board& board);
+		int kings_row(const board& board);
+		int edges(const board& board);
 	}
 }
 

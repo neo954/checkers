@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.24 2007-11-25 18:59:18 neo Exp $
+/* $Id: board_i.hpp,v 1.25 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -33,36 +33,6 @@ namespace checkers
 		_black_pieces(bitboard::EMPTY), _white_pieces(bitboard::EMPTY),
 		_kings(bitboard::EMPTY), _player(board::BLACK), _zobrist(0x0UL)
 	{
-	}
-
-	/** @return whether the same player move once more.
-	 */
-	inline bool board::make_move(const move& move)
-	{
-		assert(this->is_valid_move(move));
-
-		/** @retval true if multiple opposing pieces may be captured in
-		 *   a single turn, and this move is not the last move in this
-		 *   turn.  The same player will make move once more.
-		 *  @retval false if the other player will make the next move.
-		 */
-		return this->is_black_to_move() ?
-			this->make_black_move(move) :
-			this->make_white_move(move);
-	}
-
-	inline void board::undo_move(const move& move)
-	{
-		if (move.get_dest() & this->_black_pieces)
-		{
-			this->undo_black_move(move);
-		}
-		else
-		{
-			this->undo_white_move(move);
-		}
-
-		assert(this->is_valid_move(move));
 	}
 
 	inline bitboard board::get_black_pieces(void) const
@@ -130,59 +100,6 @@ namespace checkers
 	{
 		return this->_zobrist;
 	} 
-
-	inline std::vector<move> board::generate_moves(void) const
-	{
-		return (this->is_black_to_move()) ?
-			(this->get_black_jumpers() ?
-				this->generate_black_jumps() :
-				this->generate_black_moves()) :
-			(this->get_white_jumpers() ?
-				this->generate_white_jumps() :
-				this->generate_white_moves());
-	}
-
-	inline void board::set_black_to_move(void)
-	{
-		if (this->is_white_to_move())
-		{
-			this->_player = board::BLACK;
-			this->_zobrist.change_side();
-		}
-	}
-
-	inline void board::set_white_to_move(void)
-	{
-		if (this->is_black_to_move())
-		{
-			this->_player = board::WHITE;
-			this->_zobrist.change_side();
-		}
-	}
-
-	/** @return game over or not.
-	 *  @retval true when the current player is winning.
-	 *  @retval false in other situation.
-	 */
-	inline bool board::is_winning(void) const
-	{
-		return this->is_black_to_move() ?
-			!this->get_white_pieces() :
-			!this->get_black_pieces();
-	}
-
-	/** @return game over or not.
-	 *  @retval true when the current player is losing.
-	 *  @retval false in other situation.
-	 */
-	inline bool board::is_losing(void) const
-	{
-		return this->is_black_to_move() ?
-			!(this->get_black_jumpers() ||
-			  this->get_black_movers()) :
-			!(this->get_white_jumpers() ||
-			  this->get_white_movers());
-	}
 }
 
 #endif // __BOARD_I_HPP__

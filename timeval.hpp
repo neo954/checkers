@@ -1,4 +1,4 @@
-/* $Id: timeval.hpp,v 1.11 2007-11-22 16:30:56 neo Exp $
+/* $Id: timeval.hpp,v 1.12 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -39,13 +39,13 @@ namespace checkers
 	namespace timeval
 	{
 		/// Get the time of day.
-		inline struct timeval now(void);
+		struct timeval now(void);
 	}
 
 	/// Unary minus.
-	inline struct timeval operator -(const struct timeval& rhs);
+	struct timeval operator -(const struct timeval& rhs);
 	/// Assignment by sum.
-	inline struct timeval& operator +=(struct timeval& lhs,
+	struct timeval& operator +=(struct timeval& lhs,
 		const struct timeval& rhs);
 	/// Assignment by sum.
 	inline struct timeval& operator +=(struct timeval& lhs, time_t rhs);

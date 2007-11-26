@@ -1,4 +1,4 @@
-/* $Id: runer.cpp,v 1.9 2007-11-26 06:49:05 neo Exp $
+/* $Id: runer.cpp,v 1.10 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -33,7 +33,7 @@
 void usage(void)
 {
 	std::cerr
-		<< "Usage: runer --black PROGRAM --white PROGRAM [--depth DEPTH]\n"
+		<< "Usage: runer --black PROGRAM --white PROGRAM [--time SECOND]\n"
 		<< std::flush;
 }
 
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
 		std::string black;
 		std::string white;
-		int depth = 1;
+		int second = 10;
 		int moves_limit = 999;
 		int i = 0;
 	
@@ -66,15 +66,15 @@ int main(int argc, char* argv[])
 					white = argv[i];
 				}
 			}
-			else if ("--depth" == std::string(argv[i]))
+			else if ("--time" == std::string(argv[i]))
 			{
 				if (++i < argc)
 				{
-					depth = ::strtol(argv[i], NULL, 10);
-					if (depth < 0 || depth > 999)
+					second = ::strtol(argv[i], NULL, 10);
+					if (second < 0 || second > 999)
 					{
 						std::cerr <<
-							"Error: Invalid depth"
+							"Error: Invalid time"
 							<< std::endl;
 						exit(255);
 					}
@@ -96,8 +96,8 @@ int main(int argc, char* argv[])
 		std::string move;
 		int moves = 0;
 	
-		io_black << "st 999\nsd " << depth << '\n';
-		io_white << "st 999\nsd " << depth << '\n';
+		io_black << "st " << second << '\n';
+		io_white << "st " << second << '\n';
 	
 		io_black << "go\n";
 	
@@ -134,23 +134,22 @@ int main(int argc, char* argv[])
 					++moves;
 					if (moves > moves_limit)
 					{
-						io << "RESULT 1/2-1/2 {Draw}\n"
+						io << "***** 1/2-1/2 (Draw) ***\n"
 							<< checkers::io::flush;
 						return 0;
 					}
 					break;
-				case 'R':
 				case '*':
 					io << line_black << '\n' << checkers::io::flush;
 					return 0;
 				case 'E':
-					io << "Black " << line_black << '\n'
+					io << "Black: " << line_black << '\n'
 						<< checkers::io::flush;
 					return 255;
 				case ' ':
 					break;
 				default:
-					io << "Black " << line_black << '\n'
+					io << "Black: " << line_black << '\n'
 						<< checkers::io::flush;
 					break;
 				}
@@ -168,24 +167,23 @@ int main(int argc, char* argv[])
 					++moves;
 					if (moves > moves_limit)
 					{
-						io << "RESULT 1/2-1/2 {Draw}\n"
+						io << "***** 1/2-1/2 (Draw) ***\n"
 							<< checkers::io::flush;
 						return 0;
 					}
 					break;
-				case 'R':
 				case '*':
 					io << line_white << '\n' << checkers::io::flush;
 					return 0;
 					break;
 				case 'E':
-					io << "White " << line_black << '\n'
+					io << "White: " << line_white << '\n'
 						<< checkers::io::flush;
 					return 255;
 				case ' ':
 					break;
 				default:
-					io << "White " << line_black << '\n'
+					io << "White: " << line_white << '\n'
 						<< checkers::io::flush;
 					return 255;
 				}

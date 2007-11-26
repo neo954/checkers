@@ -1,4 +1,4 @@
-/* $Id: timeval_i.hpp,v 1.10 2007-11-22 16:30:56 neo Exp $
+/* $Id: timeval_i.hpp,v 1.11 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,52 +27,8 @@
 #ifndef __TIMEVAL_I_HPP__
 #define __TIMEVAL_I_HPP__
 
-#include <cerrno>
-
 namespace checkers
 {
-	inline struct timeval timeval::now(void)
-	{
-		struct timeval now;
-		if (::gettimeofday(&now, NULL) < 0)
-		{
-			/** @throw std::runtime_error when gettimeofday()
-			 *   failed.
-			 */
-			throw std::runtime_error(
-				std::string("gettimeofday() failed: ") +
-				std::strerror(errno));
-		}
-
-		/// @return the time of day.
-		return now;
-	}
-
-
-	inline struct timeval operator -(const struct timeval& rhs)
-	{
-		struct timeval tv =
-		{
-			-1 - rhs.tv_sec,
-			1000000 - rhs.tv_usec
-		};
-		return tv;
-	}
-
-	inline struct timeval& operator +=(struct timeval& lhs,
-		const struct timeval& rhs)
-	{
-		lhs.tv_sec  += rhs.tv_sec;
-		lhs.tv_usec += rhs.tv_usec;
-		if (lhs.tv_usec >= 1000000)
-		{
-			lhs.tv_usec -= 1000000;
-			++lhs.tv_sec;
-		}
-
-		return lhs;
-	}
-
 	inline struct timeval& operator +=(struct timeval& lhs, time_t rhs)
 	{
 		lhs.tv_sec += rhs;

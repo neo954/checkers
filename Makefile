@@ -10,8 +10,8 @@ TARGETS = ponder runer
 
 build: $(TARGETS)
 
-ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o \
-	record.o signal.o zobrist.o
+ponder: bitboard.o board.o engine.o evaluate.o intelligence.o io.o \
+	loopbuffer.o move.o record.o signal.o timeval.o zobrist.o
 
 runer: io.o loopbuffer.o pipe.o signal.o
 

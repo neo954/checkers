@@ -1,4 +1,4 @@
-/* $Id: bitboard.hpp,v 1.25 2007-11-22 16:30:55 neo Exp $
+/* $Id: bitboard.hpp,v 1.26 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -79,9 +79,9 @@ namespace checkers
 		bitboard(char file, char rank);
 
 		/// Count set bits in bitboard, with traditional method.
-		inline unsigned int bitcount(void) const;
+		unsigned int bitcount(void) const;
 		/// Count the Number of Tail Zeros
-		inline unsigned int ntz(void) const;
+		unsigned int ntz(void) const;
 		/// Get the Least Significant Bit
 		inline bitboard lsb(void) const;
 		/// Empty bitboard

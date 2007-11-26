@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.29 2007-11-26 06:49:05 neo Exp $
+/* $Id: board.hpp,v 1.30 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -61,9 +61,9 @@ namespace checkers
 		void undo_white_move(const move& move);
 
 		/// Make one move.
-		inline bool make_move(const move& move);
+		bool make_move(const move& move);
 		/// Undo one move.
-		inline void undo_move(const move& move);
+		void undo_move(const move& move);
 
 		/// Get all dark pieces on the game board.
 		inline bitboard get_black_pieces(void) const;
@@ -121,18 +121,18 @@ namespace checkers
 		std::vector<move> generate_white_jumps(void) const;
 
 		/// Generate all legal moves based on current situation.
-		inline std::vector<move> generate_moves(void) const;
+		std::vector<move> generate_moves(void) const;
 		/// Generate a legal move based on user input @e str.
 		move generate_move(const std::string& str) const;
 
 		/// Set the player has dark pieces makes the next move.
-		inline void set_black_to_move(void);
+		void set_black_to_move(void);
 		/// Set the player has light pieces makes the next move.
-		inline void set_white_to_move(void);
+		void set_white_to_move(void);
 		/// Check whether the current player is winning.
-		inline bool is_winning(void) const;
+		bool is_winning(void) const;
 		/// Check whether the current player is losing.
-		inline bool is_losing(void) const;
+		bool is_losing(void) const;
 		
 	private:
 		enum player

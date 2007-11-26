@@ -1,4 +1,4 @@
-/* $Id: evaluate_i.hpp,v 1.2 2007-11-26 15:20:21 neo Exp $
+/* $Id: timeval.cpp,v 1.1 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -20,32 +20,58 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file evaluate_i.hpp
- *  @brief Artificial intelligence, weight of evaluate strategy.
+/** @file timeval.cpp
+ *  @brief Time calculate.
  */
 
-#ifndef __EVALUATE_I_HPP__
-#define __EVALUATE_I_HPP__
-
-#include <limits>
+#include <cerrno>
+#include <stdexcept>
+#include <string>
+#include "timeval.hpp"
 
 namespace checkers
 {
-	inline int evaluate::win(void)
+	struct timeval timeval::now(void)
 	{
-		return evaluate::WEIGHT_MAN * 256;
+		struct timeval now;
+		if (::gettimeofday(&now, NULL) < 0)
+		{
+			/** @throw std::runtime_error when gettimeofday()
+			 *   failed.
+			 */
+			throw std::runtime_error(
+				std::string("gettimeofday() failed: ") +
+				std::strerror(errno));
+		}
+
+		/// @return the time of day.
+		return now;
 	}
 
-	inline int evaluate::infinity(void)
+
+	struct timeval operator -(const struct timeval& rhs)
 	{
-		return std::numeric_limits<int>::max();
+		struct timeval tv =
+		{
+			-1 - rhs.tv_sec,
+			1000000 - rhs.tv_usec
+		};
+		return tv;
 	}
 
-	inline int evaluate::unknown(void)
+	struct timeval& operator +=(struct timeval& lhs,
+		const struct timeval& rhs)
 	{
-		return std::numeric_limits<int>::min();
+		lhs.tv_sec  += rhs.tv_sec;
+		lhs.tv_usec += rhs.tv_usec;
+		if (lhs.tv_usec >= 1000000)
+		{
+			lhs.tv_usec -= 1000000;
+			++lhs.tv_sec;
+		}
+
+		return lhs;
 	}
 }
 
-#endif // __EVALUATE_I_HPP__
 // End of file

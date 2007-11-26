@@ -1,4 +1,4 @@
-/* $Id: intelligence_i.hpp,v 1.22 2007-11-26 06:49:05 neo Exp $
+/* $Id: intelligence_i.hpp,v 1.23 2007-11-26 15:20:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -37,97 +37,6 @@ namespace checkers
 	}
 
 	// ================================================================
-
-	/**
-	 *  @retval >0 when the current player is ahead in game
-	 *  @retval <0 when the current player is behind in game
-	 */
-	inline int intelligence::evaluate(void)
-	{
-		return this->evaluate_pieces() * evaluate::WEIGHT_PIECES +
-			this->evaluate_kings() * evaluate::WEIGHT_KINGS +
-			this->evaluate_movers() * evaluate::WEIGHT_MOVERS +
-			this->evaluate_kings_row() *
-			evaluate::WEIGHT_KINGS_ROW +
-			this->evaluate_edges() * evaluate::WEIGHT_EDGES;
-	}
-
-	inline int intelligence::evaluate_pieces(void)
-	{
-		return this->_board.is_black_to_move() ?
-			(this->_board.get_black_pieces().bitcount() -
-			 this->_board.get_white_pieces().bitcount()) :
-			(this->_board.get_white_pieces().bitcount() -
-			 this->_board.get_black_pieces().bitcount());
-	}
-
-	inline int intelligence::evaluate_kings(void)
-	{
-		return this->_board.is_black_to_move() ?
-			 (this->_board.get_black_kings().bitcount() -
-			  this->_board.get_white_kings().bitcount()) :
-			 (this->_board.get_white_kings().bitcount() -
-			  this->_board.get_black_kings().bitcount());
-	}
-
-	inline int intelligence::evaluate_movers(void)
-	{
-		return this->_board.is_black_to_move() ?
-			(this->_board.get_black_movers().bitcount() -
-			 this->_board.get_white_movers().bitcount()) :
-			(this->_board.get_white_movers().bitcount() -
-			 this->_board.get_black_movers().bitcount());
-	}
-
-	inline int intelligence::evaluate_kings_row(void)
-	{
-		return this->_board.is_black_to_move() ?
-			((this->_board.get_black_pieces() &
-				bitboard::WHITE_KINGS_ROW).bitcount() -
-			 (this->_board.get_white_pieces() &
-				bitboard::BLACK_KINGS_ROW).bitcount()) :
-			((this->_board.get_white_pieces() &
-				bitboard::BLACK_KINGS_ROW).bitcount() -
-			 (this->_board.get_black_pieces() &
-				bitboard::WHITE_KINGS_ROW).bitcount());
-	}
-
-	inline int intelligence::evaluate_edges(void)
-	{
-		return this->_board.is_black_to_move() ?
-			((this->_board.get_black_pieces() &
-				bitboard::EDGES).bitcount() -
-			 (this->_board.get_white_pieces() &
-				bitboard::EDGES).bitcount()) :
-			((this->_board.get_white_pieces() &
-				bitboard::EDGES).bitcount() -
-			 (this->_board.get_black_pieces() &
-				bitboard::EDGES).bitcount());
-	}
-
-	inline void intelligence::optimize_moves(std::vector<move>& moves,
-		unsigned int ply)
-	{
-		if (!this->_optimize_move)
-		{
-			return;
-		}
-		if (ply >= this->_best_moves.size())
-		{
-			this->_optimize_move = false;
-			return;
-		}
-
-		std::vector<move>::iterator pos = std::find(moves.begin(),
-			moves.end(), *(this->_best_moves.rbegin() + ply));
-		if (moves.end() == pos)
-		{
-			this->_optimize_move = false;
-			return;
-		}
-
-		std::swap(moves[0], *pos);
-	}
 
 	inline void intelligence::set_timeout(time_t second)
 	{
