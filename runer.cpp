@@ -1,4 +1,4 @@
-/* $Id: runer.cpp,v 1.8 2007-11-25 18:59:19 neo Exp $
+/* $Id: runer.cpp,v 1.9 2007-11-26 06:49:05 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 		std::string black;
 		std::string white;
 		int depth = 1;
-		int moves_limit = 299;
+		int moves_limit = 999;
 		int i = 0;
 	
 		while (++i < argc)

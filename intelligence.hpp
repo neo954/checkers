@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.24 2007-11-25 18:59:19 neo Exp $
+/* $Id: intelligence.hpp,v 1.25 2007-11-26 06:49:05 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,13 +24,13 @@
  *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
-#ifndef __INTELLIGENCE_HPP_
-#define __INTELLIGENCE_HPP_
+#ifndef __INTELLIGENCE_HPP__
+#define __INTELLIGENCE_HPP__
 
 #include "board.hpp"
 #include "io.hpp"
+#include "record.hpp"
 #include "timeval.hpp"
-#include "zobrist.hpp"
 
 namespace checkers
 {
@@ -47,22 +47,6 @@ namespace checkers
 			const board& board, unsigned int depth_limit,
 			time_t second, verbose show_detail);
 
-		enum hash_flag
-		{
-			EXACT = 0,
-			ALPHA,
-			BETA
-		};
-
-		struct record
-		{
-			zobrist key;
-			unsigned int depth;
-			hash_flag flag;
-			int val;
-			std::vector<move> best_moves;
-		};
-
 		static const unsigned int hash_size = 1024 * 1024;
 
 	private:
@@ -75,8 +59,8 @@ namespace checkers
 		 */
 		int alpha_beta_search(io& io, std::vector<move>& best_moves,
 			unsigned int depth,
-			int alpha = -intelligence::infinity(),
-			int beta = intelligence::infinity(),
+			int alpha = -evaluate::infinity(),
+			int beta = evaluate::infinity(),
 			unsigned int ply = 0);
 
 		/// Print the detail information of thinking.
@@ -91,20 +75,19 @@ namespace checkers
 		inline int evaluate_kings_row(void);
 		inline int evaluate_edges(void);
 
-		inline void optimize_moves(std::vector<move>& moves, unsigned int ply);
+		inline void optimize_moves(std::vector<move>& moves,
+			unsigned int ply);
 
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);
 
 		int probe_hash(unsigned int depth, int alpha, int beta,
 			std::vector<move>& best_moves) const;
-		void record_hash(unsigned int depth, int val, hash_flag flag);
-		void record_hash(unsigned int depth, int val, hash_flag flag,
+		void record_hash(unsigned int depth, int val,
+			record::hash_flag flag);
+		void record_hash(unsigned int depth, int val,
+			record::hash_flag flag,
 			const std::vector<move>& best_moves);
-
-		static inline int unknown(void);
-		static inline int infinity(void);
-		static inline int win(void);
 
 		board _board;
 
@@ -114,10 +97,10 @@ namespace checkers
 		static long unsigned int _nodes;
 		static struct timeval _deadline;
 
-		static std::vector<intelligence::record> _hash;
+		static std::vector<record> _hash;
 	};
 }
 
 #include "intelligence_i.hpp"
-#endif // __INTELLIGENCE_HPP_
+#endif // __INTELLIGENCE_HPP__
 // End of file

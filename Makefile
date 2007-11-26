@@ -1,9 +1,9 @@
 PROJECT = checkers
 CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
 CXXFLAGS += -g -ggdb
-#CXXFLAGS += -O0 -fno-inline
-CXXFLAGS += -DNDEBUG
-CXXFLAGS += -O3 --param max-inline-insns-single=9999
+CXXFLAGS += -O0 -fno-inline
+#CXXFLAGS += -DNDEBUG
+#CXXFLAGS += -O3 --param max-inline-insns-single=9999
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 TARGETS = ponder runer
@@ -11,7 +11,7 @@ TARGETS = ponder runer
 build: $(TARGETS)
 
 ponder: bitboard.o board.o engine.o intelligence.o io.o loopbuffer.o move.o \
-	signal.o zobrist.o
+	record.o signal.o zobrist.o
 
 runer: io.o loopbuffer.o pipe.o signal.o
 

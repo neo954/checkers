@@ -1,4 +1,4 @@
-/* $Id: intelligence_x.hpp,v 1.5 2007-11-22 16:30:55 neo Exp $
+/* $Id: evaluate_i.hpp,v 1.1 2007-11-26 06:49:05 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -20,25 +20,32 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file intelligence_x.hpp
+/** @file evaluate_i.hpp
  *  @brief Artificial intelligence, weight of evaluate strategy.
  */
 
-#ifndef __INTELLIGENCE_X_HPP__
-#define __INTELLIGENCE_X_HPP__
+#ifndef __EVALUATE_I_HPP__
+#define __EVALUATE_I_HPP__
+
+#include <limits>
 
 namespace checkers
 {
-	/// Weight of evaluate strategy.
-	namespace evaluate
+	inline int evaluate::win(void)
 	{
-		const int WEIGHT_PIECES    = 256;
-		const int WEIGHT_KINGS     = 256;
-		const int WEIGHT_MOVERS    = 2;
-		const int WEIGHT_KINGS_ROW = 16;
-		const int WEIGHT_EDGES     = 8;
+		return evaluate::WEIGHT_PIECES * 256;
+	}
+
+	inline int evaluate::infinity(void)
+	{
+		return std::numeric_limits<int>::max();
+	}
+
+	inline int evaluate::unknown(void)
+	{
+		return std::numeric_limits<int>::min();
 	}
 }
 
-#endif // __INTELLIGENCE_X_HPP__
+#endif // __EVALUATE_I_HPP__
 // End of file

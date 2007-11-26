@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.28 2007-11-25 18:59:18 neo Exp $
+/* $Id: board.hpp,v 1.29 2007-11-26 06:49:05 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -135,6 +135,14 @@ namespace checkers
 		inline bool is_losing(void) const;
 		
 	private:
+		enum player
+		{
+			/// Player has dark pieces.
+			BLACK = 1,
+			/// Player has light pieces.
+			WHITE = -BLACK
+		};
+
 		/// Build Zobrist key.
 		zobrist build_zobrist(void);
 
@@ -147,13 +155,7 @@ namespace checkers
 		 */
 		bitboard _kings;
 		/// The player on move
-		enum
-		{
-			/// Player has dark pieces.
-			BLACK = 1,
-			/// Player has light pieces.
-			WHITE = -BLACK
-		} _player;
+		player _player;
 		/// The Zobrist key
 		zobrist _zobrist;
 

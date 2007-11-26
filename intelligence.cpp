@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.30 2007-11-25 18:59:18 neo Exp $
+/* $Id: intelligence.cpp,v 1.31 2007-11-26 06:49:05 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -40,23 +40,23 @@ namespace checkers
 				io.eof())
 			{
 	 			/// @retval intelligence::unknown() when timeout
-				return intelligence::unknown();
+				return evaluate::unknown();
 			}
 		}
 		++this->_nodes;
 
-		hash_flag flag = ALPHA;
+		record::hash_flag flag = record::ALPHA;
 		int val = this->probe_hash(depth, alpha, beta, best_moves);
 
-		if (intelligence::unknown() != val)
+		if (evaluate::unknown() != val)
 		{
-			if (intelligence::win() == val)
+			if (evaluate::win() == val)
 			{
-				return intelligence::win() - ply;
+				return evaluate::win() - ply;
 			}
-			else if (-intelligence::win() == val)
+			else if (-evaluate::win() == val)
 			{
-				return -intelligence::win() + ply;
+				return -evaluate::win() + ply;
 			}
 			else
 			{
@@ -65,19 +65,21 @@ namespace checkers
 		}
 		else if (this->_board.is_winning())
 		{
-			this->record_hash(depth, intelligence::win(), EXACT);
-			return intelligence::win() - ply;
+			this->record_hash(depth, evaluate::win(),
+				record::EXACT);
+			return evaluate::win() - ply;
 		}
 		else if (this->_board.is_losing())
 		{
-			this->record_hash(depth, -intelligence::win(), EXACT);
-			return -intelligence::win() + ply;
+			this->record_hash(depth, -evaluate::win(),
+				record::EXACT);
+			return -evaluate::win() + ply;
 		}
 		else if (0 == depth)
 		{
 			best_moves.clear();
 			val = this->evaluate();
-			this->record_hash(depth, val, EXACT);
+			this->record_hash(depth, val, record::EXACT);
 			return val;
 		}
 
@@ -104,25 +106,32 @@ namespace checkers
 				-intelligence.alpha_beta_search(io, moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
-			if (intelligence::unknown() == val)
+			if (evaluate::unknown() == val)
 			{
 				return val;
 			}
 			if (val >= beta)
 			{
-				this->record_hash(depth, beta, BETA);
+				this->record_hash(depth, beta, record::BETA);
 				return beta;
 			}
 			if (val > alpha)
 			{
-				flag = EXACT;
+				flag = record::EXACT;
 				alpha = val;
 				best_moves = moves;
 				best_moves.push_back(*pos);
 			}
 		}
 
-		this->record_hash(depth, alpha, flag, best_moves);
+		if (record::EXACT == flag)
+		{
+			this->record_hash(depth, alpha, flag, best_moves);
+		}
+		else
+		{
+			this->record_hash(depth, alpha, flag);
+		}
 		return alpha;
 	}
 
@@ -142,7 +151,7 @@ namespace checkers
 
 		for (i = 0, depth = std::max(best_moves.size(),
 			static_cast<std::vector<move>::size_type>(1U)), val = 0;
-			depth <= depth_limit && val != intelligence::unknown();
+			depth <= depth_limit && val != evaluate::unknown();
 			++i, ++depth)
 		{
 			intelligence::_nodes = 0;
@@ -155,7 +164,7 @@ namespace checkers
 				depth);
 			end = timeval::now();
 
-			if (intelligence::VERBOSE == show_detail)
+		//	if (intelligence::VERBOSE == show_detail)
 			{
 				intelligence::show_think(io, depth, val,
 					end - start, intelligence::_nodes,
@@ -172,7 +181,7 @@ namespace checkers
 		 *  @retval false while reach specified search depth or game
 		 *   end.
 		 */
-		return val == intelligence::unknown();
+		return val == evaluate::unknown();
 	}
 
 	// ================================================================
@@ -192,7 +201,7 @@ namespace checkers
 		}
 		stream << "  " << std::setw(5) << depth;
 		stream << "  ";
-		if (intelligence::unknown() == val)
+		if (evaluate::unknown() == val)
 		{
 			stream << "     -";
 		}
@@ -225,73 +234,49 @@ namespace checkers
 
 	// ================================================================
 
+	/** @param depth
+	 *  @param alpha
+	 *  @param beta
+	 *  @param best_moves
+	 *  @return value found in the hash table.
+	 */ 
 	int intelligence::probe_hash(unsigned int depth, int alpha, int beta,
 		std::vector<move>& best_moves) const
 	{
-		std::vector<intelligence::record>::iterator pos = 
-			intelligence::_hash.begin() +
-			(this->_board.get_zobrist().key() %
-			intelligence::hash_size);
-		if (pos->key == this->_board.get_zobrist())
-		{
-			if (pos->depth >= depth)
-			{
-				if (EXACT == pos->flag)
-				{
-					best_moves = pos->best_moves;
-					return pos->val;
-				}
-				if (ALPHA == pos->flag && pos->val <= alpha)
-				{
-					best_moves = pos->best_moves;
-					return alpha;
-				}
-				if (BETA  == pos->flag && pos->val >= beta)
-				{
-					best_moves = pos->best_moves;
-					return beta;
-				}
-			}
-		}
-		return intelligence::unknown();
+		std::vector<record>::iterator pos = intelligence::_hash.begin()
+			+ (this->_board.get_zobrist().key()
+			% intelligence::hash_size);
+
+		return pos->get_val(this->_board.get_zobrist(), depth, alpha,
+			beta, best_moves);
 	}
 
 	void intelligence::record_hash(unsigned int depth, int val,
-		hash_flag flag)
+		record::hash_flag flag)
 	{
-		std::vector<intelligence::record>::iterator pos = 
-			intelligence::_hash.begin() +
-			(this->_board.get_zobrist().key() %
-			intelligence::hash_size);
+		std::vector<record>::iterator pos = intelligence::_hash.begin()
+			+ (this->_board.get_zobrist().key()
+			% intelligence::hash_size);
 
-		pos->key = this->_board.get_zobrist();
-		pos->depth = depth;
-		pos->flag = flag;
-		pos->val = val;
-		pos->best_moves.clear();
+		*pos = record(this->_board.get_zobrist(), depth, val, flag);
 	}
 
 	void intelligence::record_hash(unsigned int depth, int val,
-		hash_flag flag, const std::vector<move>& best_moves)
+		record::hash_flag flag, const std::vector<move>& best_moves)
 	{
-		std::vector<intelligence::record>::iterator pos = 
-			intelligence::_hash.begin() +
-			(this->_board.get_zobrist().key() %
-			intelligence::hash_size);
+		std::vector<record>::iterator pos = intelligence::_hash.begin()
+			+ (this->_board.get_zobrist().key()
+			% intelligence::hash_size);
 
-		pos->key = this->_board.get_zobrist();
-		pos->depth = depth;
-		pos->flag = flag;
-		pos->val = val;
-		pos->best_moves = best_moves;
+		*pos = record(this->_board.get_zobrist(), depth, val, flag,
+			best_moves);
 	}
 
 	std::vector<move> intelligence::_best_moves;
 	bool intelligence::_optimize_move = false;
 	long unsigned int intelligence::_nodes = 0;
 	struct timeval intelligence::_deadline = { 0, 0 };
-	std::vector<intelligence::record> intelligence::_hash(
-		intelligence::hash_size);
+	std::vector<record> intelligence::_hash(intelligence::hash_size);
 }
 
 // End of file

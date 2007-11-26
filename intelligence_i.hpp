@@ -1,4 +1,4 @@
-/* $Id: intelligence_i.hpp,v 1.21 2007-11-25 18:59:19 neo Exp $
+/* $Id: intelligence_i.hpp,v 1.22 2007-11-26 06:49:05 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,8 +27,7 @@
 #ifndef __INTELLIGENCE_I_HPP__
 #define __INTELLIGENCE_I_HPP__
 
-#include <limits>
-#include "intelligence_x.hpp"
+#include "evaluate.hpp"
 
 namespace checkers
 {
@@ -138,21 +137,6 @@ namespace checkers
 	inline bool intelligence::is_timeout(void)
 	{
 		return timeval::now() > intelligence::_deadline;
-	}
-
-	inline int intelligence::unknown(void)
-	{
-		return std::numeric_limits<int>::min();
-	}
-
-	inline int intelligence::infinity(void)
-	{
-		return std::numeric_limits<int>::max();
-	}
-
-	inline int intelligence::win(void)
-	{
-		return evaluate::WEIGHT_PIECES * 256;
 	}
 }
 
