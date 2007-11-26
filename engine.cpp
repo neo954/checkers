@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.39 2007-11-24 18:08:00 neo Exp $
+/* $Id: engine.cpp,v 1.40 2007-11-26 08:13:14 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -32,7 +32,7 @@ namespace checkers
 	engine::engine(void) :
 		_board(), _rotate(false), _history(), _best_moves(),
 		_force_mode(false), _depth_limit(UNLIMITED), _time_limit(10),
-		_io(STDIN_FILENO, STDOUT_FILENO)
+		_verbose(false), _io(STDIN_FILENO, STDOUT_FILENO)
 	{
 		this->_action.insert(std::make_pair("?",
 			&engine::do_help));
@@ -68,6 +68,8 @@ namespace checkers
 			&engine::do_setboard));
 		this->_action.insert(std::make_pair("undo",
 			&engine::do_undo));
+		this->_action.insert(std::make_pair("verbose",
+			&engine::do_verbose));
 		this->_action.insert(std::make_pair("white",
 			&engine::do_white));
 	}
@@ -309,7 +311,7 @@ namespace checkers
 		{
 			intelligence::think(this->_io, this->_best_moves,
 				this->_board, this->_depth_limit,
-				this->_time_limit, intelligence::VERBOSE);
+				this->_time_limit, this->_verbose);
 			if (this->_best_moves.empty())
 			{
 				break;
@@ -365,7 +367,7 @@ namespace checkers
 	{
 		if (this->_force_mode || !intelligence::think(this->_io,
 			this->_best_moves, this->_board, engine::UNLIMITED,
-			engine::UNLIMITED, intelligence::SILENT))
+			engine::UNLIMITED, this->_verbose))
 		{
 			this->idle();
 		}
@@ -406,7 +408,7 @@ namespace checkers
 		this->_io << "  Analyzing ...\n";
 		intelligence::think(this->_io, this->_best_moves, this->_board,
 			this->_depth_limit, this->_time_limit,
-			intelligence::VERBOSE);
+			true);
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -472,25 +474,40 @@ namespace checkers
 		(void)args;
 
 		this->_io <<
-			"    analyze         Engine thinks about what move it make next if it were on\n"
-			"                    move.\n"
-			"    black           Set Black on move, and the engine will play White.\n"
-			"    force           Set the engine to play neither color (\"force mode\").\n"
-			"    go              Leave force mode and set the engine to play the color that\n"
-			"                    is on move.  Start thinking and eventually make a move.\n"
-			"    help            Show this help information.\n"
-			"    history         Show the record of moves.\n"
-			"    new             Reset the board to the standard starting position.\n"
-			"    ping N          N is a decimal number.  Reply by sending the string\n"
-			"                    \"pong N\"\n"
-			"    print           Show the current board.\n"
-			"    quit            Quit this program.\n"
-			"    rotate          Rotate the board 180 degrees.\n"
-			"    setboard FEN    Set up the pieces position on the board.\n"
-			"    sd DEPTH        The engine should limit its thinking to DEPTH ply.\n"
-			"    st TIME         Set the time control to TIME seconds per move.\n"
-			"    white           Set White on move, and the engine will play Black.\n"
-			"    undo            Back up a move.\n";
+		// --+----1----+----2----+----3----+----4----+----5----+----6--|
+		"    ?               Show this help information.\n"
+		"    analyze         Engine thinks about what move it make next"
+			" if it were on\n"
+		"                    move.\n"
+		"    black           Set Black on move, and the engine will"
+			" play White.\n"
+		"    force           Set the engine to play neither color"
+			" (\"force mode\").\n"
+		"    go              Leave force mode and set the engine to"
+			" play the color that\n"
+		"                    is on move.  Start thinking and eventually"
+			" make a move.\n"
+		"    help            Show this help information.\n"
+		"    history         Show the record of moves.\n"
+		"    new             Reset the board to the standard starting"
+			" position.\n"
+		"    ping N          N is a decimal number.  Reply by sending"
+			" the string\n"
+		"                    \"pong N\"\n"
+		"    print           Show the current board.\n"
+		"    quit            Quit this program.\n"
+		"    rotate          Rotate the board 180 degrees.\n"
+		"    setboard FEN    Set up the pieces position on the"
+			" board.\n"
+		"    sd DEPTH        The engine should limit its thinking to"
+			" DEPTH ply.\n"
+		"    st TIME         Set the time control to TIME seconds per"
+			" move.\n"
+		"    undo            Back up a move.\n"
+		"    verbose         Toggle verbose mode.\n"
+		"    white           Set White on move, and the engine will"
+			" play Black.\n";
+		// --+----1----+----2----+----3----+----4----+----5----+----6--|
 	}
 
 	void engine::do_history(const std::vector<std::string>& args)
@@ -586,9 +603,27 @@ namespace checkers
 		}
 	}
 
+	void engine::do_verbose(const std::vector<std::string>& args)
+	{
+		// Void the warning: unused parameter ‘args’
+		(void)args;
+
+		if (this->_verbose)
+		{
+			this->_verbose = false;
+			this->_io << "  Verbose mode off.\n";
+		}
+		else
+		{
+			this->_verbose = true;
+			this->_io << "  Verbose mode on.\n";
+		}
+	}
+
 	void engine::not_implemented(const std::vector<std::string>& args)
 	{
-		this->_io << "Error (command not implemented): " << args[0] << '\n';
+		this->_io << "Error (command not implemented): " << args[0]
+			<< '\n';
 	}
 }
 

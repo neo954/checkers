@@ -1,4 +1,4 @@
-/* $Id: engine.hpp,v 1.23 2007-11-22 16:30:55 neo Exp $
+/* $Id: engine.hpp,v 1.24 2007-11-26 08:13:14 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -80,8 +80,9 @@ namespace checkers
 		void do_sd(const std::vector<std::string>& args);
 		void do_st(const std::vector<std::string>& args);
 		void do_setboard(const std::vector<std::string>& args);
-		void do_white(const std::vector<std::string>& args);
 		void do_undo(const std::vector<std::string>& args);
+		void do_verbose(const std::vector<std::string>& args);
+		void do_white(const std::vector<std::string>& args);
 		void not_implemented(const std::vector<std::string>& args);
 
 		board _board;
@@ -91,6 +92,7 @@ namespace checkers
 		bool _force_mode;
 		int _depth_limit;
 		int _time_limit;
+		bool _verbose;
 		io _io;
 
 		static const int UNLIMITED = 999999;

@@ -1,4 +1,4 @@
-/* $Id: record.cpp,v 1.1 2007-11-26 06:49:05 neo Exp $
+/* $Id: record.cpp,v 1.2 2007-11-26 08:13:14 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -28,32 +28,29 @@
 
 namespace checkers
 {
-	int record::get_val(zobrist zobrist, unsigned int depth, int alpha,
-			int beta, std::vector<move>& best_moves) const
+	int record::get_val(unsigned int depth, int alpha, int beta,
+		std::vector<move>& best_moves) const
 	{
-		if (this->_zobrist == zobrist)
+		if (this->_depth >= depth)
 		{
-			if (this->_depth >= depth)
+			if (EXACT == this->_flag)
 			{
-				if (EXACT == this->_flag)
-				{
-					best_moves = this->_best_moves;
-					return this->_val;
-				}
-				if (ALPHA == this->_flag && this->_val <= alpha)
-				{
-					best_moves = this->_best_moves;
-					return alpha;
-				}
-				if (BETA  == this->_flag && this->_val >= beta)
-				{
-					best_moves = this->_best_moves;
-					return beta;
-				}
+				best_moves = this->_best_moves;
+				return this->_val;
+			}
+			if (ALPHA == this->_flag && this->_val <= alpha)
+			{
+				best_moves = this->_best_moves;
+				return alpha;
+			}
+			if (BETA  == this->_flag && this->_val >= beta)
+			{
+				best_moves = this->_best_moves;
+				return beta;
 			}
 		}
-		/** @retval evaluate::unknown() while an effective value is not
-		 *   found in the hash table.
+		/** @retval evaluate::unknown() while the value is not
+		 *   suitable.
 		 */
 		return evaluate::unknown();
 	}

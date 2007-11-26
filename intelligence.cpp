@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.31 2007-11-26 06:49:05 neo Exp $
+/* $Id: intelligence.cpp,v 1.32 2007-11-26 08:13:14 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -139,7 +139,7 @@ namespace checkers
 	 */ 
 	bool intelligence::think(io& io, std::vector<move>& best_moves,
 		const board& board, unsigned int depth_limit, time_t time_limit,
-		verbose show_detail)
+		bool verbose)
 	{
 		unsigned int i;
 		unsigned int depth;
@@ -164,7 +164,7 @@ namespace checkers
 				depth);
 			end = timeval::now();
 
-		//	if (intelligence::VERBOSE == show_detail)
+			if (verbose)
 			{
 				intelligence::show_think(io, depth, val,
 					end - start, intelligence::_nodes,
@@ -247,8 +247,14 @@ namespace checkers
 			+ (this->_board.get_zobrist().key()
 			% intelligence::hash_size);
 
-		return pos->get_val(this->_board.get_zobrist(), depth, alpha,
-			beta, best_moves);
+		if (pos->get_zobrist() == this->_board.get_zobrist())
+		{
+			return pos->get_val(depth, alpha, beta, best_moves);
+		}
+		/** @retval evaluate::unknown() while an effective value is not
+		 *   found in the hash table.
+		 */
+		return evaluate::unknown();
 	}
 
 	void intelligence::record_hash(unsigned int depth, int val,

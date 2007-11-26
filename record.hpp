@@ -1,4 +1,4 @@
-/* $Id: record.hpp,v 1.1 2007-11-26 06:49:05 neo Exp $
+/* $Id: record.hpp,v 1.2 2007-11-26 08:13:14 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -53,8 +53,9 @@ namespace checkers
 		inline record(zobrist zobrist, unsigned int depth, int val,
 			hash_flag flag, const std::vector<move>& best_moves);
 
-		int get_val(zobrist zobrist, unsigned int depth, int alpha,
-			int beta, std::vector<move>& best_moves) const;
+		inline zobrist get_zobrist(void) const;
+		int get_val(unsigned int depth, int alpha, int beta,
+			std::vector<move>& best_moves) const;
 
 	private:
 		zobrist _zobrist;
