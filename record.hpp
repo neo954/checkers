@@ -1,4 +1,4 @@
-/* $Id: record.hpp,v 1.2 2007-11-26 08:13:14 neo Exp $
+/* $Id: record.hpp,v 1.3 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,7 +27,6 @@
 #ifndef __RECORD_HPP_
 #define __RECORD_HPP_
 
-#include <vector>
 #include "evaluate.hpp"
 #include "move.hpp"
 #include "zobrist.hpp"

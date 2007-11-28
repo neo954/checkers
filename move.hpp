@@ -1,4 +1,4 @@
-/* $Id: move.hpp,v 1.22 2007-11-22 16:30:56 neo Exp $
+/* $Id: move.hpp,v 1.23 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -27,12 +27,11 @@
 #ifndef __MOVE_HPP__
 #define __MOVE_HPP__
 
+#include <vector>
 #include "bitboard.hpp"
 
 namespace checkers
 {
-	class board;
-
 	class move
 	{
 	public:
@@ -53,8 +52,6 @@ namespace checkers
 		inline bool will_crown(void) const;
 
 		friend bool operator ==(const move& lhs, const move& rhs);
-		friend std::ostream& operator <<(std::ostream& os,
-			const move& rhs);
 
 	private:
 		/// The source square of the move.
@@ -76,6 +73,9 @@ namespace checkers
 
 	/// Stream out the move.
 	std::ostream& operator <<(std::ostream& os, const move& rhs);
+	/// Stream out the moves.
+	std::ostream& operator <<(std::ostream& os,
+		const std::vector<move>& rhs);
 }
 
 #include "move_i.hpp"

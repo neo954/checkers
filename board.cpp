@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.35 2007-11-26 15:20:21 neo Exp $
+/* $Id: board.cpp,v 1.36 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -29,64 +29,192 @@
 
 namespace checkers
 {
-	board::board(const std::string& input)
+	/** @param str The position of checkers board in FEN.
+	 *  A position can be stored by the FEN tag:
+	 *  @verbatim [Turn]:[Color 1][[K][Square number][,]...]:[Color 2][[K][Square number][,]...] @endverbatim
+	 *  @par Turn
+	 *   the side to move, B for Black, W for White.
+	 *  @par Color 1 and Color 2
+	 *   the color for the Square numbers that follow B for Black, W, and
+	 *   the sequence is unimportant.
+	 *  @par K
+	 *   optional before square number, indicates the piece on that square
+	 *   is a king, otherwise it is a man.
+	 *  @par Square number
+	 *   indicates the square number occupied by a piece.  The square number
+	 *   must be at least a "1".  On an 8×8 board, it has a range from 1-32.
+	 *   These are comma separated, and the sequence is unimportant.
+	 *  @par Examples:
+	 *  @verbatim B:W18,24,27,28,K10,K15:B12,16,20,K22,K25,K29 @endverbatim
+	 *  @verbatim B:W18,19,21,23,24,26,29,30,31,32:B1,2,3,4,6,7,9,10,11,12 @endverbatim
+	 */
+	board::board(const std::string& str) :
+		_black_pieces(), _white_pieces(), _kings(), _player(),
+		_zobrist()
 	{
-		int i;
-		bitboard square;
-		std::string::size_type p;
-
-		for (i = 0, p = 0; i < 32 && p < input.size(); ++p)
+		if (0 == str.size())
 		{
-			square = bitboard(0x1U << i);
-			switch (input[p])
+			/** @throw std::logic_error while @e str has wrong
+			 *   format.
+			 */
+			throw std::logic_error("Error (illegal FEN,"
+				" zero length): " + str);
+		}
+
+		switch (str[0])
+		{
+		case 'B':
+			this->_player = board::BLACK;
+			break;
+		case 'W':
+			this->_player = board::WHITE;
+			break;
+		default:
+			throw std::logic_error("Error (illegal FEN, expect `B'"
+				" or `W' at the 1st character): " + str);
+			break;
+		}
+
+		if (str.size() > 1 && str[1] != ':')
+		{
+			throw std::logic_error("Error (illegal FEN, expect `:'"
+				" at the 2nd character): " + str);
+		}
+
+		bitboard a_piece;
+		std::string::size_type p;
+		player color;
+		bool is_king;
+		unsigned int i = 0;
+		for (p = 2; p < str.size(); ++p)
+		{
+			switch (str[p])
 			{
 			case 'B':
-				this->_kings |= square;
-				// Intentionally no break
-			case 'b':
-				this->_black_pieces |= square;
-				++i;
+				if (':' != str[p - 1])
+				{
+					throw std::logic_error("Error "
+						"(illegal FEN, expected `B'"
+						" after `:'): " + str);
+				}
+				color = board::BLACK;
 				break;
 			case 'W':
-				this->_kings |= square;
-				// Intentionally no break
-			case 'w':
-				this->_white_pieces |= square;
-				// Intentionally no break
-			case '0':
-				++i;
+				if (':' != str[p - 1])
+				{
+					throw std::logic_error("Error "
+						"(illegal FEN, expected `W'"
+						" after `:'): " + str);
+				}
+				color = board::WHITE;
 				break;
-			case '/':
+			case ',':
+				if (str[p - 1] < '0' || str[p - 1] > '9')
+				{
+					throw std::logic_error("Error "
+						"(illegal FEN, unexpected"
+						" character before `,'): "
+						+ str);
+				}
+				// Intentionally no break
+			case ':':
+				if (0 == i || i > 32)
+				{
+					throw std::logic_error("Error "
+						"(illegal FEN, square number"
+						" out of range): " + str);
+				}
+				a_piece = bitboard(0x1U << (i - 1));
+				if ((this->_black_pieces | this->_white_pieces)
+					& a_piece)
+				{
+					throw std::logic_error("Error "
+						"(illegal FEN, square number"
+						" repeated): " + str);
+				}
+				if (board::BLACK == color)
+				{
+					this->_black_pieces |= a_piece;
+				}
+				else
+				{
+					this->_white_pieces |= a_piece;
+				}
+				if (is_king)
+				{
+					this->_kings |= a_piece;
+				}
+				is_king = false;
+				i = 0;
+				break;
+			case 'K':
+				if (',' != str[p - 1] && 'B' != str[p - 1] &&
+					'W' != str[p - 1])
+				{
+					throw std::logic_error("Error "
+						"(illegal FEN, unexpected"
+						" character before `K'): "
+						+ str);
+				}
+				is_king = true;
+				break;
+			case '0':
+				// Intentionally no break
+			case '1':
+				// Intentionally no break
+			case '2':
+				// Intentionally no break
+			case '3':
+				// Intentionally no break
+			case '4':
+				// Intentionally no break
+			case '5':
+				// Intentionally no break
+			case '6':
+				// Intentionally no break
+			case '7':
+				// Intentionally no break
+			case '8':
+				// Intentionally no break
+			case '9':
+				i *= 10;
+				i += (str[p] - '0');
+				break;
 			default:
+				throw std::logic_error("Error (illegal FEN,"
+					" unexpected character): " + str);
 				break;
 			}
-		}	
-
-		// Black crown
-		this->_kings |= this->_black_pieces & bitboard::BLACK_KINGS_ROW;
-		// White crown
-		this->_kings |= this->_white_pieces & bitboard::WHITE_KINGS_ROW;
-
-		++p;
-		if (p < input.size() && 'w' == input[p])
+		} // for
+		if (0 == i || i > 32)
 		{
-			this->_player = board::WHITE;
+			throw std::logic_error("Error (illegal FEN, square"
+				" number out of range): " + str);
+		}
+		a_piece = bitboard(0x1U << (i - 1));
+		if ((this->_black_pieces | this->_white_pieces) & a_piece)
+		{
+			throw std::logic_error("Error (illegal FEN, square"
+				" number repeated): " + str);
+		}
+		if (board::BLACK == color)
+		{
+			this->_black_pieces |= a_piece;
 		}
 		else
 		{
-			this->_player = board::BLACK;
+			this->_white_pieces |= a_piece;
+		}
+		if (is_king)
+		{
+			this->_kings |= a_piece;
 		}
 
 		this->_zobrist = this->build_zobrist();
-	}
 
-	void board::opening(void)
-	{
-		this->_black_pieces = bitboard(bitboard::BLACK_PIECES_INIT);
-		this->_white_pieces = bitboard(bitboard::WHITE_PIECES_INIT);
-		this->_kings  = bitboard(bitboard::EMPTY);
-		this->_player = board::BLACK;
-		this->_zobrist = this->build_zobrist();
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
 	}
 
 	bool board::is_valid_move(const move& move) const
@@ -136,6 +264,11 @@ namespace checkers
 			if (!move.will_crown() &&
 				(move.get_dest() & this->get_black_jumpers()))
 			{
+				assert(!(this->_black_pieces &
+					this->_white_pieces));
+				assert(((this->_black_pieces |
+					this->_white_pieces) &
+					this->_kings) == this->_kings);
 				assert(this->build_zobrist() == this->_zobrist);
 				/** @retval true when the player has dark
 				 *   pieces jumps once more (Capture multiple
@@ -148,6 +281,9 @@ namespace checkers
 		this->_player = board::WHITE;
 		this->_zobrist.change_side();
 
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
 		assert(this->build_zobrist() == this->_zobrist);
 		/// @retval false when change side.
 		return false;
@@ -192,6 +328,11 @@ namespace checkers
 			if (!move.will_crown() &&
 				(move.get_dest() & this->get_white_jumpers()))
 			{
+				assert(!(this->_black_pieces &
+					this->_white_pieces));
+				assert(((this->_black_pieces |
+					this->_white_pieces) &
+					this->_kings) == this->_kings);
 				assert(this->build_zobrist() == this->_zobrist);
 				/** @retval true when the player has light
 				 *   pieces jumps once more (Capture multiple
@@ -204,6 +345,9 @@ namespace checkers
 		this->_player = board::BLACK;
 		this->_zobrist.change_side();
 
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
 		assert(this->build_zobrist() == this->_zobrist);
 		/// @retval false when change side.
 		return false;
@@ -250,6 +394,9 @@ namespace checkers
 		this->_black_pieces |= move.get_src();
 		this->_zobrist.change_black_piece(move.get_src());
 
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
 		assert(this->build_zobrist() == this->_zobrist);
 	}
 
@@ -293,6 +440,9 @@ namespace checkers
 		this->_white_pieces |= move.get_src();
 		this->_zobrist.change_white_piece(move.get_src());
 
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
 		assert(this->build_zobrist() == this->_zobrist);
 	}
 
@@ -330,18 +480,18 @@ namespace checkers
 	{
 		const bitboard not_occupied = this->get_not_occupied();
 		const bitboard black_kings = this->get_black_kings();
-		bitboard movers = (not_occupied << 4) & this->_black_pieces;
-		movers |= ((not_occupied & bitboard::MASK_L3) << 3)
+		bitboard movers = (not_occupied >> 4) & this->_black_pieces;
+		movers |= ((not_occupied & bitboard::MASK_R3) >> 3)
 			& this->_black_pieces;
-		movers |= ((not_occupied & bitboard::MASK_L5) << 5)
+		movers |= ((not_occupied & bitboard::MASK_R5) >> 5)
 			& this->_black_pieces;
 
 		if (black_kings)
 		{
-			movers |= (not_occupied >> 4) & black_kings;
-			movers |= ((not_occupied & bitboard::MASK_R3) >> 3)
+			movers |= (not_occupied << 4) & black_kings;
+			movers |= ((not_occupied & bitboard::MASK_L3) << 3)
 				& black_kings;
-			movers |= ((not_occupied & bitboard::MASK_R5) >> 5)
+			movers |= ((not_occupied & bitboard::MASK_L5) << 5)
 				& black_kings;
 		}
 		return movers;
@@ -351,18 +501,18 @@ namespace checkers
 	{
 		const bitboard not_occupied = this->get_not_occupied();
 		const bitboard white_kings = this->get_white_kings();
-		bitboard movers = (not_occupied >> 4) & this->_white_pieces;
-		movers |= ((not_occupied & bitboard::MASK_R3) >> 3)
+		bitboard movers = (not_occupied << 4) & this->_white_pieces;
+		movers |= ((not_occupied & bitboard::MASK_L3) << 3)
 			& this->_white_pieces;
-		movers |= ((not_occupied & bitboard::MASK_R5) >> 5)
+		movers |= ((not_occupied & bitboard::MASK_L5) << 5)
 			& this->_white_pieces;
 
 		if (white_kings)
 		{
-			movers |= (not_occupied << 4) & white_kings;
-			movers |= ((not_occupied & bitboard::MASK_L3) << 3)
+			movers |= (not_occupied >> 4) & white_kings;
+			movers |= ((not_occupied & bitboard::MASK_R3) >> 3)
 				& white_kings;
-			movers |= ((not_occupied & bitboard::MASK_L5) << 5)
+			movers |= ((not_occupied & bitboard::MASK_R5) >> 5)
 				& white_kings;
 		}
 		return movers;
@@ -374,36 +524,36 @@ namespace checkers
 		const bitboard black_kings = this->get_black_kings();
 		bitboard movers = bitboard(bitboard::EMPTY);
 		// White pieces next to not occupied squares
-		bitboard temp = (not_occupied << 4) & this->_white_pieces;
+		bitboard temp = (not_occupied >> 4) & this->_white_pieces;
 		if (temp)
 		{
-			movers |= (((temp & bitboard::MASK_L3) << 3)
-				| ((temp & bitboard::MASK_L5) << 5))
+			movers |= (((temp & bitboard::MASK_R3) >> 3)
+				| ((temp & bitboard::MASK_R5) >> 5))
 				& this->_black_pieces;
 		}
-  		temp = (((not_occupied & bitboard::MASK_L3) << 3) |
-			((not_occupied & bitboard::MASK_L5) << 5))
+  		temp = (((not_occupied & bitboard::MASK_R3) >> 3) |
+			((not_occupied & bitboard::MASK_R5) >> 5))
 			& this->_white_pieces;
 		if (temp)
 		{
-			movers |= (temp << 4) & this->_black_pieces;
+			movers |= (temp >> 4) & this->_black_pieces;
 		}
 
 		if (black_kings)
 		{
-			temp = (not_occupied >> 4) & this->_white_pieces;
+			temp = (not_occupied << 4) & this->_white_pieces;
       			if (temp)
 			{
-				movers |= (((temp & bitboard::MASK_R3) >> 3)
-					 | ((temp & bitboard::MASK_R5) >> 5))
+				movers |= (((temp & bitboard::MASK_L3) << 3)
+					 | ((temp & bitboard::MASK_L5) << 5))
 					 & black_kings;
 			}
-      			temp = (((not_occupied & bitboard::MASK_R3) >> 3) |
-				((not_occupied & bitboard::MASK_R5) >> 5))
+      			temp = (((not_occupied & bitboard::MASK_L3) << 3) |
+				((not_occupied & bitboard::MASK_L5) << 5))
 				& this->_white_pieces;
       			if (temp)
 			{
-				movers |= (temp >> 4) & black_kings;
+				movers |= (temp << 4) & black_kings;
 			}
       		}
 		return movers;
@@ -415,36 +565,36 @@ namespace checkers
 		const bitboard white_kings = this->get_white_kings();
 		bitboard movers = bitboard(bitboard::EMPTY);
 		// Black pieces next to not occupied squares
-		bitboard temp = (not_occupied >> 4) & this->_black_pieces;
+		bitboard temp = (not_occupied << 4) & this->_black_pieces;
       		if (temp)
 		{
-			movers |= (((temp & bitboard::MASK_R3) >> 3)
-				 | ((temp & bitboard::MASK_R5) >> 5))
+			movers |= (((temp & bitboard::MASK_L3) << 3)
+				 | ((temp & bitboard::MASK_L5) << 5))
 				 & this->_white_pieces;
 		}
-      		temp = (((not_occupied & bitboard::MASK_R3) >> 3) |
-			((not_occupied & bitboard::MASK_R5) >> 5))
+      		temp = (((not_occupied & bitboard::MASK_L3) << 3) |
+			((not_occupied & bitboard::MASK_L5) << 5))
 			& this->_black_pieces;
       		if (temp)
 		{
-			movers |= (temp >> 4) & this->_white_pieces;
+			movers |= (temp << 4) & this->_white_pieces;
 		}
 
 		if (white_kings)
 		{
-			temp = (not_occupied << 4) & this->_black_pieces;
+			temp = (not_occupied >> 4) & this->_black_pieces;
 			if (temp)
 			{
-				movers |= (((temp & bitboard::MASK_L3) << 3)
-					| ((temp & bitboard::MASK_L5) << 5))
+				movers |= (((temp & bitboard::MASK_R3) >> 3)
+					| ((temp & bitboard::MASK_R5) >> 5))
 					& white_kings;
 			}
-  			temp = (((not_occupied & bitboard::MASK_L3) << 3) |
-				((not_occupied & bitboard::MASK_L5) << 5))
+  			temp = (((not_occupied & bitboard::MASK_R3) >> 3) |
+				((not_occupied & bitboard::MASK_R5) >> 5))
 				& this->_black_pieces;
 			if (temp)
 			{
-				movers |= (temp << 4) & white_kings;
+				movers |= (temp >> 4) & white_kings;
 			}
 		}
 		return movers;
@@ -464,7 +614,7 @@ namespace checkers
 			src = black_movers.lsb();
 			black_movers &= ~src;
 
-			dest = (src >> 4) & not_occupied; 
+			dest = (src << 4) & not_occupied; 
 			if (dest)
 			{
 				moves.push_back(move(src, dest,
@@ -473,8 +623,8 @@ namespace checkers
 					(dest & bitboard::BLACK_KINGS_ROW)));
 			}
 
-			dest = (((src & bitboard::MASK_R3) >> 3) |
-				((src & bitboard::MASK_R5) >> 5)) &
+			dest = (((src & bitboard::MASK_L3) << 3) |
+				((src & bitboard::MASK_L5) << 5)) &
 				not_occupied;
 			if (dest)
 			{
@@ -486,7 +636,7 @@ namespace checkers
 
 			if (src & this->_kings)
 			{
-				dest = (src << 4) & not_occupied;
+				dest = (src >> 4) & not_occupied;
 				if (dest)
 				{
 					moves.push_back(move(src, dest,
@@ -494,8 +644,8 @@ namespace checkers
 						false, false));
 				}
 
-				dest = (((src & bitboard::MASK_L3) << 3) |
-					((src & bitboard::MASK_L5) << 5)) &
+				dest = (((src & bitboard::MASK_R3) >> 3) |
+					((src & bitboard::MASK_R5) >> 5)) &
 					not_occupied;
 				if (dest)
 				{
@@ -523,7 +673,7 @@ namespace checkers
 			src = white_movers.lsb();
 			white_movers &= ~src;
 
-			dest = (src << 4) & not_occupied; 
+			dest = (src >> 4) & not_occupied; 
 			if (dest)
 			{
 				moves.push_back(move(src, dest,
@@ -532,8 +682,8 @@ namespace checkers
 					(dest & bitboard::WHITE_KINGS_ROW)));
 			}
 
-			dest = (((src & bitboard::MASK_L3) << 3) |
-				((src & bitboard::MASK_L5) << 5)) &
+			dest = (((src & bitboard::MASK_R3) >> 3) |
+				((src & bitboard::MASK_R5) >> 5)) &
 				not_occupied;
 			if (dest)
 			{
@@ -545,7 +695,7 @@ namespace checkers
 
 			if (src & this->_kings)
 			{
-				dest = (src >> 4) & not_occupied;
+				dest = (src << 4) & not_occupied;
 				if (dest)
 				{
 					moves.push_back(move(src, dest,
@@ -553,8 +703,8 @@ namespace checkers
 						false, false));
 				}
 
-				dest = (((src & bitboard::MASK_R3) >> 3) |
-					((src & bitboard::MASK_R5) >> 5)) &
+				dest = (((src & bitboard::MASK_L3) << 3) |
+					((src & bitboard::MASK_L5) << 5)) &
 					not_occupied;
 				if (dest)
 				{
@@ -583,11 +733,11 @@ namespace checkers
 			src = black_jumpers.lsb();
 			black_jumpers &= ~src;
 
-			capture = (src >> 4) & this->_white_pieces;
+			capture = (src << 4) & this->_white_pieces;
 			if (capture)
 			{
-				dest = (((capture & bitboard::MASK_R3) >> 3) |
-					((capture & bitboard::MASK_R5) >> 5)) &
+				dest = (((capture & bitboard::MASK_L3) << 3) |
+					((capture & bitboard::MASK_L5) << 5)) &
 					not_occupied;
 				if (dest)
 				{
@@ -598,12 +748,12 @@ namespace checkers
 				}
 			}
 
-			capture = (((src & bitboard::MASK_R3) >> 3) |
-				((src & bitboard::MASK_R5) >> 5)) &
+			capture = (((src & bitboard::MASK_L3) << 3) |
+				((src & bitboard::MASK_L5) << 5)) &
 				this->_white_pieces;
 			if (capture)
 			{
-				dest = (capture >> 4) & not_occupied;
+				dest = (capture << 4) & not_occupied;
 				if (dest)
 				{
 					moves.push_back(move(src, dest,
@@ -615,13 +765,13 @@ namespace checkers
 
 			if (src & this->_kings)
 			{
-				capture = (src << 4) & this->_white_pieces;
+				capture = (src >> 4) & this->_white_pieces;
 				if (capture)
 				{
-					dest = (((capture & bitboard::MASK_L3)
-							<< 3) |
-						((capture & bitboard::MASK_L5)
-							<< 5)) & not_occupied;
+					dest = (((capture & bitboard::MASK_R3)
+							>> 3) |
+						((capture & bitboard::MASK_R5)
+							>> 5)) & not_occupied;
 					if (dest)
 					{
 						moves.push_back(move(
@@ -631,12 +781,12 @@ namespace checkers
 					}
 				}
 
-				capture = (((src & bitboard::MASK_L3) << 3) |
-					((src & bitboard::MASK_L5) << 5)) &
+				capture = (((src & bitboard::MASK_R3) >> 3) |
+					((src & bitboard::MASK_R5) >> 5)) &
 					this->_white_pieces;
 				if (capture)
 				{
-					dest = (capture << 4) & not_occupied;
+					dest = (capture >> 4) & not_occupied;
 					if (dest)
 					{
 						moves.push_back(move(
@@ -666,11 +816,11 @@ namespace checkers
 			src = white_jumpers.lsb();
 			white_jumpers &= ~src;
 
-			capture = (src << 4) & this->_black_pieces;
+			capture = (src >> 4) & this->_black_pieces;
 			if (capture)
 			{
-				dest = (((capture & bitboard::MASK_L3) << 3) |
-					((capture & bitboard::MASK_L5) << 5)) &
+				dest = (((capture & bitboard::MASK_R3) >> 3) |
+					((capture & bitboard::MASK_R5) >> 5)) &
 					not_occupied;
 				if (dest)
 				{
@@ -681,12 +831,12 @@ namespace checkers
 				}
 			}
 
-			capture = (((src & bitboard::MASK_L3) << 3) |
-				((src & bitboard::MASK_L5) << 5)) &
+			capture = (((src & bitboard::MASK_R3) >> 3) |
+				((src & bitboard::MASK_R5) >> 5)) &
 				this->_black_pieces;
 			if (capture)
 			{
-				dest = (capture << 4) & not_occupied;
+				dest = (capture >> 4) & not_occupied;
 				if (dest)
 				{
 					moves.push_back(move(src, dest,
@@ -698,13 +848,13 @@ namespace checkers
 
 			if (src & this->_kings)
 			{
-				capture = (src >> 4) & this->_black_pieces;
+				capture = (src << 4) & this->_black_pieces;
 				if (capture)
 				{
-					dest = (((capture & bitboard::MASK_R3)
-							>> 3) |
-						((capture & bitboard::MASK_R5)
-							>> 5)) & not_occupied;
+					dest = (((capture & bitboard::MASK_L3)
+							<< 3) |
+						((capture & bitboard::MASK_L5)
+							<< 5)) & not_occupied;
 					if (dest)
 					{
 						moves.push_back(move( 
@@ -714,12 +864,12 @@ namespace checkers
 					}
 				}
 
-				capture = (((src & bitboard::MASK_R3) >> 3) |
-					((src & bitboard::MASK_R5) >> 5)) &
+				capture = (((src & bitboard::MASK_L3) << 3) |
+					((src & bitboard::MASK_L5) << 5)) &
 					this->_black_pieces;
 				if (capture)
 				{
-					dest = (capture >> 4) & not_occupied;
+					dest = (capture << 4) & not_occupied;
 					if (dest)
 					{
 						moves.push_back(move(
@@ -736,31 +886,8 @@ namespace checkers
 
 	move board::generate_move(const std::string& str) const
 	{
-		if (4 != str.length())
-		{
-			/** @throw std::logic_error when @e str has wrong
-			 *   length.
-			 */
-			throw std::logic_error("Error (illegal move,"
-				" wrong length): " + str);
-		}
 
-		bitboard src(str[0], str[1]);
-		bitboard dest(str[2], str[3]);
-		bitboard capture = bitboard(bitboard::EMPTY);
-		if (2 == abs(str[2] - str[0]))
-		{
-			capture = bitboard((str[0] + str[2]) / 2,
-				(str[1] + str[3]) / 2);
-		}
-		
-		bool will_capture_a_king = capture & this->_kings;
-		bool will_crown = !(src & this->_kings) &&
-			(this->is_black_to_move() ?
-				dest & bitboard::BLACK_KINGS_ROW :
-				dest & bitboard::WHITE_KINGS_ROW);
-
-		move move(src, dest, capture, will_capture_a_king, will_crown);
+		move move(bitboard(), bitboard(), bitboard(), false, false);
 		if (!this->is_valid_move(move))
 		{	
 			/** @throw std::logic_error when @e str is an
@@ -775,45 +902,62 @@ namespace checkers
 
 	std::ostream& operator <<(std::ostream& os, const board& rhs)
 	{
-		int i;
-		bitboard square;
+		bitboard pieces;
+		bitboard a_piece;
 
-		for (i = 0; i < 32; ++i)
+		os << (rhs.is_black_to_move() ? 'B' : 'W') << ":W";
+
+		unsigned int i = 0;
+		pieces = rhs.get_white_men();
+		while (pieces)
 		{
-			if (i > 0 && 0 == i % 4)
+			a_piece = pieces.lsb();
+			pieces &= ~a_piece;
+			if (i++)
 			{
-				os << '/';
+				os << ',';
 			}
-			square = bitboard(0x1U << i);
-			if (rhs._black_pieces & square)
-			{
-				if (rhs._kings & square)
-				{
-					os << 'B';
-				}
-				else
-				{
-					os << 'b';
-				}
-			}
-			else if (rhs._white_pieces & square)
-			{
-				if (rhs._kings & square)
-				{
-					os << 'W';
-				}
-				else
-				{
-					os << 'w';
-				}
-			}
-			else
-			{
-				os << '0';
-			}
+			os << a_piece;
 		}
-		os << ' ';
-		os << (rhs.is_black_to_move() ? 'b' : 'w');
+
+		pieces = rhs.get_white_kings();
+		while (pieces)
+		{
+			a_piece = pieces.lsb();
+			pieces &= ~a_piece;
+			if (i++)
+			{
+				os << ',';
+			}
+			os << 'K' << a_piece;
+		}
+
+		os << ":B";
+
+		i = 0;
+		pieces = rhs.get_black_men();
+		while (pieces)
+		{
+			a_piece = pieces.lsb();
+			pieces &= ~a_piece;
+			if (i++)
+			{
+				os << ',';
+			}
+			os << a_piece;
+		}
+
+		pieces = rhs.get_black_kings();
+		while (pieces)
+		{
+			a_piece = pieces.lsb();
+			pieces &= ~a_piece;
+			if (i++)
+			{
+				os << ',';
+			}
+			os << 'K' << a_piece;
+		}
 
 		return os;
 	}
@@ -836,6 +980,11 @@ namespace checkers
 			this->_player = board::BLACK;
 			this->_zobrist.change_side();
 		}
+
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
+		assert(this->build_zobrist() == this->_zobrist);
 	}
 
 	void board::set_white_to_move(void)
@@ -845,6 +994,11 @@ namespace checkers
 			this->_player = board::WHITE;
 			this->_zobrist.change_side();
 		}
+
+		assert(!(this->_black_pieces & this->_white_pieces));
+		assert(((this->_black_pieces | this->_white_pieces) &
+			this->_kings) == this->_kings);
+		assert(this->build_zobrist() == this->_zobrist);
 	}
 
 	/** @return game over or not.

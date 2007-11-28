@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.41 2007-11-26 15:20:21 neo Exp $
+/* $Id: engine.cpp,v 1.42 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -87,7 +87,6 @@ namespace checkers
 		std::vector<std::string> args;
 		std::map<std::string, do_action>::const_iterator pos;
 
-		this->_board.opening();
 		this->print_board();
 
 		for (;;)
@@ -127,60 +126,85 @@ namespace checkers
 
 		if (this->_rotate)
 		{
-			this->_io <<
-				"       h   g   f   e   d   c   b   a\n"
-				"     +---+---+---+---+---+---+---+---+\n";
-			for (i = 1; i <= 8; ++i)
+			this->_io << "  +---+---+---+---+---+---+---+---+\n";
+			for (i = 0; i < 32; i += 8)
 			{
-				this->_io << "  " << i;
-				if (i % 2)
+				this->_io << "  ";
+				for (j = i; j < i + 4; ++j)
 				{
-					this->_io << "  | ";
-				}
-				for (j = i * 4 - 1; j >= i * 4 - 4; --j)
-				{
-					this->_io << "  |";
+					this->_io << "|   |";
 					this->print_square(j);
-					this->_io << "| ";
 				}
-				if (!(i % 2))
+				this->_io << "|\n  +";
+				for (j = i; j < i + 4; ++j)
 				{
-					this->_io << "  | ";
+					this->_io << "---+" << (j + 1);
+					if (j + 1 < 10)
+					{
+						this->_io << '-';
+					}
+					this->_io << "-+";
 				}
-				this->_io << ' ' << i << "\n"
-				"     +---+---+---+---+---+---+---+---+\n";
+				this->_io << "\n  |";
+				for (j = i + 4; j < i + 8; ++j)
+				{
+					this->print_square(j);
+					this->_io << "|   |";
+				}
+				this->_io << "\n  +";
+				for (j = i + 4; j < i + 8; ++j)
+				{
+					this->_io << (j + 1);
+					if (j + 1 < 10)
+					{
+						this->_io << '-';
+					}
+					this->_io << "-+---+";
+				}
+				this->_io << '\n';
 			}
-			this->_io <<
-				"       h   g   f   e   d   c   b   a\n";
 		}
 		else
 		{
-			this->_io <<
-				"       a   b   c   d   e   f   g   h\n"
-				"     +---+---+---+---+---+---+---+---+\n";
-			for (i = 8; i >= 1; --i)
+			this->_io << "  +---+---+---+---+---+---+---+---+\n";
+			for (i = 32; i > 0; i -= 8)
 			{
-				this->_io << "  " << i;
-				if (!(i % 2))
+				this->_io << "  ";
+				for (j = i; j > i - 4; --j)
 				{
-					this->_io << "  | ";
+					this->_io << "|   |";
+					this->print_square(j - 1);
 				}
-				for (j = i * 4 - 4; j <= i * 4 - 1; ++j)
+				this->_io << "|\n  +";
+				for (j = i; j > i - 4; --j)
 				{
-					this->_io << "  |";
-					this->print_square(j);
-					this->_io << "| ";
+					this->_io << "---+" << j;
+					if (j < 10)
+					{
+						this->_io << '-';
+					}
+					this->_io << "-+";
 				}
-				if (i % 2)
+				this->_io << "\n  |";
+				for (j = i - 4; j > i - 8; --j)
 				{
-					this->_io << "  | ";
+					this->print_square(j - 1);
+					this->_io << "|   |";
 				}
-				this->_io << ' ' << i << "\n"
-				"     +---+---+---+---+---+---+---+---+\n";
+				this->_io << "\n  +";
+				for (j = i - 4; j > i - 8; --j)
+				{
+					this->_io << j;
+					if (j < 10)
+					{
+						this->_io << '-';
+					}
+					this->_io << "-+---+";
+				}
+				this->_io << '\n';
 			}
-			this->_io <<
-				"       a   b   c   d   e   f   g   h\n";
 		}
+		this->_io << ";[FEN \"" << this->_board << "\"]\n";
 	}
 
 	void engine::print_square(int n)
@@ -283,9 +307,10 @@ namespace checkers
 
 		if (this->_best_moves.size())
 		{
-			if (move == this->_best_moves.back())
+			if (move == this->_best_moves.front())
 			{
-				this->_best_moves.pop_back();
+				this->_best_moves.erase(
+					this->_best_moves.begin());
 			}
 			else
 			{
@@ -307,6 +332,7 @@ namespace checkers
 
 		this->_io << "  Thinking ...\n";
 
+		std::vector<move> moves;
 		do
 		{
 			intelligence::think(this->_io, this->_best_moves,
@@ -318,13 +344,17 @@ namespace checkers
 			}
 			do
 			{
-				this->_io << "move " <<
-					this->_best_moves.back() << '\n';
+				moves.push_back(this->_best_moves.front());
 				contin = this->make_move(
-					this->_best_moves.back());
+					this->_best_moves.front());
 				this->print_board();
 			} while (contin && !this->_best_moves.empty());
 		} while (contin);
+
+		if (moves.size())
+		{
+			this->_io << moves << '\n';
+		}
 		this->result();
 	}
 
@@ -377,23 +407,25 @@ namespace checkers
 	{
 		this->_io << "  *** "
 			<< (this->_board.is_black_to_move() ? "Black" : "White")
-			<< " move ***\n";
+			<< " ***\n";
 	}
 
 	bool engine::result(void)
 	{
 		if (this->_board.is_losing())
 		{
-			this->_io << "***** " <<
+			this->_io <<
 				(this->_board.is_black_to_move() ?
-				"1-0 (White win)" : "0-1 (Black win)") << " ***\n";
+				"[Result \"1-0\"]\n{White win}\n" :
+				"[Result \"0-1\"]\n{Black win}\n");
 			return true;
 		}
 		if (this->_board.is_winning())
 		{
-			this->_io << "***** " <<
+			this->_io <<
 				(this->_board.is_black_to_move() ?
-				"0-1 (Black win)" : "1-0 (White win)") << " ***\n";
+				"[Result \"0-1\"]\n{Black win}\n" :
+				"[Result \"1-0\"]\n{White win}\n");
 			return true;
 		}
 
@@ -528,7 +560,7 @@ namespace checkers
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_board.opening();
+		this->_board = board();
 		this->_history.clear();
 		this->_best_moves.clear();
 		this->print_board();
@@ -577,8 +609,17 @@ namespace checkers
 			this->_io << "Error (option missing): setboard\n";
 			return;
 		}
-		this->_board = board(args.size() > 2 ?
-			(args[1] + ' ' + args[2]) : args[1]);
+
+		try
+		{
+			this->_board = board(args[1]);
+		}
+		catch (const std::logic_error& e)
+		{
+			this->_io << e.what() << '\n';
+			return;
+		}
+
 		this->_history.clear();
 		this->_best_moves.clear();
 		this->print_board();

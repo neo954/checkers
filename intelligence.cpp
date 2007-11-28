@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.33 2007-11-26 15:20:21 neo Exp $
+/* $Id: intelligence.cpp,v 1.34 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -88,7 +88,7 @@ namespace checkers
 		// Optimize the order of legal moves
 		this->optimize_moves(legal_moves, ply);
 
-		std::vector<move> moves;
+		std::vector<move> deeper_moves;
 
 		for (std::vector<move>::const_iterator pos =
 			legal_moves.begin(); pos != legal_moves.end(); ++pos)
@@ -101,9 +101,9 @@ namespace checkers
 
 			intelligence intelligence(*this);
 			val = intelligence._board.make_move(*pos) ?
-				 intelligence.alpha_beta_search(io, moves,
+				 intelligence.alpha_beta_search(io, deeper_moves,
 					depth,     alpha,   beta, ply + 1) :
-				-intelligence.alpha_beta_search(io, moves,
+				-intelligence.alpha_beta_search(io, deeper_moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
 			if (evaluate::unknown() == val)
@@ -119,8 +119,11 @@ namespace checkers
 			{
 				flag = record::EXACT;
 				alpha = val;
-				best_moves = moves;
+				best_moves.clear();
 				best_moves.push_back(*pos);
+				best_moves.insert(best_moves.end(),
+					deeper_moves.begin(),
+					deeper_moves.end());
 			}
 		}
 
@@ -215,19 +218,41 @@ namespace checkers
 		stream << ' ' << std::setw(11) << nodes;
 		stream << ' ';
 
-		unsigned int i;
-		std::vector<move>::const_reverse_iterator pos;
-		for (pos = best_moves.rbegin(), i = 0;
-			pos != best_moves.rend(); ++pos, ++i)
 		{
-			if (i && 0 == i % 8)
+			// Print out the moves.
+			std::ostringstream stream2;
+			stream2 << best_moves;
+			std::string str = stream2.str();
+
+			std::string::size_type idx_begin = 0;
+			std::string::size_type idx_end = 0;
+			std::string::iterator begin = str.begin();
+			std::string piece;
+			std::string::size_type width = 0;
+			std::string::size_type max_width = 40;
+			while ((idx_end = str.find(' ', idx_begin)) !=
+				std::string::npos)
+			{
+				piece = std::string(begin + idx_begin,
+					begin + idx_end);
+				idx_begin = idx_end + 1;
+				if (width + 1 + piece.length() > max_width)
+				{
+					width = 0;
+					stream << "\n"
+				"                                      ";
+				}
+				stream << ' ' << piece;
+				width += 1 + piece.length();
+			}
+			piece = std::string(begin + idx_begin, str.end());
+			if (width + 1 + piece.length() > max_width)
 			{
 				stream << "\n"
 				"                                      ";
 			}
-			stream << ' ' << *pos;
+			stream << ' ' << piece << '\n';
 		}
-		stream << '\n';
 
 		io << stream.str() << io::flush;
 	}
@@ -248,7 +273,7 @@ namespace checkers
 		}
 
 		std::vector<move>::iterator pos = std::find(moves.begin(),
-			moves.end(), *(this->_best_moves.rbegin() + ply));
+			moves.end(), this->_best_moves[ply]);
 		if (moves.end() == pos)
 		{
 			this->_optimize_move = false;

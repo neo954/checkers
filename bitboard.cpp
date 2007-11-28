@@ -1,4 +1,4 @@
-/* $Id: bitboard.cpp,v 1.22 2007-11-26 15:20:21 neo Exp $
+/* $Id: bitboard.cpp,v 1.23 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -30,43 +30,7 @@
 
 namespace checkers
 {
-	/** @param file ASCII lowercase character, `a' to 'h'.
-	 *  @param rank ASCII digit character `1' to `8'.
-	 */
-	bitboard::bitboard(char file, char rank)
-	{
-		if (file < 'a' || file > 'h')
-		{
-			/** @throw std::logic_error when @e file is out of
-			 *   range.
-			 */
-			throw std::logic_error(std::string("Error"
-				" (illegal square, file out of range): ") +
-				file + rank);
-		}
-		if (rank < '1' || rank > '8')
-		{
-			/** @throw std::logic_error when @e rank is out of
-			 *   range.
-			 */
-			throw std::logic_error(std::string("Error"
-				" (illegal square, rank out of range): ") +
-				file + rank);
-		}
-		if (file % 2 != rank % 2)
-		{
-			/** @throw std::logic_error when @e file and @e rank
-			 *   does not indecate a dark sqare on the game board.
-			 */
-			throw std::logic_error(std::string("Error"
-				" (illegal square, dark square only): ") +
-				file + rank);
-		}
-
-		this->_bitboard = 0x1U << ((rank - '1') * 4 + (file - 'a') / 2);
-	}
-
-	unsigned int bitboard::bitcount(void) const
+	unsigned int bitboard::count(void) const
 	{
 		uint32_t x = this->_bitboard;
 
@@ -114,17 +78,9 @@ namespace checkers
 
 	std::ostream& operator <<(std::ostream& os, const bitboard& rhs)
 	{
-		assert(1 == rhs.bitcount());
+		assert(1 == rhs.count());
 
-		static const char* const square[] =
-		{
-			"a1", "c1", "e1", "g1", "b2", "d2", "f2", "h2",
-			"a3", "c3", "e3", "g3", "b4", "d4", "f4", "h4",
-			"a5", "c5", "e5", "g5", "b6", "d6", "f6", "h6",
-			"a7", "c7", "e7", "g7", "b8", "d8", "f8", "h8"
-		};
-
-		os << square[rhs.ntz()];
+		os << (rhs.ntz() + 1);
 
 		return os;
 	}

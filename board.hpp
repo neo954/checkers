@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.30 2007-11-26 15:20:21 neo Exp $
+/* $Id: board.hpp,v 1.31 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -158,9 +158,6 @@ namespace checkers
 		player _player;
 		/// The Zobrist key
 		zobrist _zobrist;
-
-		friend std::ostream& operator <<(std::ostream& os,
-			const board& rhs);
 	};
 
 	/// Stream out the current game board.

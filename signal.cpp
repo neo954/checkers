@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.13 2007-11-25 18:59:19 neo Exp $
+/* $Id: signal.cpp,v 1.14 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -30,7 +30,6 @@ extern "C"
 	#include <fcntl.h>
 	#include <sys/time.h>
 	#include <sys/resource.h>
-	#include <ucontext.h>
 	#include <unistd.h>
 }
 #include <cerrno>
@@ -280,25 +279,37 @@ namespace checkers
 			crash_dump("SIGPOLL\n");
 			switch (siginfo->si_code)
 			{
+#ifdef POLL_IN
 			case POLL_IN :
 				crash_dump("  * data input available\n");
 				break;
+#endif // POLL_IN
+#ifdef POLL_OUT
 			case POLL_OUT:
 				crash_dump("  * output buffers available\n");
 				break;
+#endif // POLL_OUT
+#ifdef POLL_MSG
 			case POLL_MSG:
 				crash_dump("  * input message available\n");
 				break;
+#endif // POLL_MSG
+#ifdef POLL_ERR
 			case POLL_ERR:
 				crash_dump("  * i/o error\n");
 				break;
+#endif // POLL_ERR
+#ifdef POLL_PRI
 			case POLL_PRI:
 				crash_dump("  * high priority input"
 					" available\n");
 				break;
+#endif // POLL_PRI
+#ifdef POLL_HUP
 			case POLL_HUP:
 				crash_dump("  * device disconnected\n");
 				break;
+#endif // POLL_HUP
 			default:
 				goto common_si_code;
 			}
@@ -326,12 +337,16 @@ namespace checkers
 			crash_dump("SIGTRAP\n");
 			switch (siginfo->si_code)
 			{
+#ifdef TRAP_BRKPT
 			case TRAP_BRKPT:
 				crash_dump("  * process breakpoint\n");
 				break;
+#endif // TRAP_BRKPT
+#ifdef TRAP_TRACE
 			case TRAP_TRACE:
 				crash_dump("  * process trace trap\n");
 				break;
+#endif // TRAP_TRACE
 			default:
 				goto common_si_code;
 			}
@@ -372,13 +387,17 @@ namespace checkers
 			case SI_ASYNCIO:
 				crash_dump("  * AIO completed\n");
 				break;
+#ifdef SI_SIGIO
 			case SI_SIGIO  :
 				crash_dump("  * queued SIGIO\n");
 				break;
+#endif // SI_SIGIO
+#ifdef SI_TKILL
 			case SI_TKILL  :
 				crash_dump("  * tkill() or tgkill() (since"
 					" Linux 2.4.19)\n");
 				break;
+#endif // SI_TKILL
 			default:
 				crash_dump("  * Unknown or not-specified"
 					" cause\n");

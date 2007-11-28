@@ -1,4 +1,4 @@
-/* $Id: bitboard.hpp,v 1.26 2007-11-26 15:20:21 neo Exp $
+/* $Id: bitboard.hpp,v 1.27 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -42,44 +42,40 @@ namespace checkers
 	 *   and/or memory or disk use in mass calculations.
 	 */
 	/**  This is the official game board of English/American checkers game,
-	 *   8 x 8 board size.  The playable surface consists only of the dark
-	 *   squares.  One dark square is at the lower left corner.  The square
-	 *   `a1' is marked as `0', it is the Least Significant Bit of the
-	 *   bitboard, and square `h8' is marked  as `31', is the Most
-	 *   Significant Bit of the bitboard.
+	 *   8x8 board size.  The playable surface consists only of the dark
+	 *   squares.  One dark square is at the lower left corner.
+	 *
+	 *   The squares are marked from "0" to "31", "0" is the Least
+	 *   Significant Bit of the bitboard, and "31", is the Most Significant
+	 *   Bit of the bitboard.
+	 *
 	 *  @verbatim
-	        A   B   C   D   E   F   G   H
-	      +---+---+---+---+---+---+---+---+
-	   8  |   | 28|   | 29|   | 30|   | 31|  8  Black
-	      +---+---+---+---+---+---+---+---+
-	   7  | 24|   | 25|   | 26|   | 27|   |  7
-	      +---+---+---+---+---+---+---+---+
-	   6  |   | 20|   | 21|   | 22|   | 23|  6
-	      +---+---+---+---+---+---+---+---+
-	   5  | 16|   | 17|   | 18|   | 19|   |  5
-	      +---+---+---+---+---+---+---+---+
-	   4  |   | 12|   | 13|   | 14|   | 15|  4
-	      +---+---+---+---+---+---+---+---+
-	   3  |  8|   |  9|   | 10|   | 11|   |  3
-	      +---+---+---+---+---+---+---+---+
-	   2  |   |  4|   |  5|   |  6|   |  7|  2
-	      +---+---+---+---+---+---+---+---+
-	   1  |  0|   |  1|   |  2|   |  3|   |  1  White
-	      +---+---+---+---+---+---+---+---+
-	        A   B   C   D   E   F   G   H       @endverbatim
+	     +---+---+---+---+---+---+---+---+
+	     |   |(w)|   |(w)|   |(w)|   |(w)| White
+	     +---+31-+---+30-+---+29-+---+28-+
+	     |(w)|   |(w)|   |(w)|   |(w)|   |
+	     +27-+---+26-+---+25-+---+24-+---+
+	     |   |(w)|   |(w)|   |(w)|   |(w)|
+	     +---+23-+---+22-+---+21-+---+20-+
+	     | \ |   | \ |   | \ |   | \ |   |
+	     +19-+---+18-+---+17-+---+16-+---+
+	     |   | \ |   | \ |   | \ |   | \ |
+	     +---+15-+---+14-+---+13-+---+12-+
+	     |(b)|   |(b)|   |(b)|   |(b)|   |
+	     +11-+---+10-+---+9--+---+8--+---+
+	     |   |(b)|   |(b)|   |(b)|   |(b)|
+	     +---+7--+---+6--+---+5--+---+4--+
+	     |(b)|   |(b)|   |(b)|   |(b)|   | Black
+	     +3--+---+2--+---+1--+---+0--+---+ @endverbatim
 	 */
 	class bitboard
 	{
 	public:
 		/// Construct from a 32-bit unsigned integer
 		explicit inline bitboard(uint32_t x = bitboard::EMPTY);
-		/** @brief Construct a bitboard with only one bit set.
-		 *   According to the file and rank on the game board.
-		 */
-		bitboard(char file, char rank);
 
-		/// Count set bits in bitboard, with traditional method.
-		unsigned int bitcount(void) const;
+		/// Count set bits in bitboard.
+		unsigned int count(void) const;
 		/// Count the Number of Tail Zeros
 		unsigned int ntz(void) const;
 		/// Get the Least Significant Bit
@@ -88,49 +84,50 @@ namespace checkers
 		static const uint32_t EMPTY = 0x0U;
 		/// Black pieces initial position
 		static const uint32_t BLACK_PIECES_INIT =
-			0x1U << 20 | 0x1U << 21 | 0x1U << 22 | 0x1U << 23 |
-			0x1U << 24 | 0x1U << 25 | 0x1U << 26 | 0x1U << 27 |
-			0x1U << 28 | 0x1U << 29 | 0x1U << 30 | 0x1U << 31;
-		/// White pieces initial position
-		static const uint32_t WHITE_PIECES_INIT =
 			0x1U <<  0 | 0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3 |
 			0x1U <<  4 | 0x1U <<  5 | 0x1U <<  6 | 0x1U <<  7 |
 			0x1U <<  8 | 0x1U <<  9 | 0x1U << 10 | 0x1U << 11;
+		/// White pieces initial position
+		static const uint32_t WHITE_PIECES_INIT =
+			0x1U << 20 | 0x1U << 21 | 0x1U << 22 | 0x1U << 23 |
+			0x1U << 24 | 0x1U << 25 | 0x1U << 26 | 0x1U << 27 |
+			0x1U << 28 | 0x1U << 29 | 0x1U << 30 | 0x1U << 31;
 		/// The bit mask to left shift 3
 		static const uint32_t MASK_L3 =
-			0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3 | 0x1U <<  9 |
-			0x1U << 10 | 0x1U << 11 | 0x1U << 17 | 0x1U << 18 |
-			0x1U << 19 | 0x1U << 25 | 0x1U << 26 | 0x1U << 27;
+			0x1U <<  5 | 0x1U <<  6 | 0x1U <<  7 |
+			0x1U << 13 | 0x1U << 14 | 0x1U << 15 |
+			0x1U << 21 | 0x1U << 22 | 0x1U << 23;
 		/// The bit mask to left shift 5
 		static const uint32_t MASK_L5 =
-			0x1U <<  4 | 0x1U <<  5 | 0x1U <<  6 | 0x1U << 12 |
-			0x1U << 13 | 0x1U << 14 | 0x1U << 20 | 0x1U << 21 |
-			0x1U << 22;
+			0x1U <<  0 | 0x1U <<  1 | 0x1U <<  2 |
+			0x1U <<  8 | 0x1U <<  9 | 0x1U << 10 |
+			0x1U << 16 | 0x1U << 17 | 0x1U << 18 |
+			0x1U << 24 | 0x1U << 25 | 0x1U << 26;
 		/// The bit mask to right shift 3
 		static const uint32_t MASK_R3 =
-			0x1U <<  4 | 0x1U <<  5 | 0x1U <<  6 | 0x1U << 12 |
-			0x1U << 13 | 0x1U << 14 | 0x1U << 20 | 0x1U << 21 |
-			0x1U << 22 | 0x1U << 28 | 0x1U << 29 | 0x1U << 30;
+			0x1U <<  8 | 0x1U <<  9 | 0x1U << 10 |
+			0x1U << 16 | 0x1U << 17 | 0x1U << 18 |
+			0x1U << 24 | 0x1U << 25 | 0x1U << 26;
 		/// The bit mask to right shift 5
 		static const uint32_t MASK_R5 =
-			0x1U <<  9 | 0x1U << 10 | 0x1U << 11 | 0x1U << 17 |
-			0x1U << 18 | 0x1U << 19 | 0x1U << 25 | 0x1U << 26 |
-			0x1U << 27;
+			0x1U <<  5 | 0x1U <<  6 | 0x1U <<  7 |
+			0x1U << 13 | 0x1U << 14 | 0x1U << 15 |
+			0x1U << 21 | 0x1U << 22 | 0x1U << 23 |
+			0x1U << 29 | 0x1U << 30 | 0x1U << 31;
 		/// The bit mask for the game board edges
 		static const uint32_t EDGES =
-			0x1U <<  7 | 0x1U <<  8 | 0x1U << 15 | 0x1U << 16 |
-			0x1U << 23 | 0x1U << 24;
+			0x1U <<  4 | 0x1U << 11 | 0x1U << 12 |
+			0x1U << 19 | 0x1U << 20 | 0x1U << 27;
 		/** @brief Kings row for black.  Black man will become king
 		 *   when reach this row.
 		 */
 		static const uint32_t BLACK_KINGS_ROW =
-			0x1U <<  0 | 0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3;
+			0x1U << 28 | 0x1U << 29 | 0x1U << 30 | 0x1U << 31;
 		/** @brief Kings row for white.  White man will become king
 		 *   when reach this row.
 		 */
 		static const uint32_t WHITE_KINGS_ROW =
-			0x1U << 28 | 0x1U << 29 | 0x1U << 30 | 0x1U << 31;
-
+			0x1U <<  0 | 0x1U <<  1 | 0x1U <<  2 | 0x1U <<  3;
 		/// Logical left shift by @e rhs bit(s).
 		inline bitboard operator <<(int rhs) const;
 		/// Logical right shift by @e rhs bit(s).

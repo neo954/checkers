@@ -1,4 +1,4 @@
-/* $Id: zobrist_i.hpp,v 1.7 2007-11-22 16:30:56 neo Exp $
+/* $Id: zobrist_i.hpp,v 1.8 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -41,19 +41,19 @@ namespace checkers
 
 	inline void zobrist::change_black_piece(const bitboard& piece)
 	{
-		assert(1 == piece.bitcount());
+		assert(1 == piece.count());
 		this->_key ^= this->_black_pieces[piece.ntz()];
 	}
 
 	inline void zobrist::change_white_piece(const bitboard& piece)
 	{
-		assert(1 == piece.bitcount());
+		assert(1 == piece.count());
 		this->_key ^= this->_white_pieces[piece.ntz()];
 	}
 
 	inline void zobrist::change_king(const bitboard& piece)
 	{
-		assert(1 == piece.bitcount());
+		assert(1 == piece.count());
 		this->_key ^= this->_kings[piece.ntz()];
 	}
 

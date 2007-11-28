@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.25 2007-11-26 15:20:21 neo Exp $
+/* $Id: board_i.hpp,v 1.26 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -29,10 +29,15 @@
 
 namespace checkers
 {
+	/**  Reset all pieces to initial position and set the player has dark
+	 *   pieces makes the next move.
+	 */ 
 	inline board::board(void) :
-		_black_pieces(bitboard::EMPTY), _white_pieces(bitboard::EMPTY),
+		_black_pieces(bitboard::BLACK_PIECES_INIT),
+		_white_pieces(bitboard::WHITE_PIECES_INIT),
 		_kings(bitboard::EMPTY), _player(board::BLACK), _zobrist(0x0UL)
 	{
+		this->_zobrist = this->build_zobrist();
 	}
 
 	inline bitboard board::get_black_pieces(void) const

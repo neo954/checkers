@@ -1,4 +1,4 @@
-/* $Id: move_i.hpp,v 1.20 2007-11-22 16:30:56 neo Exp $
+/* $Id: move_i.hpp,v 1.21 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -38,9 +38,9 @@ namespace checkers
 		_will_capture_a_king(will_capture_a_king),
 		_will_crown(will_crown)
 	{
-		assert(1 == this->_src.bitcount());
-		assert(1 == this->_dest.bitcount());
-		assert(this->_capture.bitcount() <= 1);
+		assert(1 == this->_src.count());
+		assert(1 == this->_dest.count());
+		assert(this->_capture.count() <= 1);
 	}
 
 	inline bitboard move::get_src(void) const

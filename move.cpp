@@ -1,4 +1,4 @@
-/* $Id: move.cpp,v 1.18 2007-11-22 16:30:56 neo Exp $
+/* $Id: move.cpp,v 1.19 2007-11-28 17:17:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -32,10 +32,37 @@ namespace checkers
 {
 	std::ostream& operator <<(std::ostream& os, const move& rhs)
 	{
-		assert(1 == rhs._src.bitcount());
-		assert(1 == rhs._dest.bitcount());
+		assert(1 == rhs.get_src().count());
+		assert(1 == rhs.get_dest().count());
 
-		os << rhs._src << rhs._dest;
+		os << rhs.get_src() << (rhs.get_capture() ? 'x' : '-')
+			<< rhs.get_dest();
+
+		return os;
+	}
+
+	std::ostream& operator <<(std::ostream& os,
+		const std::vector<move>& rhs)
+	{
+		for (std::vector<move>::const_iterator pos = rhs.begin();
+			pos != rhs.end(); ++pos)
+		{
+			if (pos != rhs.begin())
+			{
+				if (pos->get_src() == (pos - 1)->get_dest())
+				{
+					assert((pos - 1)->get_capture());
+					assert(pos->get_capture());
+					os << 'x' << pos->get_dest();
+					continue;
+				}
+				else
+				{
+					os << ' ';
+				}
+			}
+			os << *pos;
+		}
 
 		return os;
 	}
