@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.43 2007-12-14 07:03:21 neo Exp $
+/* $Id: engine.cpp,v 1.44 2007-12-14 17:44:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -121,6 +121,8 @@ namespace checkers
 
 	void engine::print_board(void)
 	{
+		this->_io << ";[FEN \"" << this->_board << "\"]\n";
+
 		int i;
 		int j;
 
@@ -204,7 +206,6 @@ namespace checkers
 				this->_io << '\n';
 			}
 		}
-		this->_io << ";[FEN \"" << this->_board << "\"]\n";
 	}
 
 	void engine::print_square(int n)

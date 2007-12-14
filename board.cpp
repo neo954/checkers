@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.37 2007-12-14 07:03:21 neo Exp $
+/* $Id: board.cpp,v 1.38 2007-12-14 17:44:37 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -936,8 +936,7 @@ namespace checkers
 	/** @param str The movetext.
 	 *   Movetext contains the actual moves for the game.  Moves begin with
 	 *   the source square number, then a "-" or "x", finally destination
-	 *   square number.  Jumps must be specified by each square that would
-	 *   be jumped ("11x18x25"), or two squares only ("11x25").
+	 *   square number.
 	 */ 
 	move board::parse_move(const std::string& str) const
 	{
