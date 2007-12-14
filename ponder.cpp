@@ -1,4 +1,4 @@
-/* $Id: ponder.cpp,v 1.15 2007-11-28 17:17:21 neo Exp $
+/* $Id: ponder.cpp,v 1.16 2007-12-14 07:03:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -149,6 +149,11 @@ int main(void)
 	catch (std::exception& e)
 	{
 		std::cerr << "Fatal error: " << e.what() << std::endl;
+		return 1;
+	}
+	catch (...)
+	{
+		std::cerr << "Fatal error: unknown exception!" << std::endl;
 		return 1;
 	}
 

@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.26 2007-11-28 17:17:21 neo Exp $
+/* $Id: board_i.hpp,v 1.27 2007-12-14 07:03:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -60,7 +60,7 @@ namespace checkers
 		return this->_black_pieces | this->_white_pieces;
 	}
 
-	inline bitboard board::get_not_occupied(void) const
+	inline bitboard board::get_unoccupied(void) const
 	{
 		return ~this->get_occupied();
 	}

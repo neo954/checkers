@@ -1,4 +1,4 @@
-/* $Id: loopbuffer.cpp,v 1.18 2007-11-22 16:30:55 neo Exp $
+/* $Id: loopbuffer.cpp,v 1.19 2007-12-14 07:03:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -128,7 +128,7 @@ namespace checkers
 	}
 
 	/** @return a entire line from the loop buffer, include the newline
-	 *   character.  A empty string will be returned when no new line
+	 *   character.  A empty string will be returned if no new line
 	 *   available.
 	 */
 	std::string loopbuffer::getline(void)
@@ -141,10 +141,10 @@ namespace checkers
 			do
 			{
 				c = this->front();
-				/** @warning This is not exception-safe, may
-				 *   cause data lose when
-				 *   std::string::operator +=(char) failed and
-				 *   throw exception.
+				/** @warning This function is not
+				 *   exception-safe, and may cause data lose if
+				 *   std::string::operator +=(char) fail and
+				 *   throw an exception.
 				 */
 				line += c;
 				this->pop_front();

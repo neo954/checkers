@@ -1,4 +1,4 @@
-/* $Id: board.hpp,v 1.31 2007-11-28 17:17:21 neo Exp $
+/* $Id: board.hpp,v 1.32 2007-12-14 07:03:21 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -42,11 +42,6 @@ namespace checkers
 		/// Construct from an user input string.
 		explicit board(const std::string& input);
 
-		/** @brief Reset all pieces to initial position and set the
-		 *   player has dark pieces makes the next move.
-		 */
-		void opening(void);
-
 		/// Check if move is legal based on current situation
 		bool is_valid_move(const move& move) const;
 
@@ -74,8 +69,8 @@ namespace checkers
 
 		/// Get all occupied squares on the game board.
 		inline bitboard get_occupied(void) const;
-		/// Get all not occupied squares on the game board.
-		inline bitboard get_not_occupied(void) const;
+		/// Get all unoccupied squares on the game board.
+		inline bitboard get_unoccupied(void) const;
 
 		/// Get all dark men on the game board.
 		inline bitboard get_black_men(void) const;
@@ -120,10 +115,10 @@ namespace checkers
 		/// Generate all legal jumps for light pieces.
 		std::vector<move> generate_white_jumps(void) const;
 
-		/// Generate all legal moves based on current situation.
+		/// Generate all legal moves based on game board.
 		std::vector<move> generate_moves(void) const;
-		/// Generate a legal move based on user input @e str.
-		move generate_move(const std::string& str) const;
+		/// Parse user move @e.
+		move parse_move(const std::string& str) const;
 
 		/// Set the player has dark pieces makes the next move.
 		void set_black_to_move(void);
