@@ -1,8 +1,8 @@
-/* $Id: board.cpp,v 1.40 2008-09-04 14:32:18 neo Exp $
+/* $Id: board.cpp,v 1.41 2008-09-04 14:38:08 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008 Mamiyami Information.
 		     Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
