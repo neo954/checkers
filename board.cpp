@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.39 2008-09-03 10:47:33 neo Exp $
+/* $Id: board.cpp,v 1.40 2008-09-04 14:32:18 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -88,8 +88,8 @@ namespace checkers
 
 		bitboard a_piece;
 		std::string::size_type p;
-		player color = BLACK;
-		bool is_king = false;
+		player color;
+		bool is_king;
 		unsigned int i = 0;
 		for (p = 2; p < str.size(); ++p)
 		{

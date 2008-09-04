@@ -1,0 +1,199 @@
+Ponder is an American Checkers Engine
+=====================================
+
+Rules [1]
+-----
+
+* Board - The board is an 8×8 grid, with alternating black and red squares,
+called a checkerboard (in the U.S., in reference to its checkered pattern,
+also the source of the name checkers). The playable surface consists of the 32
+dark squares only. A consequence of this is that, from each player's
+perspective, the left and right corners encourage different strategies.
+
+* Pieces - The pieces are usually made of wood and are flat and cylindrical.
+They are invariably split into one darker and one lighter color. Traditionally,
+these colors are red and white. There are two kinds of pieces: "men" and
+"kings". Kings are differentiated as consisting of two normal pieces of the
+same color, stacked one on top of the other. Often indentations are added to
+the pieces to aid stacking.
+
+* Starting Position - Each player starts with 12 pieces on the three rows
+closest to their own side, as shown in the diagram. The row closest to each
+player is called the "crownhead" or "kings row". The black (darker color) side
+moves first.
+
+* How to Move - There are two ways to move a piece: simply sliding a piece
+diagonally forwards (also diagonally backwards in the case of kings) to an
+adjacent and unoccupied dark square, or "jumping" one of the opponent's pieces.
+In this case, one piece "jumps over" the other, provided there is a vacant
+square on the opposite side for it to land on. Again, a man (uncrowned piece)
+can only jump diagonally forwards, and a king can also move diagonally
+backwards. A piece that is jumped is captured and removed from the board.
+Multiple-jump moves are possible if, when the jumping piece lands, there is
+another piece that can be jumped. Jumping is mandatory and cannot be passed up
+to make a non-jumping move, nor can fewer than the maximum jumps possible be
+taken in a multiple-jump move. When there is more than one way for a player to
+jump, one may choose which sequence to make, not necessarily the sequence that
+will result in the most amount of captures. However, one must make all the
+captures in that sequence. (Under traditional draughts rules jumping is not
+mandatory. If it is not done, the opponent may either force the move to be
+reversed, huff the piece or carry on regardless.)
+
+* Kings - If a player's piece moves into the kings row on the opposing player's
+side of the board, that piece is said to be "crowned" (or often "kinged" in the
+U.S.), becoming a "king" and gaining the ability to move both forwards and
+backwards. If a player's piece jumps into the kings row, the current move
+terminates; having just been crowned, the piece cannot continue on by jumping
+back out (as in a multiple jump), until the next move.
+
+* How the Game Ends - A player wins by capturing all of the opposing player's
+pieces, or by leaving the opposing player with no legal moves.
+
+[1] http://en.wikipedia.org/wiki/English_draughts
+
+Compiling
+---------
+
+Run command ``make'' to compiling. The main executable file is ``ponder''.
+
+Playing
+-------
+
+The below chart show the user interface of the Ponder engine.  This is the
+official game board of American checkers game, 8x8 size.  The squares are
+marked from "1" to "32" at the lower left.
+
+$ ponder
+  +---+---+---+---+---+---+---+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+32-+---+31-+---+30-+---+29-+
+  |(w)|   |(w)|   |(w)|   |(w)|   |
+  +28-+---+27-+---+26-+---+25-+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+24-+---+23-+---+22-+---+21-+
+  | \ |   | \ |   | \ |   | \ |   |
+  +20-+---+19-+---+18-+---+17-+---+
+  |   | \ |   | \ |   | \ |   | \ |
+  +---+16-+---+15-+---+14-+---+13-+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +12-+---+11-+---+10-+---+9--+---+
+  |   |(b)|   |(b)|   |(b)|   |(b)|
+  +---+8--+---+7--+---+6--+---+5--+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +4--+---+3--+---+2--+---+1--+---+
+;[FEN "B:W21,22,23,24,25,26,27,28,29,30,31,32:B1,2,3,4,5,6,7,8,9,10,11,12"]
+  *** Black ***
+
+(b) indecate a black man
+(B) indicate a black king
+(w) indicate a white man
+(W) indicate a white king
+ \  indicate an unoccupied dark square
+
+Move a piece by type the starting square and the destination square with a dash
+between them.
+
+;[FEN "B:W21,22,23,24,25,26,27,28,29,30,31,32:B1,2,3,4,5,6,7,8,9,10,11,12"]
+  +---+---+---+---+---+---+---+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+32-+---+31-+---+30-+---+29-+
+  |(w)|   |(w)|   |(w)|   |(w)|   |
+  +28-+---+27-+---+26-+---+25-+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+24-+---+23-+---+22-+---+21-+
+  | \ |   | \ |   | \ |   | \ |   |
+  +20-+---+19-+---+18-+---+17-+---+
+  |   | \ |   | \ |   | \ |   | \ |
+  +---+16-+---+15-+---+14-+---+13-+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +12-+---+11-+---+10-+---+9--+---+
+  |   |(b)|   |(b)|   |(b)|   |(b)|
+  +---+8--+---+7--+---+6--+---+5--+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +4--+---+3--+---+2--+---+1--+---+
+  *** Black ***
+10-14
+;[FEN "W:W21,22,23,24,25,26,27,28,29,30,31,32:B1,2,3,4,5,6,7,8,9,11,12,14"]
+  +---+---+---+---+---+---+---+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+32-+---+31-+---+30-+---+29-+
+  |(w)|   |(w)|   |(w)|   |(w)|   |
+  +28-+---+27-+---+26-+---+25-+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+24-+---+23-+---+22-+---+21-+
+  | \ |   | \ |   | \ |   | \ |   |
+  +20-+---+19-+---+18-+---+17-+---+
+  |   | \ |   | \ |   |(b)|   | \ |
+  +---+16-+---+15-+---+14-+---+13-+
+  |(b)|   |(b)|   | \ |   |(b)|   |
+  +12-+---+11-+---+10-+---+9--+---+
+  |   |(b)|   |(b)|   |(b)|   |(b)|
+  +---+8--+---+7--+---+6--+---+5--+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +4--+---+3--+---+2--+---+1--+---+
+
+While capture a piece, use character x instead of dash.
+
+;[FEN "B:W15,21,22,24,25,26,27,28,29,30,31,32:B1,2,3,4,5,6,8,9,10,11,12,14"]
+  +---+---+---+---+---+---+---+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+32-+---+31-+---+30-+---+29-+
+  |(w)|   |(w)|   |(w)|   |(w)|   |
+  +28-+---+27-+---+26-+---+25-+---+
+  |   |(w)|   | \ |   |(w)|   |(w)|
+  +---+24-+---+23-+---+22-+---+21-+
+  | \ |   | \ |   | \ |   | \ |   |
+  +20-+---+19-+---+18-+---+17-+---+
+  |   | \ |   |(w)|   |(b)|   | \ |
+  +---+16-+---+15-+---+14-+---+13-+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +12-+---+11-+---+10-+---+9--+---+
+  |   |(b)|   | \ |   |(b)|   |(b)|
+  +---+8--+---+7--+---+6--+---+5--+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +4--+---+3--+---+2--+---+1--+---+
+  *** Black ***
+11x18
+;[FEN "W:W21,22,24,25,26,27,28,29,30,31,32:B1,2,3,4,5,6,8,9,10,12,14,18"]
+  +---+---+---+---+---+---+---+---+
+  |   |(w)|   |(w)|   |(w)|   |(w)|
+  +---+32-+---+31-+---+30-+---+29-+
+  |(w)|   |(w)|   |(w)|   |(w)|   |
+  +28-+---+27-+---+26-+---+25-+---+
+  |   |(w)|   | \ |   |(w)|   |(w)|
+  +---+24-+---+23-+---+22-+---+21-+
+  | \ |   | \ |   |(b)|   | \ |   |
+  +20-+---+19-+---+18-+---+17-+---+
+  |   | \ |   | \ |   |(b)|   | \ |
+  +---+16-+---+15-+---+14-+---+13-+
+  |(b)|   | \ |   |(b)|   |(b)|   |
+  +12-+---+11-+---+10-+---+9--+---+
+  |   |(b)|   | \ |   |(b)|   |(b)|
+  +---+8--+---+7--+---+6--+---+5--+
+  |(b)|   |(b)|   |(b)|   |(b)|   |
+  +4--+---+3--+---+2--+---+1--+---+
+
+Use "help" or "?" in the game engine to show the help information.
+
+help
+    ?               Show this help information.
+    analyze         Engine thinks about what move it make next if it were on
+                    move.
+    black           Set Black on move, and the engine will play White.
+    force           Set the engine to play neither color ("force mode").
+    go              Leave force mode and set the engine to play the color that
+                    is on move.  Start thinking and eventually make a move.
+    help            Show this help information.
+    history         Show the record of moves.
+    new             Reset the board to the standard starting position.
+    ping N          N is a decimal number.  Reply by sending the string
+                    "pong N"
+    print           Show the current board.
+    quit            Quit this program.
+    rotate          Rotate the board 180 degrees.
+    setboard FEN    Set up the pieces position on the board.
+    sd DEPTH        The engine should limit its thinking to DEPTH ply.
+    st TIME         Set the time control to TIME seconds per move.
+    undo            Back up a move.
+    verbose         Toggle verbose mode.
+    white           Set White on move, and the engine will play Black.
