@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.44 2007-12-14 17:44:37 neo Exp $
+/* $Id: engine.cpp,v 1.45 2008-10-26 17:20:18 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,6 +24,7 @@
  *  @brief Game engine.
  */
 
+#include <cstdlib>
 #include "engine.hpp"
 #include "intelligence.hpp"
 
@@ -253,7 +254,7 @@ namespace checkers
 		{
 			return UNLIMITED;
 		}
-		int v = ::strtol(str.c_str(), NULL, 10);
+		int v = std::strtol(str.c_str(), NULL, 10);
 		if (v < 0 || v > UNLIMITED)
 		{
 			return UNLIMITED;

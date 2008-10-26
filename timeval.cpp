@@ -1,4 +1,4 @@
-/* $Id: timeval.cpp,v 1.1 2007-11-26 15:20:21 neo Exp $
+/* $Id: timeval.cpp,v 1.2 2008-10-26 17:20:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -25,6 +25,7 @@
  */
 
 #include <cerrno>
+#include <cstring>
 #include <stdexcept>
 #include <string>
 #include "timeval.hpp"

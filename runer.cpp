@@ -1,4 +1,4 @@
-/* $Id: runer.cpp,v 1.10 2007-11-26 15:20:21 neo Exp $
+/* $Id: runer.cpp,v 1.11 2008-10-26 17:20:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,6 +24,8 @@
  *  @brief
  */
 
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <stdexcept>
 #include "io.hpp"
@@ -70,13 +72,13 @@ int main(int argc, char* argv[])
 			{
 				if (++i < argc)
 				{
-					second = ::strtol(argv[i], NULL, 10);
+					second = std::strtol(argv[i], NULL, 10);
 					if (second < 0 || second > 999)
 					{
 						std::cerr <<
 							"Error: Invalid time"
 							<< std::endl;
-						exit(255);
+						std::exit(255);
 					}
 				}
 			}
@@ -85,7 +87,7 @@ int main(int argc, char* argv[])
 		if (black.empty() || white.empty())
 		{
 			usage();
-			exit(255);
+			std::exit(255);
 		}
 
 		checkers::io io(STDIN_FILENO, STDOUT_FILENO);

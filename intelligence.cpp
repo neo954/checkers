@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.34 2007-11-28 17:17:21 neo Exp $
+/* $Id: intelligence.cpp,v 1.35 2008-10-26 17:20:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,6 +24,7 @@
  *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
+#include <algorithm>
 #include <iomanip>
 #include "intelligence.hpp"
 

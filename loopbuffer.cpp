@@ -1,4 +1,4 @@
-/* $Id: loopbuffer.cpp,v 1.19 2007-12-14 07:03:21 neo Exp $
+/* $Id: loopbuffer.cpp,v 1.20 2008-10-26 17:20:19 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -30,6 +30,7 @@ extern "C"
 }
 #include <cerrno>
 #include <cassert>
+#include <cstring>
 #include <sstream>
 #include <stdexcept>
 #include "loopbuffer.hpp"
@@ -197,14 +198,14 @@ namespace checkers
 
 		if (this->_front < this->_rear)
 		{
-			memcpy(buffer, this->_buffer + this->_front,
+			std::memcpy(buffer, this->_buffer + this->_front,
 				this->_rear - this->_front);
 		}
 		else
 		{
-			memcpy(buffer, this->_buffer + this->_front,
+			std::memcpy(buffer, this->_buffer + this->_front,
 				this->_max_size - this->_front);
-			memcpy(buffer + this->_max_size - this->_front,
+			std::memcpy(buffer + this->_max_size - this->_front,
 				this->_buffer, this->_rear);
 		}
 
