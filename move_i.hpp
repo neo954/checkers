@@ -1,4 +1,4 @@
-/* $Id: move_i.hpp,v 1.22 2007-11-28 19:25:44 neo Exp $
+/* $Id: move_i.hpp,v 1.23 2008-11-29 11:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -49,24 +49,24 @@ namespace checkers
 		 this->_dest == (((this->_src & bitboard::MASK_R3) >> 3) |
 				 ((this->_src & bitboard::MASK_R5) >> 5)))) ||
 		(1 == this->_capture.count() &&
-		(this->_capture ==    (this->_src << 4) &&
+	       ((this->_capture ==    (this->_src << 4) &&
 		 this->_dest == (((this->_capture & bitboard::MASK_L3) << 3) |
-				 ((this->_capture & bitboard::MASK_L5) << 5)) ||
-		 this->_capture ==  (((this->_src & bitboard::MASK_L3) << 3) |
+				 ((this->_capture & bitboard::MASK_L5) << 5))) ||
+		(this->_capture ==  (((this->_src & bitboard::MASK_L3) << 3) |
 				     ((this->_src & bitboard::MASK_L5) << 5)) &&
-		 this->_dest ==   (this->_capture << 4) ||
-		 this->_capture ==    (this->_src >> 4) &&
+		 this->_dest ==   (this->_capture << 4)) ||
+		(this->_capture ==    (this->_src >> 4) &&
 		 this->_dest == (((this->_capture & bitboard::MASK_R3) >> 3) |
-				 ((this->_capture & bitboard::MASK_R5) >> 5)) ||
-		 this->_capture ==  (((this->_src & bitboard::MASK_R3) >> 3) |
+				 ((this->_capture & bitboard::MASK_R5) >> 5))) ||
+		(this->_capture ==  (((this->_src & bitboard::MASK_R3) >> 3) |
 				     ((this->_src & bitboard::MASK_R5) >> 5)) &&
-		 this->_dest ==   (this->_capture >> 4))));
+		 this->_dest ==   (this->_capture >> 4)))));
 		assert(!"Error (illegal move, could not capture a king)" ||
 			(this->_will_capture_a_king && this->_capture) ||
 			!this->_will_capture_a_king);
 		assert(!"Error (illegal move, could not crown)" ||
-			this->_will_crown && (this->_dest &
-			(bitboard::BLACK_KINGS_ROW | bitboard::WHITE_KINGS_ROW))
+			(this->_will_crown && (this->_dest &
+			(bitboard::BLACK_KINGS_ROW | bitboard::WHITE_KINGS_ROW)))
 			|| !this->_will_crown);
 	}
 

@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.35 2008-10-26 17:20:19 neo Exp $
+/* $Id: intelligence.cpp,v 1.36 2008-11-29 11:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -34,7 +34,7 @@ namespace checkers
 		std::vector<move>& best_moves, unsigned int depth, int alpha,
 		int beta, unsigned int ply)
 	{
-		if (0 == this->_nodes % 2 ^ 16)
+		if (0 == this->_nodes % (2 ^ 16))
 		{
 			io << io::flush;
 			if (this->is_timeout() || io.lines_to_read() ||

@@ -1,4 +1,4 @@
-/* $Id: timeval_i.hpp,v 1.11 2007-11-26 15:20:21 neo Exp $
+/* $Id: timeval_i.hpp,v 1.12 2008-11-29 11:14:53 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -78,7 +78,8 @@ namespace checkers
 		const struct timeval& rhs)
 	{
 		return lhs.tv_sec > rhs.tv_sec ||
-			lhs.tv_sec == rhs.tv_sec && lhs.tv_usec > rhs.tv_usec;
+			(lhs.tv_sec == rhs.tv_sec &&
+			 lhs.tv_usec > rhs.tv_usec);
 	}
 
 	inline bool operator <(const struct timeval& lhs,

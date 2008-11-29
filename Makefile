@@ -4,7 +4,7 @@ CXXFLAGS += -g -ggdb
 #CXXFLAGS += -O0 -fno-inline
 #CXXFLAGS += -DNDEBUG
 CXXFLAGS += -O3 --param max-inline-insns-single=9999 \
-	--param inline-unit-growth=100
+	--param inline-unit-growth=9999
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 TARGETS = ponder runer
