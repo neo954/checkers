@@ -1,4 +1,4 @@
-/* $Id: ponder.cpp,v 1.16 2007-12-14 07:03:21 neo Exp $
+/* $Id: ponder.cpp,v 1.17 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -31,7 +31,7 @@
 /** @mainpage Ponder, a English/American Checkers Game
  *
  *  @author Gong Jie <neo@mamiyami.com>
- *  @date   2006-2007
+ *  @date   2006 - 2009
  *
  *  @section sec_intro Introduction
  *

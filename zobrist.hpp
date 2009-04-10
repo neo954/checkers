@@ -1,8 +1,8 @@
-/* $Id: zobrist.hpp,v 1.10 2007-11-22 16:30:56 neo Exp $
+/* $Id: zobrist.hpp,v 1.11 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -47,16 +47,16 @@ namespace checkers
 
 		/// Get the Zobrist key.
 		inline uint64_t key(void) const;
-		void change_black_piece(const bitboard& piece);
-		void change_white_piece(const bitboard& piece);
-		void change_king(const bitboard& piece);
-		void change_side(void);
+		void inline change_black_piece(const bitboard& piece);
+		void inline change_white_piece(const bitboard& piece);
+		void inline change_king(const bitboard& piece);
+		void inline change_side(void);
 
 		friend bool operator ==(const zobrist& lhs, const zobrist& rhs);
 
 	private:
 		static inline uint32_t rand32(void);
-		static inline uint64_t rand64(void);
+		static uint64_t rand64(void);
 
 		static uint64_t _black_pieces[];
 		static uint64_t _white_pieces[];

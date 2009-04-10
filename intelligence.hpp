@@ -1,8 +1,8 @@
-/* $Id: intelligence.hpp,v 1.27 2007-11-26 15:20:21 neo Exp $
+/* $Id: intelligence.hpp,v 1.28 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,6 @@
 #define __INTELLIGENCE_HPP__
 
 #include "board.hpp"
-#include "io.hpp"
 #include "record.hpp"
 #include "timeval.hpp"
 
@@ -37,7 +36,8 @@ namespace checkers
 	class intelligence
 	{
 	public:
-		static bool think(io& io, std::vector<move>& best_moves,
+		typedef bool (*ponder_t)(void);
+		static bool think(std::vector<move>& best_moves,
 			const board& board, unsigned int depth_limit,
 			time_t second, bool verbose = false);
 
@@ -51,14 +51,14 @@ namespace checkers
 		 *   in the search tree by the minimax algorithm.
 		 *  @note This is recursive function.
 		 */
-		int alpha_beta_search(io& io, std::vector<move>& best_moves,
+		int alpha_beta_search(std::vector<move>& best_moves,
 			unsigned int depth,
 			int alpha = -evaluate::infinity(),
 			int beta = evaluate::infinity(),
 			unsigned int ply = 0);
 
-		/// Print the detail information of thinking.
-		static void show_think(io& io, unsigned int depth, int val,
+		/// The detail information of thinking.
+		static std::string thinking_detail(unsigned int depth, int val,
 			struct timeval time, long unsigned int nodes,
 			const std::vector<move>& best_moves, bool show_title);
 
@@ -67,10 +67,13 @@ namespace checkers
 		inline static void set_timeout(time_t second);
 		inline static bool is_timeout(void);
 
+		/// Get an evaluate value from the hash table.
 		int probe_hash(unsigned int depth, int alpha, int beta,
 			std::vector<move>& best_moves) const;
+		/// Store an evaluate record in the hash table.
 		void record_hash(unsigned int depth, int val,
 			record::hash_flag flag);
+		/// Store an evaluate record in the hash table with best moves.
 		void record_hash(unsigned int depth, int val,
 			record::hash_flag flag,
 			const std::vector<move>& best_moves);

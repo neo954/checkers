@@ -1,8 +1,8 @@
-/* $Id: intelligence.cpp,v 1.36 2008-11-29 11:14:53 neo Exp $
+/* $Id: intelligence.cpp,v 1.37 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -27,18 +27,18 @@
 #include <algorithm>
 #include <iomanip>
 #include "intelligence.hpp"
+#include "nonstdio.hpp"
 
 namespace checkers
 {
-	int intelligence::alpha_beta_search(io& io,
-		std::vector<move>& best_moves, unsigned int depth, int alpha,
-		int beta, unsigned int ply)
+	int intelligence::alpha_beta_search(std::vector<move>& best_moves,
+		unsigned int depth, int alpha, int beta, unsigned int ply)
 	{
 		if (0 == this->_nodes % (2 ^ 16))
 		{
-			io << io::flush;
-			if (this->is_timeout() || io.lines_to_read() ||
-				io.eof())
+			nio << io::flush;
+			if (this->is_timeout() || nio.lines_to_read() ||
+				nio.eof())
 			{
 	 			/// @retval intelligence::unknown() when timeout
 				return evaluate::unknown();
@@ -102,9 +102,9 @@ namespace checkers
 
 			intelligence intelligence(*this);
 			val = intelligence._board.make_move(*pos) ?
-				 intelligence.alpha_beta_search(io, deeper_moves,
+				 intelligence.alpha_beta_search(deeper_moves,
 					depth,     alpha,   beta, ply + 1) :
-				-intelligence.alpha_beta_search(io, deeper_moves,
+				-intelligence.alpha_beta_search(deeper_moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
 			if (evaluate::unknown() == val)
@@ -141,7 +141,7 @@ namespace checkers
 
 	/** @return Timeout or not.
 	 */ 
-	bool intelligence::think(io& io, std::vector<move>& best_moves,
+	bool intelligence::think(std::vector<move>& best_moves,
 		const board& board, unsigned int depth_limit, time_t time_limit,
 		bool verbose)
 	{
@@ -164,14 +164,14 @@ namespace checkers
 
 			intelligence intelligence(board);
 			start = timeval::now();
-			val = intelligence.alpha_beta_search(io, best_moves,
+			val = intelligence.alpha_beta_search(best_moves,
 				depth);
 			end = timeval::now();
 
 			if (verbose)
 			{
-				intelligence::show_think(io, depth, val,
-					end - start, intelligence::_nodes,
+				nio << intelligence::thinking_detail(depth,
+					val, end - start, intelligence::_nodes,
 					best_moves, !(i % 8));
 			}
 
@@ -190,7 +190,7 @@ namespace checkers
 
 	// ================================================================
 
-	void intelligence::show_think(io& io, unsigned int depth, int val,
+	std::string intelligence::thinking_detail(unsigned int depth, int val,
 		struct timeval time, long unsigned int nodes,
 		const std::vector<move>& best_moves, bool show_title)
 	{
@@ -217,45 +217,21 @@ namespace checkers
 			std::setw(3) << std::setfill('0') <<
 			(time.tv_usec / 1000) << std::setfill(' ');
 		stream << ' ' << std::setw(11) << nodes;
-		stream << ' ';
 
+		// Print out the moves.
+		for (std::vector<move>::size_type i = 0;
+			i < best_moves.size(); ++i)
 		{
-			// Print out the moves.
-			std::ostringstream stream2;
-			stream2 << best_moves;
-			std::string str = stream2.str();
-
-			std::string::size_type idx_begin = 0;
-			std::string::size_type idx_end = 0;
-			std::string::iterator begin = str.begin();
-			std::string piece;
-			std::string::size_type width = 0;
-			std::string::size_type max_width = 40;
-			while ((idx_end = str.find(' ', idx_begin)) !=
-				std::string::npos)
-			{
-				piece = std::string(begin + idx_begin,
-					begin + idx_end);
-				idx_begin = idx_end + 1;
-				if (width + 1 + piece.length() > max_width)
-				{
-					width = 0;
-					stream << "\n"
-				"                                      ";
-				}
-				stream << ' ' << piece;
-				width += 1 + piece.length();
-			}
-			piece = std::string(begin + idx_begin, str.end());
-			if (width + 1 + piece.length() > max_width)
+			if (i > 0 && 0 == i % 6)
 			{
 				stream << "\n"
-				"                                      ";
+					"                                     ";
 			}
-			stream << ' ' << piece << '\n';
+			stream << ' ' << best_moves[i];
 		}
+		stream << '\n';
 
-		io << stream.str() << io::flush;
+		return stream.str();
 	}
 
 	// ================================================================

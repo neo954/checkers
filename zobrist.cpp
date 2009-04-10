@@ -1,8 +1,8 @@
-/* $Id: zobrist.cpp,v 1.7 2007-11-22 16:30:56 neo Exp $
+/* $Id: zobrist.cpp,v 1.8 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -28,6 +28,11 @@
 
 namespace checkers
 {
+	uint64_t zobrist::rand64(void)
+	{
+		return uint64_t(rand32()) | (uint64_t(rand32()) << 32);
+	}
+
 	uint64_t zobrist::_black_pieces[] =
 	{
 		rand64(), rand64(), rand64(), rand64(),

@@ -1,4 +1,4 @@
-/* $Id: engine.hpp,v 1.24 2007-11-26 08:13:14 neo Exp $
+/* $Id: engine.hpp,v 1.25 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -29,7 +29,6 @@
 
 #include <map>
 #include "board.hpp"
-#include "io.hpp"
 
 namespace checkers
 {
@@ -93,7 +92,6 @@ namespace checkers
 		int _depth_limit;
 		int _time_limit;
 		bool _verbose;
-		io _io;
 
 		static const int UNLIMITED = 999999;
 

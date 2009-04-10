@@ -1,8 +1,8 @@
-/* $Id: move.hpp,v 1.23 2007-11-28 17:17:21 neo Exp $
+/* $Id: move.hpp,v 1.24 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -73,9 +73,6 @@ namespace checkers
 
 	/// Stream out the move.
 	std::ostream& operator <<(std::ostream& os, const move& rhs);
-	/// Stream out the moves.
-	std::ostream& operator <<(std::ostream& os,
-		const std::vector<move>& rhs);
 }
 
 #include "move_i.hpp"

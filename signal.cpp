@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.16 2008-10-26 17:20:19 neo Exp $
+/* $Id: signal.cpp,v 1.17 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -92,7 +92,7 @@ namespace checkers
 	// ================================================================
 
 	/// Print dump information to stdout.
-	inline static void crash_dump(const char* buf)
+	static void crash_dump(const char* buf)
 	{
 		for (; *buf != '\0'; ++buf)
 		{

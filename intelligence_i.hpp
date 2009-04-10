@@ -1,8 +1,8 @@
-/* $Id: intelligence_i.hpp,v 1.23 2007-11-26 15:20:21 neo Exp $
+/* $Id: intelligence_i.hpp,v 1.24 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify

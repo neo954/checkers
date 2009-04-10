@@ -1,8 +1,8 @@
-/* $Id: engine.cpp,v 1.45 2008-10-26 17:20:18 neo Exp $
+/* $Id: engine.cpp,v 1.46 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -27,13 +27,14 @@
 #include <cstdlib>
 #include "engine.hpp"
 #include "intelligence.hpp"
+#include "nonstdio.hpp"
 
 namespace checkers
 {
 	engine::engine(void) :
 		_board(), _rotate(false), _history(), _best_moves(),
 		_force_mode(false), _depth_limit(UNLIMITED), _time_limit(10),
-		_verbose(false), _io(STDIN_FILENO, STDOUT_FILENO)
+		_verbose(false)
 	{
 		this->_action.insert(std::make_pair("?",
 			&engine::do_help));
@@ -95,12 +96,12 @@ namespace checkers
 			this->prompt();
 			this->ponder();
 
-			if (this->_io.eof())
+			if (nio.eof())
 			{
 				break;
 			}
 
-			this->_io >> command;
+			nio >> command;
 
 			args = engine::parse(command);
 			if (!args.empty())
@@ -122,89 +123,89 @@ namespace checkers
 
 	void engine::print_board(void)
 	{
-		this->_io << ";[FEN \"" << this->_board << "\"]\n";
+		nio << ";[FEN \"" << this->_board << "\"]\n";
 
 		int i;
 		int j;
 
 		if (this->_rotate)
 		{
-			this->_io << "  +---+---+---+---+---+---+---+---+\n";
+			nio << "  +---+---+---+---+---+---+---+---+\n";
 			for (i = 0; i < 32; i += 8)
 			{
-				this->_io << "  ";
+				nio << "  ";
 				for (j = i; j < i + 4; ++j)
 				{
-					this->_io << "|   |";
+					nio << "|   |";
 					this->print_square(j);
 				}
-				this->_io << "|\n  +";
+				nio << "|\n  +";
 				for (j = i; j < i + 4; ++j)
 				{
-					this->_io << "---+" << (j + 1);
+					nio << "---+" << (j + 1);
 					if (j + 1 < 10)
 					{
-						this->_io << '-';
+						nio << '-';
 					}
-					this->_io << "-+";
+					nio << "-+";
 				}
-				this->_io << "\n  |";
+				nio << "\n  |";
 				for (j = i + 4; j < i + 8; ++j)
 				{
 					this->print_square(j);
-					this->_io << "|   |";
+					nio << "|   |";
 				}
-				this->_io << "\n  +";
+				nio << "\n  +";
 				for (j = i + 4; j < i + 8; ++j)
 				{
-					this->_io << (j + 1);
+					nio << (j + 1);
 					if (j + 1 < 10)
 					{
-						this->_io << '-';
+						nio << '-';
 					}
-					this->_io << "-+---+";
+					nio << "-+---+";
 				}
-				this->_io << '\n';
+				nio << '\n';
 			}
 		}
 		else
 		{
-			this->_io << "  +---+---+---+---+---+---+---+---+\n";
+			nio << "  +---+---+---+---+---+---+---+---+\n";
 			for (i = 32; i > 0; i -= 8)
 			{
-				this->_io << "  ";
+				nio << "  ";
 				for (j = i; j > i - 4; --j)
 				{
-					this->_io << "|   |";
+					nio << "|   |";
 					this->print_square(j - 1);
 				}
-				this->_io << "|\n  +";
+				nio << "|\n  +";
 				for (j = i; j > i - 4; --j)
 				{
-					this->_io << "---+" << j;
+					nio << "---+" << j;
 					if (j < 10)
 					{
-						this->_io << '-';
+						nio << '-';
 					}
-					this->_io << "-+";
+					nio << "-+";
 				}
-				this->_io << "\n  |";
+				nio << "\n  |";
 				for (j = i - 4; j > i - 8; --j)
 				{
 					this->print_square(j - 1);
-					this->_io << "|   |";
+					nio << "|   |";
 				}
-				this->_io << "\n  +";
+				nio << "\n  +";
 				for (j = i - 4; j > i - 8; --j)
 				{
-					this->_io << j;
+					nio << j;
 					if (j < 10)
 					{
-						this->_io << '-';
+						nio << '-';
 					}
-					this->_io << "-+---+";
+					nio << "-+---+";
 				}
-				this->_io << '\n';
+				nio << '\n';
 			}
 		}
 	}
@@ -217,23 +218,23 @@ namespace checkers
 
 		if (this->_board.get_black_men() & square)
 		{
-			this->_io << "(b)";
+			nio << "(b)";
 		}		
 		else if (this->_board.get_white_men() & square)
 		{
-			this->_io << "(w)";
+			nio << "(w)";
 		}		
 		else if (this->_board.get_black_kings() & square)
 		{
-			this->_io << "(B)";
+			nio << "(B)";
 		}		
 		else if (this->_board.get_white_kings() & square)
 		{
-			this->_io << "(W)";
+			nio << "(W)";
 		}
 		else
 		{
-			this->_io << " \\ ";
+			nio << " \\ ";
 		}
 	}
 
@@ -332,14 +333,14 @@ namespace checkers
 
 		bool contin;
 
-		this->_io << "  Thinking ...\n";
+		nio << "  Thinking ...\n";
 
 		std::vector<move> moves;
 		do
 		{
-			intelligence::think(this->_io, this->_best_moves,
-				this->_board, this->_depth_limit,
-				this->_time_limit, this->_verbose);
+			intelligence::think(this->_best_moves, this->_board,
+				this->_depth_limit, this->_time_limit,
+				this->_verbose);
 			if (this->_best_moves.empty())
 			{
 				break;
@@ -353,10 +354,12 @@ namespace checkers
 			} while (contin && !this->_best_moves.empty());
 		} while (contin);
 
-		if (moves.size())
+		for (std::vector<move>::const_iterator pos = moves.begin();
+			pos != moves.end(); ++pos)
 		{
-			this->_io << moves << '\n';
+			nio << *pos << '\n';
 		}
+
 		this->result();
 	}
 
@@ -376,7 +379,7 @@ namespace checkers
 		}
 		catch (const std::logic_error& e)
 		{
-			this->_io << e.what() << '\n';
+			nio << e.what() << '\n';
 		}
 
 		return contin;
@@ -386,8 +389,8 @@ namespace checkers
 	{
 		for (;;)
 		{
-			this->_io << io::flush;
-			if (this->_io.lines_to_read() || this->_io.eof())
+			nio << io::flush;
+			if (nio.lines_to_read() || nio.eof())
 			{
 				break;
 			}
@@ -397,7 +400,7 @@ namespace checkers
 
 	void engine::ponder(void)
 	{
-		if (this->_force_mode || !intelligence::think(this->_io,
+		if (this->_force_mode || !intelligence::think(
 			this->_best_moves, this->_board, engine::UNLIMITED,
 			engine::UNLIMITED, this->_verbose))
 		{
@@ -407,7 +410,7 @@ namespace checkers
 
 	void engine::prompt(void)
 	{
-		this->_io << "  *** "
+		nio << "  *** "
 			<< (this->_board.is_black_to_move() ? "Black" : "White")
 			<< " ***\n";
 	}
@@ -416,7 +419,7 @@ namespace checkers
 	{
 		if (this->_board.is_losing())
 		{
-			this->_io <<
+			nio <<
 				(this->_board.is_black_to_move() ?
 				"[Result \"1-0\"]\n{White win}\n" :
 				"[Result \"0-1\"]\n{Black win}\n");
@@ -424,7 +427,7 @@ namespace checkers
 		}
 		if (this->_board.is_winning())
 		{
-			this->_io <<
+			nio <<
 				(this->_board.is_black_to_move() ?
 				"[Result \"0-1\"]\n{Black win}\n" :
 				"[Result \"1-0\"]\n{White win}\n");
@@ -439,10 +442,9 @@ namespace checkers
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io << "  Analyzing ...\n";
-		intelligence::think(this->_io, this->_best_moves, this->_board,
-			this->_depth_limit, this->_time_limit,
-			true);
+		nio << "  Analyzing ...\n";
+		intelligence::think(this->_best_moves, this->_board,
+			this->_depth_limit, this->_time_limit, true);
 	}
 
 	void engine::do_print(const std::vector<std::string>& args)
@@ -485,12 +487,12 @@ namespace checkers
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io << "pong";
+		nio << "pong";
 		if (1 < args.size())
 		{
-			this->_io << ' ' << args[1];
+			nio << ' ' << args[1];
 		}
-		this->_io << '\n';
+		nio << '\n';
 	}
 
 	void engine::do_go(const std::vector<std::string>& args)
@@ -507,7 +509,7 @@ namespace checkers
 		// Void the warning: unused parameter ‘args’
 		(void)args;
 
-		this->_io <<
+		nio <<
 		// --+----1----+----2----+----3----+----4----+----5----+----6--|
 		"    ?               Show this help information.\n"
 		"    analyze         Engine thinks about what move it make next"
@@ -553,7 +555,7 @@ namespace checkers
 			this->_history.begin(); pos != this->_history.end();
 			++pos)
 		{
-			this->_io << "  move " << *pos << '\n';
+			nio << "  move " << *pos << '\n';
 		}
 	}
 
@@ -588,7 +590,7 @@ namespace checkers
 	{
 		if (args.size() <= 1)
 		{
-			this->_io << "Error (option missing): sd\n";
+			nio << "Error (option missing): sd\n";
 			return;
 		}
 		this->_depth_limit = this->to_int(args[1]);
@@ -598,7 +600,7 @@ namespace checkers
 	{
 		if (args.size() <= 1)
 		{
-			this->_io << "Error (option missing): st\n";
+			nio << "Error (option missing): st\n";
 			return;
 		}
 		this->_time_limit  = this->to_int(args[1]);
@@ -608,7 +610,7 @@ namespace checkers
 	{
 		if (args.size() <= 1)
 		{
-			this->_io << "Error (option missing): setboard\n";
+			nio << "Error (option missing): setboard\n";
 			return;
 		}
 
@@ -618,14 +620,14 @@ namespace checkers
 		}
 		catch (const std::logic_error& e)
 		{
-			this->_io << e.what() << '\n';
+			nio << e.what() << '\n';
 			return;
 		}
 
 		this->_history.clear();
 		this->_best_moves.clear();
 		this->print_board();
-		this->_io << io::flush;
+		nio << io::flush;
 	}
 
 	void engine::do_undo(const std::vector<std::string>& args)
@@ -642,7 +644,7 @@ namespace checkers
 		}
 		else
 		{
-			this->_io << "Error (no move to undo): undo\n";
+			nio << "Error (no move to undo): undo\n";
 		}
 	}
 
@@ -654,18 +656,18 @@ namespace checkers
 		if (this->_verbose)
 		{
 			this->_verbose = false;
-			this->_io << "  Verbose mode off.\n";
+			nio << "  Verbose mode off.\n";
 		}
 		else
 		{
 			this->_verbose = true;
-			this->_io << "  Verbose mode on.\n";
+			nio << "  Verbose mode on.\n";
 		}
 	}
 
 	void engine::not_implemented(const std::vector<std::string>& args)
 	{
-		this->_io << "Error (command not implemented): " << args[0]
+		nio << "Error (command not implemented): " << args[0]
 			<< '\n';
 	}
 }

@@ -1,8 +1,8 @@
-/* $Id: board.cpp,v 1.43 2008-11-29 11:14:53 neo Exp $
+/* $Id: board.cpp,v 1.44 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007, 2008 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
 		     Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -191,23 +191,23 @@ namespace checkers
 				is_king = true;
 				break;
 			case '0':
-				// Intentionally no break
+				// Fall through
 			case '1':
-				// Intentionally no break
+				// Fall through
 			case '2':
-				// Intentionally no break
+				// Fall through
 			case '3':
-				// Intentionally no break
+				// Fall through
 			case '4':
-				// Intentionally no break
+				// Fall through
 			case '5':
-				// Intentionally no break
+				// Fall through
 			case '6':
-				// Intentionally no break
+				// Fall through
 			case '7':
-				// Intentionally no break
+				// Fall through
 			case '8':
-				// Intentionally no break
+				// Fall through
 			case '9':
 				i *= 10;
 				i += (str[p] - '0');

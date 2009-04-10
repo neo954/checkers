@@ -1,8 +1,8 @@
-/* $Id: move.cpp,v 1.20 2009-04-10 18:34:23 neo Exp $
+/* $Id: nonstdio.cpp,v 1.1 2009-04-10 18:34:23 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
+   Copyright (c) 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -20,26 +20,15 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file move.cpp
- *  @brief Move.
+/** @file nonstdio.cpp
+ *  @brief Synchronous stdin/stdout.
  */
 
-#include <cassert>
-#include <ostream>
-#include "move.hpp"
+#include "nonstdio.hpp"
 
 namespace checkers
 {
-	std::ostream& operator <<(std::ostream& os, const move& rhs)
-	{
-		assert(1 == rhs.get_src().count());
-		assert(1 == rhs.get_dest().count());
-
-		os << rhs.get_src() << (rhs.get_capture() ? 'x' : '-')
-			<< rhs.get_dest();
-
-		return os;
-	}
+	io nio(STDIN_FILENO, STDOUT_FILENO);
 }
 
 // End of file
