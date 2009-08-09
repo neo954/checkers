@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.46 2009-04-10 18:34:23 neo Exp $
+/* $Id: engine.cpp,v 1.47 2009-08-09 13:32:13 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -25,8 +25,8 @@
  */
 
 #include <cstdlib>
+#include "absearch.hpp"
 #include "engine.hpp"
-#include "intelligence.hpp"
 #include "nonstdio.hpp"
 
 namespace checkers
@@ -338,7 +338,7 @@ namespace checkers
 		std::vector<move> moves;
 		do
 		{
-			intelligence::think(this->_best_moves, this->_board,
+			absearch::think(this->_best_moves, this->_board,
 				this->_depth_limit, this->_time_limit,
 				this->_verbose);
 			if (this->_best_moves.empty())
@@ -400,7 +400,7 @@ namespace checkers
 
 	void engine::ponder(void)
 	{
-		if (this->_force_mode || !intelligence::think(
+		if (this->_force_mode || !absearch::think(
 			this->_best_moves, this->_board, engine::UNLIMITED,
 			engine::UNLIMITED, this->_verbose))
 		{
@@ -443,7 +443,7 @@ namespace checkers
 		(void)args;
 
 		nio << "  Analyzing ...\n";
-		intelligence::think(this->_best_moves, this->_board,
+		absearch::think(this->_best_moves, this->_board,
 			this->_depth_limit, this->_time_limit, true);
 	}
 

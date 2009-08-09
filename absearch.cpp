@@ -1,4 +1,4 @@
-/* $Id: intelligence.cpp,v 1.37 2009-04-10 18:34:23 neo Exp $
+/* $Id: absearch.cpp,v 1.1 2009-08-09 13:32:12 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -20,18 +20,18 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file intelligence.cpp
+/** @file absearch.cpp
  *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
 #include <algorithm>
 #include <iomanip>
-#include "intelligence.hpp"
+#include "absearch.hpp"
 #include "nonstdio.hpp"
 
 namespace checkers
 {
-	int intelligence::alpha_beta_search(std::vector<move>& best_moves,
+	int absearch::alpha_beta_search(std::vector<move>& best_moves,
 		unsigned int depth, int alpha, int beta, unsigned int ply)
 	{
 		if (0 == this->_nodes % (2 ^ 16))
@@ -40,13 +40,15 @@ namespace checkers
 			if (this->is_timeout() || nio.lines_to_read() ||
 				nio.eof())
 			{
-	 			/// @retval intelligence::unknown() when timeout
+	 			/// @retval absearch::unknown() when timeout
 				return evaluate::unknown();
 			}
 		}
 		++this->_nodes;
 
+		// The default flag type is ALPHA
 		record::hash_flag flag = record::ALPHA;
+		// Try to get the evalute record from the hash table
 		int val = this->probe_hash(depth, alpha, beta, best_moves);
 
 		if (evaluate::unknown() != val)
@@ -84,7 +86,7 @@ namespace checkers
 			return val;
 		}
 
-		// Generate legal moves
+		// Generate all the legal moves
 		std::vector<move> legal_moves = this->_board.generate_moves();
 		// Optimize the order of legal moves
 		this->optimize_moves(legal_moves, ply);
@@ -100,11 +102,11 @@ namespace checkers
 				++depth;
 			}
 
-			intelligence intelligence(*this);
-			val = intelligence._board.make_move(*pos) ?
-				 intelligence.alpha_beta_search(deeper_moves,
+			absearch absearch(*this);
+			val = absearch._board.make_move(*pos) ?
+				 absearch.alpha_beta_search(deeper_moves,
 					depth,     alpha,   beta, ply + 1) :
-				-intelligence.alpha_beta_search(deeper_moves,
+				-absearch.alpha_beta_search(deeper_moves,
 					depth - 1, -beta, -alpha, ply + 1);
 
 			if (evaluate::unknown() == val)
@@ -141,7 +143,7 @@ namespace checkers
 
 	/** @return Timeout or not.
 	 */ 
-	bool intelligence::think(std::vector<move>& best_moves,
+	bool absearch::think(std::vector<move>& best_moves,
 		const board& board, unsigned int depth_limit, time_t time_limit,
 		bool verbose)
 	{
@@ -151,27 +153,27 @@ namespace checkers
 		struct timeval start;
 		struct timeval end;
 
-		intelligence::set_timeout(time_limit);
+		absearch::set_timeout(time_limit);
 
 		for (i = 0, depth = std::max(best_moves.size(),
 			static_cast<std::vector<move>::size_type>(1U)), val = 0;
 			depth <= depth_limit && val != evaluate::unknown();
 			++i, ++depth)
 		{
-			intelligence::_nodes = 0;
-			intelligence::_best_moves = best_moves;
-			intelligence::_optimize_move = true;
+			absearch::_nodes = 0;
+			absearch::_best_moves = best_moves;
+			absearch::_optimize_move = true;
 
-			intelligence intelligence(board);
+			absearch absearch(board);
 			start = timeval::now();
-			val = intelligence.alpha_beta_search(best_moves,
+			val = absearch.alpha_beta_search(best_moves,
 				depth);
 			end = timeval::now();
 
 			if (verbose)
 			{
-				nio << intelligence::thinking_detail(depth,
-					val, end - start, intelligence::_nodes,
+				nio << absearch::thinking_detail(depth,
+					val, end - start, absearch::_nodes,
 					best_moves, !(i % 8));
 			}
 
@@ -190,7 +192,7 @@ namespace checkers
 
 	// ================================================================
 
-	std::string intelligence::thinking_detail(unsigned int depth, int val,
+	std::string absearch::thinking_detail(unsigned int depth, int val,
 		struct timeval time, long unsigned int nodes,
 		const std::vector<move>& best_moves, bool show_title)
 	{
@@ -236,7 +238,7 @@ namespace checkers
 
 	// ================================================================
 
-	void intelligence::optimize_moves(std::vector<move>& moves,
+	void absearch::optimize_moves(std::vector<move>& moves,
 		unsigned int ply)
 	{
 		if (!this->_optimize_move)
@@ -266,12 +268,12 @@ namespace checkers
 	 *  @param best_moves
 	 *  @return value found in the hash table.
 	 */ 
-	int intelligence::probe_hash(unsigned int depth, int alpha, int beta,
+	int absearch::probe_hash(unsigned int depth, int alpha, int beta,
 		std::vector<move>& best_moves) const
 	{
-		std::vector<record>::iterator pos = intelligence::_hash.begin()
+		std::vector<record>::iterator pos = absearch::_hash.begin()
 			+ (this->_board.get_zobrist().key()
-			% intelligence::hash_size);
+			% absearch::hash_size);
 
 		if (pos->get_zobrist() == this->_board.get_zobrist())
 		{
@@ -283,32 +285,32 @@ namespace checkers
 		return evaluate::unknown();
 	}
 
-	void intelligence::record_hash(unsigned int depth, int val,
+	void absearch::record_hash(unsigned int depth, int val,
 		record::hash_flag flag)
 	{
-		std::vector<record>::iterator pos = intelligence::_hash.begin()
+		std::vector<record>::iterator pos = absearch::_hash.begin()
 			+ (this->_board.get_zobrist().key()
-			% intelligence::hash_size);
+			% absearch::hash_size);
 
 		*pos = record(this->_board.get_zobrist(), depth, val, flag);
 	}
 
-	void intelligence::record_hash(unsigned int depth, int val,
+	void absearch::record_hash(unsigned int depth, int val,
 		record::hash_flag flag, const std::vector<move>& best_moves)
 	{
-		std::vector<record>::iterator pos = intelligence::_hash.begin()
+		std::vector<record>::iterator pos = absearch::_hash.begin()
 			+ (this->_board.get_zobrist().key()
-			% intelligence::hash_size);
+			% absearch::hash_size);
 
 		*pos = record(this->_board.get_zobrist(), depth, val, flag,
 			best_moves);
 	}
 
-	std::vector<move> intelligence::_best_moves;
-	bool intelligence::_optimize_move = false;
-	long unsigned int intelligence::_nodes = 0;
-	struct timeval intelligence::_deadline = { 0, 0 };
-	std::vector<record> intelligence::_hash(intelligence::hash_size);
+	std::vector<move> absearch::_best_moves;
+	bool absearch::_optimize_move = false;
+	long unsigned int absearch::_nodes = 0;
+	struct timeval absearch::_deadline = { 0, 0 };
+	std::vector<record> absearch::_hash(absearch::hash_size);
 }
 
 // End of file

@@ -1,4 +1,4 @@
-/* $Id: intelligence_i.hpp,v 1.24 2009-04-10 18:34:23 neo Exp $
+/* $Id: absearch_i.hpp,v 1.1 2009-08-09 13:32:12 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -24,30 +24,30 @@
  *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
-#ifndef __INTELLIGENCE_I_HPP__
-#define __INTELLIGENCE_I_HPP__
+#ifndef __ABSEARCH_I_HPP__
+#define __ABSEARCH_I_HPP__
 
 #include "evaluate.hpp"
 
 namespace checkers
 {
-	inline intelligence::intelligence(const board& board) :
+	inline absearch::absearch(const board& board) :
 		_board(board)
 	{
 	}
 
 	// ================================================================
 
-	inline void intelligence::set_timeout(time_t second)
+	inline void absearch::set_timeout(time_t second)
 	{
-		intelligence::_deadline = timeval::now() + second;
+		absearch::_deadline = timeval::now() + second;
 	}
 
-	inline bool intelligence::is_timeout(void)
+	inline bool absearch::is_timeout(void)
 	{
-		return timeval::now() > intelligence::_deadline;
+		return timeval::now() > absearch::_deadline;
 	}
 }
 
-#endif // __INTELLIGENCE_I_HPP__
+#endif // __ABSEARCH_I_HPP__
 // End of file

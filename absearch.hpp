@@ -1,4 +1,4 @@
-/* $Id: intelligence.hpp,v 1.28 2009-04-10 18:34:23 neo Exp $
+/* $Id: absearch.hpp,v 1.1 2009-08-09 13:32:12 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -20,12 +20,12 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file intelligence.hpp
+/** @file absearch.hpp
  *  @brief Artificial intelligence, alpha-beta pruning.
  */
 
-#ifndef __INTELLIGENCE_HPP__
-#define __INTELLIGENCE_HPP__
+#ifndef __ABSEARCH_HPP__
+#define __ABSEARCH_HPP__
 
 #include "board.hpp"
 #include "record.hpp"
@@ -33,7 +33,7 @@
 
 namespace checkers
 {
-	class intelligence
+	class absearch
 	{
 	public:
 		typedef bool (*ponder_t)(void);
@@ -44,7 +44,7 @@ namespace checkers
 		static const unsigned int hash_size = 1024 * 1024;
 
 	private:
-		inline explicit intelligence(const board& board);
+		inline explicit absearch(const board& board);
 
 		/** @brief Alpha-beta pruning is a search algorithm that
 		 *   reduces the number of nodes that need to be evaluated
@@ -90,6 +90,6 @@ namespace checkers
 	};
 }
 
-#include "intelligence_i.hpp"
-#endif // __INTELLIGENCE_HPP__
+#include "absearch_i.hpp"
+#endif // __ABSEARCH_HPP__
 // End of file
