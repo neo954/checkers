@@ -1,4 +1,4 @@
-/* $Id: zobrist_i.hpp,v 1.10 2009-08-09 13:32:13 neo Exp $
+/* $Id: zobrist_i.hpp,v 1.11 2009-09-08 14:43:29 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -73,7 +73,7 @@ namespace checkers
 
 	inline uint32_t zobrist::rand32(void)
 	{
-		return uint32_t(rand16()) << 16 | uint32_t(rand16);
+		return uint32_t(rand16()) << 16 | uint32_t(rand16());
 	}
 
 	inline bool operator ==(const zobrist& lhs, const zobrist& rhs)
