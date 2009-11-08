@@ -1,8 +1,8 @@
-/* $Id: zobrist_i.hpp,v 1.11 2009-09-08 14:43:29 neo Exp $
+/* $Id: zobrist_i.hpp,v 1.12 2009-11-08 13:41:26 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -64,11 +64,11 @@ namespace checkers
 
 	inline uint16_t zobrist::rand16(void)
 	{
-		static uint32_t seed = 0U;
-		seed = (uint32_t(9301U) * seed + uint32_t(49297U)) %
-			uint32_t(233280U);
+		static uint32_t seed = 0UL;
+		seed = (uint32_t(9301UL) * seed + uint32_t(49297UL)) %
+			uint32_t(233280UL);
 
-		return seed;
+		return uint16_t(seed);
 	}
 
 	inline uint32_t zobrist::rand32(void)

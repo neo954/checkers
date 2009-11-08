@@ -1,4 +1,4 @@
-/* $Id: zobrist.cpp,v 1.8 2009-04-10 18:34:23 neo Exp $
+/* $Id: zobrist.cpp,v 1.9 2009-11-08 13:41:26 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -30,7 +30,7 @@ namespace checkers
 {
 	uint64_t zobrist::rand64(void)
 	{
-		return uint64_t(rand32()) | (uint64_t(rand32()) << 32);
+		return uint64_t(rand32()) << 32 | uint64_t(rand32());
 	}
 
 	uint64_t zobrist::_black_pieces[] =

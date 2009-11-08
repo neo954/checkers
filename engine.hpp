@@ -1,8 +1,8 @@
-/* $Id: engine.hpp,v 1.25 2009-04-10 18:34:23 neo Exp $
+/* $Id: engine.hpp,v 1.26 2009-11-08 13:41:26 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007 Mamiyami Information.
+   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
                      Gong Jie <neo@mamiyami.com>
 
    This program is free software; you can redistribute it and/or modify
