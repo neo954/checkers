@@ -1,4 +1,4 @@
-/* $Id: io.hpp,v 1.18 2007-11-22 16:30:55 neo Exp $
+/* $Id: io.hpp,v 1.19 2010-11-19 08:26:25 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -45,13 +45,13 @@ namespace checkers
 
 		template<typename T>
 		io& operator <<(const T& rhs);
-		inline io& operator <<(char rhs);
-		inline io& operator <<(const std::string& rhs);
-		inline io& operator <<(const char* rhs);
-		inline io& operator <<(io& (*op)(io&));
+		io& operator <<(char rhs);
+		io& operator <<(const std::string& rhs);
+		io& operator <<(const char* rhs);
+		io& operator <<(io& (*op)(io&));
 
 		/// Get a new line from read buffer
-		inline io& operator >>(std::string& rhs);
+		io& operator >>(std::string& rhs);
 
 		inline int lines_to_read(void);
 		inline bool eof(void) const;

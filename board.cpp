@@ -1,4 +1,4 @@
-/* $Id: board.cpp,v 1.44 2009-04-10 18:34:23 neo Exp $
+/* $Id: board.cpp,v 1.45 2010-11-19 08:26:25 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -92,7 +92,8 @@ namespace checkers
 		player color = board::BLACK;
 		bool is_king = false;
 		unsigned int i = 0;
-		for (p = 2; p < str.size(); ++p)
+		std::string::size_type str_size = str.size();
+		for (p = 2; p < str_size; ++p)
 		{
 			switch (str[p])
 			{
@@ -121,7 +122,7 @@ namespace checkers
 				color = board::WHITE;
 				break;
 			case ':':
-				if (p + 1 >= str.size() ||
+				if (p + 1 >= str_size ||
 					('B' != str[p + 1] && 'W' != str[p + 1]))
 				{
 					std::ostringstream error;
@@ -954,7 +955,8 @@ namespace checkers
 		unsigned int i = 0;
 		std::vector<bitboard> squares;
 		bool is_jump = true;
-		for (p = 0; p < str.size(); ++p)
+		std::string::size_type str_size = str.size();
+		for (p = 0; p < str_size; ++p)
 		{
 			switch (str[p])
 			{

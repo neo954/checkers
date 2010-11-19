@@ -1,4 +1,4 @@
-/* $Id: loopbuffer.cpp,v 1.20 2008-10-26 17:20:19 neo Exp $
+/* $Id: loopbuffer.cpp,v 1.21 2010-11-19 08:26:25 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -37,6 +37,18 @@ extern "C"
 
 namespace checkers
 {
+	loopbuffer::loopbuffer(unsigned int max_size) :
+		_max_size(max_size), _front(max_size - 2),
+		_rear(max_size - 2), _lines(0), _eof(false)
+	{
+		this->_buffer = new char[this->_max_size];
+	}
+
+	loopbuffer::~loopbuffer(void)
+	{
+		delete[] this->_buffer;
+	}
+
 	char loopbuffer::front(void) const
 	{
 		assert(!this->is_empty());		

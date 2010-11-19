@@ -1,4 +1,4 @@
-/* $Id: loopbuffer.hpp,v 1.14 2007-12-14 07:03:21 neo Exp $
+/* $Id: loopbuffer.hpp,v 1.15 2010-11-19 08:26:26 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -32,8 +32,8 @@ namespace checkers
 	class loopbuffer
 	{
 	public:
-		explicit inline loopbuffer(unsigned int max_size = 512);
-		inline ~loopbuffer(void);
+		explicit loopbuffer(unsigned int max_size = 512);
+		~loopbuffer(void);
 
 		inline int max_size(void) const;
 		inline bool is_full(void) const;

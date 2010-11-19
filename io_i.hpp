@@ -1,4 +1,4 @@
-/* $Id: io_i.hpp,v 1.14 2007-11-22 16:30:55 neo Exp $
+/* $Id: io_i.hpp,v 1.15 2010-11-19 08:26:25 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -41,38 +41,9 @@ namespace checkers
 		return *this;
 	}
 
-	inline io& io::operator <<(char rhs)
-	{
-		this->_write_buf.push_back(rhs);
-		return *this;
-	}
-
-	inline io& io::operator <<(const std::string& rhs)
-	{
-		this->_write_buf.push_back(rhs);
-		return *this;
-	}
-
-	inline io& io::operator <<(const char* rhs)
-	{
-		this->_write_buf.push_back(rhs);
-		return *this;
-	}
-
-	inline io& io::operator <<(io& (*op)(io&))
-	{
-		return (*op)(*this);
-	}
-
 	inline int io::lines_to_read(void)
 	{
 		return this->_read_buf.lines();
-	}
-
-	inline io& io::operator >>(std::string& rhs)
-	{
-		this->_read_buf.getline().swap(rhs);
-		return *this;
 	}
 
 	inline bool io::eof(void) const

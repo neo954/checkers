@@ -1,4 +1,4 @@
-/* $Id: runer.cpp,v 1.11 2008-10-26 17:20:19 neo Exp $
+/* $Id: runer.cpp,v 1.12 2010-11-19 08:26:26 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -128,7 +128,16 @@ int main(int argc, char* argv[])
 			{
 				switch (line_black[0])
 				{
-				case 'm':
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
 					move = line_black.substr(5, 4);
 					io << "Black move " << move << '\n'
 						<< checkers::io::flush;
@@ -161,7 +170,16 @@ int main(int argc, char* argv[])
 			{
 				switch (line_white[0])
 				{
-				case 'm':
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
 					move = line_white.substr(5, 4);
 					io << "White move " << move << '\n'
 						<< checkers::io::flush;
