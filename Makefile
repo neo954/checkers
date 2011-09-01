@@ -1,9 +1,12 @@
 PROJECT = checkers
-CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline
-CXXFLAGS += -g -ggdb
+CHOST="x86_64-pc-linux-gnu"
+CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline -fno-common -pipe
+#CXXFLAGS += -g -ggdb
 #CXXFLAGS += -O0 -fno-inline
-#CXXFLAGS += -DNDEBUG
+CXXFLAGS += -DNDEBUG
+CXXFLAGS += -march=native
 CXXFLAGS += -O3 --param max-inline-insns-single=9999 --param inline-unit-growth=9999
+#CXXFLAGS += -fprofile-arcs -ftest-coverage
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 TARGETS = ponder runer

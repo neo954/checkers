@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.18 2009-11-08 13:41:26 neo Exp $
+/* $Id: signal.cpp,v 1.19 2011-09-01 06:19:52 neo Exp $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -34,6 +34,7 @@ extern "C"
 }
 #include <cerrno>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
 #include <limits>
 #include <stdexcept>
