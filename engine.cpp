@@ -2,8 +2,8 @@
 
    This file is a part of ponder, a English/American checkers game.
 
-   Copyright (c) 2006, 2007, 2008, 2009 Mamiyami Information.
-                     Gong Jie <neo@mamiyami.com>
+   Copyright (c) 2006, 2007, 2008, 2009, 2014 Quux Information.
+                     Gong Jie <neo@quux.me>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
