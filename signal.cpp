@@ -298,7 +298,7 @@ namespace checkers
 #endif // POLL_MSG
 #ifdef POLL_ERR
 			case POLL_ERR:
-				crash_dump("  * i/o error\n");
+				crash_dump("  * I/O error\n");
 				break;
 #endif // POLL_ERR
 #ifdef POLL_PRI
