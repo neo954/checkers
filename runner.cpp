@@ -1,4 +1,4 @@
-/* $Id: runer.cpp 562 2014-11-03 06:47:50Z neo $
+/* $Id: runner.cpp 562 2014-11-03 06:47:50Z neo $
 
    This file is a part of ponder, a English/American checkers game.
 
@@ -20,7 +20,7 @@
    the Free Software Foundation, Inc., 51 Franklin Steet, Fifth Floor,
    Boston, MA 02110-1301, USA.
  */
-/** @file runer.cpp
+/** @file runner.cpp
  *  @brief
  */
 
@@ -35,7 +35,7 @@
 void usage(void)
 {
 	std::cerr
-		<< "Usage: runer --black PROGRAM --white PROGRAM [--time SECOND]\n"
+		<< "Usage: runner --black PROGRAM --white PROGRAM [--time SECOND]\n"
 		<< std::flush;
 }
 

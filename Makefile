@@ -16,7 +16,7 @@ build: $(TARGETS)
 ponder: absearch.o bitboard.o board.o engine.o evaluate.o io.o loopbuffer.o \
 	move.o nonstdio.o record.o signal.o timeval.o zobrist.o
 
-runer: io.o loopbuffer.o pipe.o signal.o
+runner: io.o loopbuffer.o pipe.o signal.o
 
 xcheckers: -lqt-mt
 
