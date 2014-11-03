@@ -24,6 +24,10 @@
  *  @brief Game engine.
  */
 
+extern "C"
+{
+	#include <unistd.h>
+}
 #include <cstdlib>
 #include "absearch.hpp"
 #include "engine.hpp"

@@ -24,6 +24,10 @@
  *  @brief Synchronous stdin/stdout.
  */
 
+extern "C"
+{
+	#include <unistd.h>
+}
 #include "nonstdio.hpp"
 
 namespace checkers
