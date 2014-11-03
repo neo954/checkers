@@ -20,9 +20,13 @@ runner: io.o loopbuffer.o pipe.o signal.o
 
 xcheckers: -lqt-mt
 
-doc: Doxyfile *.cpp *.hpp
+doc: checkers.pdf
+
+checkers.pdf: Doxyfile *.cpp *.hpp
 	mkdir -p doc
 	doxygen
+	$(MAKE) -C doc/latex pdf
+	ln -f doc/latex/refman.pdf checkers.pdf
 
 clean:
 	$(RM) $(TARGETS) *.gcda *.gcno *.gcov *.o deps core gmon.out
