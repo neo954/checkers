@@ -1,4 +1,4 @@
-/* $Id$
+/* $Id: runer.cpp 562 2014-11-03 06:47:50Z neo $
 
    This file is a part of ponder, a English/American checkers game.
 

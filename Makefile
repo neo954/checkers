@@ -9,7 +9,7 @@ CXXFLAGS += -O3 --param max-inline-insns-single=9999 --param inline-unit-growth=
 #CXXFLAGS += -fprofile-arcs -ftest-coverage
 LINK.o = $(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
-TARGETS = ponder runer
+TARGETS = ponder runner
 
 build: $(TARGETS)
 
