@@ -31,7 +31,7 @@
 /** @mainpage Ponder, a English/American Checkers Game
  *
  *  @author Gong Jie <neo@quux.me>
- *  @date   2006 - 2009
+ *  @date   2006 - 2009, 2014
  *
  *  @section sec_intro Introduction
  *
