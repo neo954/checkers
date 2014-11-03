@@ -1,4 +1,4 @@
-/* $Id: absearch_i.hpp,v 1.1 2009-08-09 13:32:12 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

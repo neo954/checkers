@@ -1,4 +1,4 @@
-/* $Id: move.hpp,v 1.24 2009-04-10 18:34:23 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

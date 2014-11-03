@@ -1,4 +1,4 @@
-/* $Id: loopbuffer.hpp,v 1.15 2010-11-19 08:26:26 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

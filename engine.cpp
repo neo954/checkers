@@ -1,4 +1,4 @@
-/* $Id: engine.cpp,v 1.47 2009-08-09 13:32:13 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

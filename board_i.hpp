@@ -1,4 +1,4 @@
-/* $Id: board_i.hpp,v 1.27 2007-12-14 07:03:21 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

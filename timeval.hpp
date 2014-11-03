@@ -1,4 +1,4 @@
-/* $Id: timeval.hpp,v 1.12 2007-11-26 15:20:21 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

@@ -1,4 +1,4 @@
-/* $Id: evaluate.cpp,v 1.1 2007-11-28 05:26:42 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

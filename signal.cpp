@@ -1,4 +1,4 @@
-/* $Id: signal.cpp,v 1.19 2011-09-01 06:19:52 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

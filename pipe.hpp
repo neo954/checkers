@@ -1,4 +1,4 @@
-/* $Id: pipe.hpp,v 1.6 2007-11-22 16:30:56 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 

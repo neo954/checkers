@@ -1,4 +1,4 @@
-/* $Id: zobrist_i.hpp,v 1.12 2009-11-08 13:41:26 neo Exp $
+/* $Id$
 
    This file is a part of ponder, a English/American checkers game.
 
