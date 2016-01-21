@@ -33,6 +33,7 @@ extern "C"
 }
 #include <cerrno>
 #include <stdexcept>
+#include <utility>
 
 namespace checkers
 {

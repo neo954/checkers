@@ -1,5 +1,5 @@
 PROJECT = checkers
-CHOST="x86_64-pc-linux-gnu"
+#CHOST="x86_64-pc-linux-gnu"
 CXXFLAGS += -std=c++98 -pedantic -Wall -Wextra -Winit-self -Winline -fno-common -pipe
 #CXXFLAGS += -g -ggdb
 #CXXFLAGS += -O0 -fno-inline

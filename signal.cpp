@@ -38,6 +38,7 @@ extern "C"
 #include <cstring>
 #include <limits>
 #include <stdexcept>
+#include <string>
 #include "signal.hpp"
 
 namespace checkers
@@ -277,45 +278,47 @@ namespace checkers
 		case SIGPIPE:
 			crash_dump("SIGPIPE\n");
 			goto common_si_code;
+#ifdef SIGPOLL
 		case SIGPOLL:
 			crash_dump("SIGPOLL\n");
 			switch (siginfo->si_code)
 			{
-#ifdef POLL_IN
+#  ifdef POLL_IN
 			case POLL_IN :
 				crash_dump("  * data input available\n");
 				break;
-#endif // POLL_IN
-#ifdef POLL_OUT
+#  endif // POLL_IN
+#  ifdef POLL_OUT
 			case POLL_OUT:
 				crash_dump("  * output buffers available\n");
 				break;
-#endif // POLL_OUT
-#ifdef POLL_MSG
+#  endif // POLL_OUT
+#  ifdef POLL_MSG
 			case POLL_MSG:
 				crash_dump("  * input message available\n");
 				break;
-#endif // POLL_MSG
-#ifdef POLL_ERR
+#  endif // POLL_MSG
+#  ifdef POLL_ERR
 			case POLL_ERR:
 				crash_dump("  * I/O error\n");
 				break;
-#endif // POLL_ERR
-#ifdef POLL_PRI
+#  endif // POLL_ERR
+#  ifdef POLL_PRI
 			case POLL_PRI:
 				crash_dump("  * high priority input"
 					" available\n");
 				break;
-#endif // POLL_PRI
-#ifdef POLL_HUP
+#  endif // POLL_PRI
+#  ifdef POLL_HUP
 			case POLL_HUP:
 				crash_dump("  * device disconnected\n");
 				break;
-#endif // POLL_HUP
+#  endif // POLL_HUP
 			default:
 				goto common_si_code;
 			}
 			break;
+#endif // SIGPOLL
 		case SIGQUIT:
 			crash_dump("SIGQUIT\n");
 			goto common_si_code;
@@ -373,9 +376,11 @@ namespace checkers
 				crash_dump("  * kill(), sigsend(), or"
 					" raise()\n");
 				break;
+#ifdef SI_KERNEL
 			case SI_KERNEL :
 				crash_dump("  * The kernel\n");
 				break;
+#endif // SI_KERNEL
 			case SI_QUEUE  :
 				crash_dump("  * sigqueue()\n");
 				break;
