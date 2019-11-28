@@ -970,7 +970,7 @@ namespace checkers
 					throw std::logic_error(error.str());
 				}
 				is_jump = false;
-				// Intentionally no break
+				// Falls through.
 			case 'x':
 				if (p > 3 && !is_jump)
 				{
@@ -992,23 +992,23 @@ namespace checkers
 				i = 0;
 				break;
 			case '0':
-				// Intentionally no break
+				// Falls through.
 			case '1':
-				// Intentionally no break
+				// Falls through.
 			case '2':
-				// Intentionally no break
+				// Falls through.
 			case '3':
-				// Intentionally no break
+				// Falls through.
 			case '4':
-				// Intentionally no break
+				// Falls through.
 			case '5':
-				// Intentionally no break
+				// Falls through.
 			case '6':
-				// Intentionally no break
+				// Falls through.
 			case '7':
-				// Intentionally no break
+				// Falls through.
 			case '8':
-				// Intentionally no break
+				// Falls through.
 			case '9':
 				i *= 10;
 				i += (str[p] - '0');
